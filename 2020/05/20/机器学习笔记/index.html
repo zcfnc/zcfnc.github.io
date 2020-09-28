@@ -1,0 +1,846 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/self.jpg">
+  <link rel="icon" type="image/png" href="/img/self.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="zhousan">
+  <meta name="keywords" content="">
+  <title>机器学习笔记 - 周三</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+    
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_pf9vaxs7x7b.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>周三的精神家园</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-05-20 11:14" pubdate>
+        2020年5月20日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      47
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">机器学习笔记</h1>
+            
+            <div class="markdown-body" id="post-body">
+              <h1 id="0-概述"><a href="#0-概述" class="headerlink" title="0.概述"></a>0.概述</h1><p>部分摘录</p>
+<h1 id="1-线性回归"><a href="#1-线性回归" class="headerlink" title="1. 线性回归"></a>1. 线性回归</h1><h2 id="1-1-特征缩放（归一化）"><a href="#1-1-特征缩放（归一化）" class="headerlink" title="1.1 特征缩放（归一化）"></a>1.1 特征缩放（归一化）</h2><h3 id="1-1-1-Standardization"><a href="#1-1-1-Standardization" class="headerlink" title="1.1.1 Standardization"></a>1.1.1 Standardization</h3><p>Standardization又称为 Z-score normalization，量化后的特征将服从标准正态分布：</p>
+<p>z = （X<sub>i</sub>-μ）/δ</p>
+<p>其中， μ ， δ  分别为对应特征  x<sub>i</sub>  的均值和标准差。量化后的特征将分布在  [−1,1]  区间</p>
+<a id="more"></a>
+
+<h3 id="1-1-2-Min-Max-Scaling"><a href="#1-1-2-Min-Max-Scaling" class="headerlink" title="1.1.2 Min-Max Scaling"></a>1.1.2 Min-Max Scaling</h3><p>Min-Max Scaling 又称为 normalization，特征量化的公式为：</p>
+<p>z = x<sub>i</sub>−min(x<sub>i</sub>)  /  max(x<sub>i</sub>)−min(x<sub>i</sub>)</p>
+<p>量化后的特征将分布在[0,1]区间。</p>
+<p>大多数机器学习算法中，会选择 Standardization 来进行特征缩放，但是，Min-Max Scaling 也并非会被弃置一地。在数字图像处理中，像素强度通常就会被量化到[0,1] 区间，在一般的神经网络算法中，也会要求特征被量化到  [0,1]  区间。</p>
+<h2 id="1-2-学习率的调节"><a href="#1-2-学习率的调节" class="headerlink" title="1.2 学习率的调节"></a>1.2 学习率的调节</h2><h3 id="1-2-1-梯度下降"><a href="#1-2-1-梯度下降" class="headerlink" title="1.2.1 梯度下降"></a>1.2.1 梯度下降</h3><ul>
+<li>批量梯度下降</li>
+<li>随机梯度下降<h3 id="1-2-2-正规方程"><a href="#1-2-2-正规方程" class="headerlink" title="1.2.2 正规方程"></a>1.2.2 正规方程</h3></li>
+</ul>
+<p>我们通过梯度下降法来求得J(θ)  的最小值，但是对于学习率α  的调节有时候使得我们非常恼火。为此，我们可通过正规方程来最小化  J(θ) ：</p>
+<p>θ=(X^T^X)^−1^X^T^y</p>
+<p>其中， X  为输入向量矩阵，第0  个特征表示偏置（x0=1）， y  为目标向量，仅从该表达式形式上看，我们也脱离了学习率α 的束缚。</p>
+<h2 id="1-3-欠拟合与过拟合"><a href="#1-3-欠拟合与过拟合" class="headerlink" title="1.3 欠拟合与过拟合"></a>1.3 欠拟合与过拟合</h2><h3 id="1-3-1-局部加权线性回归（LWR）"><a href="#1-3-1-局部加权线性回归（LWR）" class="headerlink" title="1.3.1 局部加权线性回归（LWR）"></a>1.3.1 局部加权线性回归（LWR）</h3><p>为了解决欠拟合和过拟合问题，引入了<strong>局部加权线性回归。</strong></p>
+<p>LWR 补充自机器学习实战一书，后续章节中我们知道，更一般地，我们使用<strong>正规化</strong>来解决过拟合问题。</p>
+<h1 id="2-逻辑回归"><a href="#2-逻辑回归" class="headerlink" title="2. 逻辑回归"></a>2. 逻辑回归</h1><ul>
+<li>逻辑回归就是解决分类问题，求决策边界<h2 id="2-1-0-1-分类问题"><a href="#2-1-0-1-分类问题" class="headerlink" title="2.1 0/1 分类问题"></a>2.1 0/1 分类问题</h2>简单的根据y值大小（类别）进行分类</li>
+</ul>
+<h2 id="2-2-逻辑回归"><a href="#2-2-逻辑回归" class="headerlink" title="2.2 逻辑回归"></a>2.2 逻辑回归</h2><p>上一节我们知道，使用线性回归来处理 0/1 分类问题总是困难重重的，因此，人们定义了逻辑回归来完成 0/1 分类问题，逻辑一词也代表了是（1）和非（0）。</p>
+<h3 id="2-2-1-Sigmoid预测函数"><a href="#2-2-1-Sigmoid预测函数" class="headerlink" title="2.2.1 Sigmoid预测函数"></a>2.2.1 Sigmoid预测函数</h3><p>在逻辑回归中，定义预测函数为：<br>h<sub>θ</sub>(x)=g(z)</p>
+<p>其中， z=θ^T^x  是<strong>分类边界</strong>（分类边界曲线/线），且g(z)=1 / 1+e^−z^</p>
+<p>g(z)  称之为 Sigmoid Function，亦称 Logic Function</p>
+<h2 id="2-3-决策边界"><a href="#2-3-决策边界" class="headerlink" title="2.3 决策边界"></a>2.3 决策边界</h2><p>决策边界，顾名思义，就是用来划清界限的边界，边界的形态可以不定，可以是点，可以是线，也可以是平面。Andrew Ng 在公开课中强调：“<strong>决策边界是预测函数  hθ(x) 的属性，而不是训练集属性</strong>”，这是因为能作出“划清”类间界限的只有h<sub>θ</sub>(x) ，而训练集只是用来训练和调节参数的。</p>
+<h2 id="2-4-利用正规化解决过拟合问题"><a href="#2-4-利用正规化解决过拟合问题" class="headerlink" title="2.4 利用正规化解决过拟合问题"></a>2.4 利用正规化解决过拟合问题</h2><p>在之前的文章中，我们认识了过拟合问题,通常，我们有如下策略来解决过拟合问题：</p>
+<p>减少特征数，显然这只是权宜之计，因为特征意味着信息，放弃特征也就等同于丢弃信息，要知道，特征的获取往往也是艰苦卓绝的。</p>
+<p>不放弃特征，而是拉伸曲线使之更加平滑以解决过拟合问题，为了拉伸曲线，也就<strong>要弱化一些高阶项（曲线曲折的罪魁祸首</strong>）。由于高阶项中的特征 x 无法更改，因此特征是无法弱化的，我们能弱化的只有高阶项中的系数  θ<sub>i</sub> 。我们把这种弱化称之为是对参数  θ 的惩罚（penalize）。Regularization（正规化）正是完成这样一种惩罚的“侩子手”</p>
+<h2 id="2-5-多分类问题"><a href="#2-5-多分类问题" class="headerlink" title="2.5 多分类问题"></a>2.5 多分类问题</h2><p>通常采用 <strong>One-vs-All</strong>，亦称 One-vs-the Rest 方法来实现多分类，其将多分类问题转化为了多次二分类问题。假定完成K个分类，One-vs-All 的执行过程如下：</p>
+<ul>
+<li>轮流选中某一类型i，将其视为正样本，即 “1” 分类，剩下样本都看做是负样本，即 “0” 分类。</li>
+<li>训练逻辑回归模型得到参数  θ^(1)^,θ^(2)^,…,θ^(K)^ ，即总共获得了K−1个决策边界。</li>
+</ul>
+<p>给定输入x，为确定其分类，需要分别计算  h<sub>θ</sub>^(k)^(x),k=1,…,K , h<sub>θ</sub>^(k)^(x)越趋近于 1，x  越接近是第k类。</p>
+<p><strong>总结</strong>：ABC三类，将A当作一类，BC当作一类，得到决策边界h<sub>1</sub>；然后将B当一类，AC当一类，得到决策边界h2，以此类推。然后将目标x<sub>θ</sub>代入h<sub>1</sub>,h<sub>2</sub>,h<sub>3</sub>中求解。哪个值越<strong>接近1</strong>，即为x<sub>0</sub>的类别。</p>
+<p><strong>这里为什么条件是接近1</strong>：因为逻辑回归的归一化函数比如说上面的sigmod函数归一化的值区间为[0,1],如果h<sub>3</sub>(x0)值为0.8表示x<sub>0</sub>有0.8的概率为h3类别，并不是h<sub>3</sub>(x<sub>0</sub>)的值越大表示它的类别一定为h<sub>3</sub></p>
+<h1 id="3-神经网络"><a href="#3-神经网络" class="headerlink" title="3. 神经网络"></a>3. 神经网络</h1><h2 id="3-1-再论-0-1-分类问题"><a href="#3-1-再论-0-1-分类问题" class="headerlink" title="3.1 再论 0/1 分类问题"></a>3.1 再论 0/1 分类问题</h2><p>在逻辑回归中，通过对特征进行多项式展开，可以让逻辑回归支持非线性的分类问题。<br>但是当数据的特征维度比较高的时候，多项式展开扩展后的特征个数是特别高的，对计算机的性能提出了很大的挑战。</p>
+<p>比如说在计算机视觉（CV）领域，图像的特征往往都是高维的</p>
+<p>因此，就需要考虑用新的机器学习模型来处理高维特征的非线性分类问题，<strong>神经网络是典型的不需要增加特征数目就能完成非线性分类问题的模型</strong>。</p>
+<h2 id="3-2-神经网络概述"><a href="#3-2-神经网络概述" class="headerlink" title="3.2 神经网络概述"></a>3.2 神经网络概述</h2><h3 id="3-2-1-卷积层"><a href="#3-2-1-卷积层" class="headerlink" title="3.2.1 卷积层"></a>3.2.1 卷积层</h3><p>作用：提取图像特征</p>
+<p>关于卷积核的选取</p>
+<h3 id="3-2-2-池化层"><a href="#3-2-2-池化层" class="headerlink" title="3.2.2 池化层"></a>3.2.2 池化层</h3><p>特征降维</p>
+<h3 id="3-2-3-全连接层"><a href="#3-2-3-全连接层" class="headerlink" title="3.2.3 全连接层"></a>3.2.3 全连接层</h3><p>全连接的核心操作就是矩阵向量乘积：y=Wx</p>
+<p>本质就是由一个特征空间线性变换到另一个特征空间。目标空间的任一维——也就是隐层的一个 cell——都认为会受到源空间的每一维的影响。不考虑严谨，可以说，目标向量是源向量的加权和。</p>
+<p>在 CNN 中，全连接常出现在最后几层，<strong>用于对前面设计的特征做加权和</strong>。比如 mnist，前面的卷积和池化相当于做特征工程，后面的全连接相当于做特征加权。（卷积相当于全连接的有意弱化，按照局部视野的启发，把局部之外的弱影响直接抹为零影响；还做了一点强制，不同的局部所使用的参数居然一致。弱化使参数变少，节省计算量，又专攻局部不贪多求全；强制进一步减少参数。少即是多）</p>
+<p>在 RNN 中，全连接用来把 embedding 空间拉到隐层空间，把隐层空间转回 label 空间等</p>
+<h1 id="4-算法分析与优化"><a href="#4-算法分析与优化" class="headerlink" title="4. 算法分析与优化"></a>4. 算法分析与优化</h1><h2 id="4-1-调优方法"><a href="#4-1-调优方法" class="headerlink" title="4.1 调优方法"></a>4.1 调优方法</h2><p>在线性回归中，我们使用了如下的代价函数来评估预测误差：<br>J(θ)=1 / 2m（costFunction + 正则化表达式）</p>
+<p>想要降低预测误差，即提高预测精度，我们往往会采用这些手段：</p>
+<table>
+<thead>
+<tr>
+<th>手段</th>
+<th>优/劣</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>采集更多的样本</td>
+<td>我们认为见多识广会让人变得聪明，但是也会让人变得优柔寡断，或者聪明反被聪明误。</td>
+</tr>
+<tr>
+<td>降低特征维度</td>
+<td>也许被降掉的维度会是非常有用的知识。</td>
+</tr>
+<tr>
+<td>采集更多的特征</td>
+<td>增加了计算负担，也可能导致过拟合。</td>
+</tr>
+<tr>
+<td>进行高次多项式回归</td>
+<td>可能造成过拟合。</td>
+</tr>
+<tr>
+<td>调试正规化参数λ</td>
+<td>这个调节策略缺乏指导，只能是猜测性调节。</td>
+</tr>
+</tbody></table>
+<h2 id="4-2-数据集划分"><a href="#4-2-数据集划分" class="headerlink" title="4.2 数据集划分"></a>4.2 数据集划分</h2><p>训练集：70%<br>测试集：30%</p>
+<p>在对数据集进行训练集和测试集的划分前，最好先对数据集进行乱序，防止类似样本聚到一起</p>
+<h3 id="4-2-1-交叉验证集"><a href="#4-2-1-交叉验证集" class="headerlink" title="4.2.1  交叉验证集"></a>4.2.1  交叉验证集</h3><p>在多项式回归中,我们总是尝试不同的多项式次数（degree）,形成了不同的预测模型:</p>
+<p>y1= θ<sub>0</sub>X</p>
+<p>y2 = θ<sub>0</sub>X  + θ<sub>1</sub>X^2^ </p>
+<p>y3 = θ<sub>0</sub>X + θ<sub>1</sub>X^2^ + θ<sub>2</sub>X^3^</p>
+<p>假设y<sub>3</sub>的测试误差最小，我们选取y<sub>3</sub>中的θ作为模型的参数。<br>这时参数已经有了，如何<strong>评估模型的泛化能力</strong>呢？</p>
+<p>这时就要使用交叉验证集对模型的泛化能力进行验证。通常情况下：</p>
+<ul>
+<li>训练集：60%，确定参数  θ </li>
+<li>交叉验证集：20%，进行模型选择。</li>
+<li>测试集：20%，评价模型预测能力。<pre><code class="hljs ada">graph LR
+使用训练集得到参数θ<span class="hljs-comment">--&gt;使用交叉验证集对模型泛化能力进行验证可能会修改超参数θ的值</span>
+使用交叉验证集对模型泛化能力进行验证可能会修改超参数θ的值<span class="hljs-comment">--&gt; 使用测试集评价模型预测能力</span></code></pre>
+<h2 id="4-3偏差与方差"><a href="#4-3偏差与方差" class="headerlink" title="4.3偏差与方差"></a>4.3偏差与方差</h2></li>
+</ul>
+<p>在机器学习中，<strong>偏差</strong>（bias）反映了模型无法描述数据规律，而<strong>方差</strong>（variance）反映了模型对训练集过度敏感，而丢失了数据规律，高偏差和高方差都会造成新数据到来时，模型给出错误的预测。</p>
+<p>通过诊断（Diagnose）模型是出现了高偏差问题还是高方差问题，我们能对症下药，采取不同的解决策略</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>使用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>采集更多的样本</td>
+<td>高方差</td>
+</tr>
+<tr>
+<td>降低特征维度</td>
+<td>高方差</td>
+</tr>
+<tr>
+<td>采集更多的特征</td>
+<td>高偏差</td>
+</tr>
+<tr>
+<td>进行高次多项式回归</td>
+<td>高偏差</td>
+</tr>
+<tr>
+<td>降低参数  λ</td>
+<td>高方差</td>
+</tr>
+<tr>
+<td>增大参数  λ</td>
+<td>高偏差</td>
+</tr>
+</tbody></table>
+<h2 id="4-4-问题分析方法"><a href="#4-4-问题分析方法" class="headerlink" title="4.4 问题分析方法"></a>4.4 问题分析方法</h2><p>对于机器学习问题，吴恩达给出了一些 tips：</p>
+<ul>
+<li>在一开始，尽量不要将问题复杂化（不要提前优化），先快速实现一个简单算法，然后通过交叉验证集评估模型。这就好比在软件工程中，不会做提前优化，而是先迭代功能。</li>
+<li>通过绘制学习曲线（learning curve），确定面临的问题是高偏差还是高方差，来决定是添加更多训练样本，还是添加更多特征。</li>
+<li>甚至可以手动检查交叉验证集中误差较大的样本，确定错误的来源和解决策略。</li>
+<li><h3 id="4-4-1-举个例子"><a href="#4-4-1-举个例子" class="headerlink" title="4.4.1 举个例子"></a>4.4.1 举个例子</h3>假定交叉验证集有 500 个样本，即  mcv=500mcv=500 ，我们的模型错分了其中 100 个样本，那么我们会通过下述手段进行错误分析：</li>
+<li>需要知道哪些邮件被错分了，是假冒伪劣的推销邮件？医药邮件？还是钓鱼邮件？</li>
+<li>需要知道提供什么线索（特征）能帮助模型区分出这些邮件？</li>
+</ul>
+<p>例如，在这 100 个错分样本中，我们发现有 53 个样本是钓鱼邮件，因此，我们就需要考虑为模型注入识别的钓鱼邮件的能力。继续观察，我们发现，在这 53 封钓鱼邮件中，故意使用错误拼写的邮件有 5 封，来源可疑（发送人可疑）的邮件有 16 封，使用了大量煽动性标点符号的邮件有 32 封。因此，对于识别钓鱼邮件来说，我们更适合将煽动性标点符号添加为特征，而不用再考虑去识别错误拼写。</p>
+<h1 id="5-SVM"><a href="#5-SVM" class="headerlink" title="5. SVM"></a>5. SVM</h1><p>常用来处理多维度不规则分类问题</p>
+<h2 id="5-1-大间距分类器"><a href="#5-1-大间距分类器" class="headerlink" title="5.1 大间距分类器"></a>5.1 大间距分类器</h2><p>SVM 是典型的大间距分类器：寻找一个直线（面）将数据分类，而这个线（面）到所有点的<strong>距离之和最大</strong>。</p>
+<h2 id="5-2-核函数"><a href="#5-2-核函数" class="headerlink" title="5.2 核函数"></a>5.2 核函数</h2><p>在逻辑回归中，我们会通过多项式扩展来处理非线性分类问题：<br>h<sub>0</sub>(x)=θ<sub>0</sub>+θ<sub>1</sub>x<sub>1</sub>+θ<sub>2</sub>x<sub>2</sub>+θ<sub>3</sub>x<sub>1</sub>x<sub>2</sub>+θ<sub>4</sub>x<sub>1</sub>^2^+θ<sub>5</sub>x<sub>2</sub>^2^+⋯</p>
+<p>假设我们令：</p>
+<p>f<sub>1</sub>=x<sub>1</sub>,</p>
+<p>f<sub>2</sub>=x<sub>2</sub>,</p>
+<p>f<sub>3</sub>=x<sub>1</sub>x<sub>2</sub>,</p>
+<p>f<sub>4</sub>=x<sub>1</sub>^2^,</p>
+<p>f<sub>5</sub>=x<sub>2</sub>^2^</p>
+<p>则预测函数为：</p>
+<p>h<sub>θ</sub>(x)=θ<sub>0</sub>+θ<sub>1</sub>f<sub>1</sub>+θ<sub>2</sub>f<sub>2</sub>+θ<sub>3</sub>f<sub>3</sub>+⋯</p>
+<p>但多项式回归所带来的高阶项不一定作用明显，针对这一问题，SVM 不会引入高阶项来作为新的特征，而是会选择一些标记点（landmark），并将样本x与标记点l^(i)^的相似程度作为<strong>新的训练特征f<sub>i</sub>（将f<sub>i</sub>作为数据集的一个属性进行训练）</strong> ：</p>
+<p>距离度量的方式就称之为核函数（Kernel），最常见的核函数是高斯核函数（Gaussian Kernel）</p>
+<h2 id="5-3-svm的使用说明"><a href="#5-3-svm的使用说明" class="headerlink" title="5.3 svm的使用说明"></a>5.3 svm的使用说明</h2><h3 id="5-3-1-参数和核函数"><a href="#5-3-1-参数和核函数" class="headerlink" title="5.3.1 参数和核函数"></a>5.3.1 参数和核函数</h3><p>使用这些库时，我们通常需要声明 SVM 需要的两个关键部分：</p>
+<ul>
+<li><p>参数  C </p>
+<blockquote>
+<p>由于  C  可以看做与正规化参数  λ  作用相反，则对于  C  的调节：</p>
+<p>低偏差，高方差，即遇到了过拟合时：减小  C  值。<br>高偏差，低方差，即遇到了欠拟合时：增大  C  值。</p>
+</blockquote>
+</li>
+<li><p>核函数（Kernel）</p>
+<blockquote>
+<p>而对于核函数的选择有这么一些 tips：</p>
+<p>当特征维度n较高，而样本规模m较小时，不宜使用核函数，否则容易引起过拟合。</p>
+<p>当特征维度n较低，而样本规模m足够大时，考虑使用高斯核函数。不过在使用高斯核函数前，需要进行特征缩放（feature scaling）。另外，当核函数的参数δ较大时，特征f<sub>i</sub>  较为平缓，即各个样本的特征差异变小，此时会造成欠拟合（高偏差，低方差）：</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="5-3-2-分类模型的选择"><a href="#5-3-2-分类模型的选择" class="headerlink" title="5.3.2 分类模型的选择"></a>5.3.2 分类模型的选择</h3><p>目前，我们学到的分类模型有：</p>
+<blockquote>
+<p>（1）逻辑回归<br>（2）神经网络；<br>（3）SVM。</p>
+</blockquote>
+<p>怎么选择在这三者中做出选择呢？我们考虑特征维度n及样本规模m ：</p>
+<ul>
+<li>如果n相对于m非常大，例如例如  n=10000,m∈(10,10000) :此时选用用逻辑回归或者无核的 SVM。</li>
+<li>如果n较小，m适中，如 n∈(1,1000) ，而 m∈(10,10000) ：此时选用核函数为高斯核函数的 SVM。</li>
+<li>如果n较小，m 较大，如 n∈(1,1000) ，而  m&gt;50000 ：此时，需要创建更多的特征（比如通过多项式扩展），再使用逻辑回归或者无核的 SVM。</li>
+</ul>
+<p>神经网络对于上述情形都有不错的适应性，但是计算性能上较慢。</p>
+<h1 id="6-k-means"><a href="#6-k-means" class="headerlink" title="6. k-means"></a>6. k-means</h1><ul>
+<li>聚类算法，其中的k为簇的种类数</li>
+<li>簇中心的选取：遍历随机初始化选取</li>
+<li>确定聚类数：肘部法则</li>
+</ul>
+<h2 id="6-1-二分k-means"><a href="#6-1-二分k-means" class="headerlink" title="6.1 二分k-means"></a>6.1 二分k-means</h2><ul>
+<li>常规的 K-Means 算法的误差通常只能收敛到局部最小，在此，引入一种称为二分 K-Means（bisecting kmeans）的算法，相较于常规的 K-Means，二分 K-Means 不急于一来就随机K个聚类中心，而是首先把所有点归为一个簇，然后将该簇一分为二。计算各个所得簇的失真函数（即误差），选择误差最大的簇再进行划分（即最大程度地减少误差），重复该过程直至达到期望的簇数目</li>
+<li>虽然二分 K-Means 能带来全局最优解，但是我们也可以看到，该算法是一个贪心算法，因此计算量不小。</li>
+</ul>
+<h1 id="7-特征降维"><a href="#7-特征降维" class="headerlink" title="7. 特征降维"></a>7. 特征降维</h1><ul>
+<li>特征降维的一般手段就是将高维特征投影到低维空间</li>
+</ul>
+<h2 id="7-1-PCA（主成分分析）"><a href="#7-1-PCA（主成分分析）" class="headerlink" title="7.1 PCA（主成分分析）"></a>7.1 PCA（主成分分析）</h2><p>PCA，Principle Component Analysis，即主成分分析法，是<strong>特征降维</strong>的最常用手段。顾名思义，PCA 能从<strong>冗余特征中提取主要成分，在不太损失模型质量的情况下，提升了模型训练速度</strong></p>
+<h1 id="8-异常检测"><a href="#8-异常检测" class="headerlink" title="8. 异常检测"></a>8. 异常检测</h1><h2 id="8-1-高斯分布模型"><a href="#8-1-高斯分布模型" class="headerlink" title="8.1 高斯分布模型"></a>8.1 高斯分布模型</h2><p>异常检测的核心就在于找到一个概率模型，帮助我们知道一个样本落入正常样本中的概率，从而帮助我们区分正常和异常样本。高斯分布（Gaussian Distribution）模型就是异常检测算法最常使用的概率分布模型。</p>
+<h1 id="9-推荐系统"><a href="#9-推荐系统" class="headerlink" title="9. 推荐系统"></a>9. 推荐系统</h1><h2 id="9-1-协同过滤"><a href="#9-1-协同过滤" class="headerlink" title="9.1 协同过滤"></a>9.1 协同过滤</h2><ul>
+<li><p>基于用户的协同过滤推荐(User-based Collaborative Filtering Recommendation)</p>
+<blockquote>
+<p>基于用户的协同过滤推荐算法先使用统计技术寻找与目标用户有相同喜好的邻居，然后根据目标用户的邻居的喜好产生向目标用户的推荐。基本原理就是利用用户访问行为的相似性来互相推荐用户可能感兴趣的资源</p>
+</blockquote>
+</li>
+<li><p>基于项目的协同过滤推荐(Item-based Collaborative Filtering Recommendation)</p>
+<blockquote>
+<p>根据所有用户对物品或者信息的评价，发现物品和物品之间的相似度，然后根据用户的历史偏好信息将类似的物品推荐给该用户</p>
+</blockquote>
+</li>
+<li><p>基于模型的协同过滤推荐(Model-based Collaborative Filtering Recommendation)</p>
+</li>
+</ul>
+<blockquote>
+<p>基模型的协同过滤推荐就是基于样本的用户喜好信息，训练一个推荐模型，然后根据实时的用户喜好的信息进行预测推荐</p>
+</blockquote>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">机器学习笔记</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/machine-learning/">machine learning</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/08/13/neo4j%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">neo4j集群安装步骤</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/05/11/HBase%E5%9F%BA%E7%A1%80/">
+                        <span class="hidden-mobile">HBase基础</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments">
+                
+                
+  <div id="vcomments"></div>
+  <script type="text/javascript">
+    function loadValine() {
+      addScript('https://cdn.staticfile.org/valine/1.4.14/Valine.min.js', function () {
+        new Valine({
+          el: "#vcomments",
+          app_id: "fuCGMO98CkmL7yo4PnW8pU01-gzGzoHsz",
+          app_key: "QgEPoTG9NK3OTaJIzm2LBdb8",
+          placeholder: "say something",
+          path: window.location.pathname,
+          avatar: "retro",
+          meta: ["nick","mail","link"],
+          pageSize: "10",
+          lang: "zh-CN",
+          highlight: false,
+          recordIP: true,
+          serverURLs: "https://fucgmo98.lc-cn-n1-shared.com",
+        });
+      });
+    }
+    waitElementVisible('vcomments', loadValine);
+  </script>
+  <noscript>Please enable JavaScript to view the <a target="_blank" href="https://valine.js.org" rel="nofollow noopener noopener">comments
+      powered by Valine.</a></noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "机器学习笔记&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript">
+      //定义获取词语下标
+      var a_idx = 0;
+      jQuery(document).ready(function ($) {
+        //点击body时触发事件
+        $("body").click(function (e) {
+          //需要显示的词语
+          var a = new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正", "法治", "爱国", "敬业", "诚信", "友善");
+          //设置词语给span标签
+          var $i = $("<span/>").text(a[a_idx]);
+          //下标等于原来下标+1  余 词语总数
+          a_idx = (a_idx + 1) % a.length;
+          //获取鼠标指针的位置，分别相对于文档的左和右边缘。
+          //获取x和y的指针坐标
+          var x = e.pageX, y = e.pageY;
+          //在鼠标的指针的位置给$i定义的span标签添加css样式
+          $i.css({
+            "z-index": 999,
+            "top": y - 20,
+            "left": x,
+            "position": "absolute",
+            "font-weight": "bold",
+            "color": rand_color()
+          });
+          // 随机颜色
+          function rand_color() {
+            return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+          }
+          //在body添加这个标签
+          $("body").append($i);
+          //animate() 方法执行 CSS 属性集的自定义动画。
+          //该方法通过CSS样式将元素从一个状态改变为另一个状态。CSS属性值是逐渐改变的，这样就可以创建动画效果。
+          //详情请看http://www.w3school.com.cn/jquery/effect_animate.asp
+          $i.animate({
+            //将原来的位置向上移动180
+            "top": y - 180,
+            "opacity": 0
+            //1500动画的速度
+          }, 1500, function () {
+            //时间到了自动删除
+            $i.remove();
+          });
+        });
+      })
+      ;
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?71f2748195d61de7d95360410c8b74c1";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+</body>
+</html>

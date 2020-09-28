@@ -1,0 +1,771 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/self.jpg">
+  <link rel="icon" type="image/png" href="/img/self.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="zhousan">
+  <meta name="keywords" content="">
+  <title>图数据库nebula-graph的安装与集群部署 - 周三</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+    
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_pf9vaxs7x7b.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>周三的精神家园</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-04-16 15:13" pubdate>
+        2020年4月16日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      20
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">图数据库nebula-graph的安装与集群部署</h1>
+            
+            <div class="markdown-body" id="post-body">
+              <h1 id="1-nebula的安装"><a href="#1-nebula的安装" class="headerlink" title="1. nebula的安装"></a>1. nebula的安装</h1><h2 id="1-1-下载nebula的rpm包"><a href="#1-1-下载nebula的rpm包" class="headerlink" title="1.1 下载nebula的rpm包"></a>1.1 下载nebula的rpm包</h2><pre><code class="hljs apache"><span class="hljs-attribute">bash</span> $ wget https://nebula-graph.oss-cn-hangzhou.aliyuncs.com/package/<span class="hljs-number">1</span>.<span class="hljs-number">0</span>.<span class="hljs-number">0</span>-rc<span class="hljs-number">2</span>/nebula-<span class="hljs-number">1</span>.<span class="hljs-number">0</span>.<span class="hljs-number">0</span>-rc<span class="hljs-number">2</span>.el<span class="hljs-number">7</span>-<span class="hljs-number">5</span>.x<span class="hljs-number">86</span>_<span class="hljs-number">64</span>.rpm
+
+<span class="hljs-comment"># centos6的链接格式  </span>
+<span class="hljs-comment"># package/$&#123;release_version&#125;/nebula-$&#123;release_version&#125;.el6-5.x86_64.rpm</span>
+<span class="hljs-comment"># centos7的链接格式</span>
+<span class="hljs-comment"># package/$&#123;release_version&#125;/nebula-$&#123;release_version&#125;.el7-5.x86_64.rpm</span>
+</code></pre>
+<h2 id="1-2-安装"><a href="#1-2-安装" class="headerlink" title="1.2 安装"></a>1.2 安装</h2><pre><code class="hljs angelscript">$ sudo rpm -ivh nebula<span class="hljs-number">-2019.12</span><span class="hljs-number">.23</span>-nightly.el6<span class="hljs-number">-5.</span>x86_64.rpm</code></pre>
+<h2 id="1-3-启动"><a href="#1-3-启动" class="headerlink" title="1.3 启动"></a>1.3 启动</h2><pre><code class="hljs awk">$ sudo <span class="hljs-regexp">/usr/</span>local<span class="hljs-regexp">/nebula/</span>scripts/nebula.service start all</code></pre>
+<h2 id="1-4-查看-Nebula-Graph-服务"><a href="#1-4-查看-Nebula-Graph-服务" class="headerlink" title="1.4 查看 Nebula Graph 服务"></a>1.4 查看 Nebula Graph 服务</h2><pre><code class="hljs awk">$ sudo <span class="hljs-regexp">/usr/</span>local<span class="hljs-regexp">/nebula/</span>scripts/nebula.service status all</code></pre>
+<h2 id="1-5-连接-Nebula-Graph-服务"><a href="#1-5-连接-Nebula-Graph-服务" class="headerlink" title="1.5 连接 Nebula Graph 服务"></a>1.5 连接 Nebula Graph 服务</h2><pre><code class="hljs routeros">$ sudo /usr/local/nebula/bin/nebula -u<span class="hljs-built_in"> user </span>-p password</code></pre>
+<h2 id="1-6-停止-Nebula-Graph-服务"><a href="#1-6-停止-Nebula-Graph-服务" class="headerlink" title="1.6 停止 Nebula Graph 服务"></a>1.6 停止 Nebula Graph 服务</h2><pre><code class="hljs awk">$ sudo <span class="hljs-regexp">/usr/</span>local<span class="hljs-regexp">/nebula/</span>scripts/nebula.service stop all</code></pre>
+
+<h1 id="2-集群部署"><a href="#2-集群部署" class="headerlink" title="2. 集群部署"></a>2. 集群部署</h1><h2 id="2-1集群部署ip需要修改的步骤如下："><a href="#2-1集群部署ip需要修改的步骤如下：" class="headerlink" title="2.1集群部署ip需要修改的步骤如下："></a>2.1集群部署ip需要修改的步骤如下：</h2><ol>
+<li>“nebula/etc/”文件夹里面的配置文件“nebula-metad.conf”里面的相关ip地址</li>
+<li>本地“etc/hosts”里面的hostsip地址</li>
+<li>“nebula/etc/nebula-graphd.conf”里面的hostname<pre><code class="hljs elixir">etc/nebula-<span class="hljs-symbol">graphd.conf:</span><span class="hljs-number">26</span><span class="hljs-symbol">:--meta_server_addrs=ng1</span><span class="hljs-symbol">:</span><span class="hljs-number">45500</span>
+etc/nebula-<span class="hljs-symbol">graphd.conf:</span><span class="hljs-number">28</span><span class="hljs-symbol">:--local_ip=ng1</span>
+etc/nebula-<span class="hljs-symbol">graphd.conf:</span><span class="hljs-number">48</span><span class="hljs-symbol">:--ws_ip=ng1</span></code></pre></li>
+<li>添加节点服务器地址<pre><code class="hljs angelscript"># 以下几个文件中的地址都要添加节点地址，用逗号隔开
+etc/nebula-storaged.conf:<span class="hljs-number">19</span>:--meta_server_addrs=<span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">45500</span>
+etc/nebula-metad.conf:<span class="hljs-number">20</span>:--meta_server_addrs=<span class="hljs-number">192.168</span><span class="hljs-number">.111</span><span class="hljs-number">.133</span>:<span class="hljs-number">45500</span>
+etc/nebula-graphd.conf:<span class="hljs-number">26</span>:--meta_server_addrs=ng2:<span class="hljs-number">45500</span></code></pre></li>
+<li>修改nebula的host文件<pre><code class="hljs autoit">[root<span class="hljs-symbol">@ng2</span> scripts]<span class="hljs-meta"># vi graph.hosts </span>
+[root<span class="hljs-symbol">@ng2</span> scripts]<span class="hljs-meta"># vi meta.hosts </span>
+[root<span class="hljs-symbol">@ng2</span> scripts]<span class="hljs-meta"># vi storage.hosts </span>
+<span class="hljs-meta"># 添加如下：</span>
+ng1
+ng2</code></pre></li>
+<li>这个时候应该已经可以登陆了，如下，但是登录从节点每次都需要输入密码。为了方便，下一步需要手动设置ssh免密登录<pre><code class="hljs routeros">[root@ng1 nebula]# ./jiqunRestart.sh 
+Processing Meta<span class="hljs-built_in"> Service </span><span class="hljs-built_in">..</span>.
+start ng1
+The authenticity of host <span class="hljs-string">&#x27;ng1 (::1)&#x27;</span> can<span class="hljs-string">&#x27;t be established.</span>
+<span class="hljs-string">ECDSA key fingerprint is SHA256:A1I43wcavqxvxEqTh2XYzqdYlXZZVbavUpmoQffE26Y.</span>
+<span class="hljs-string">ECDSA key fingerprint is MD5:5d:9c:99:d7:70:51:5f:f0:e5:c7:cc:0d:54:e5:b6:f9.</span>
+<span class="hljs-string">Are you sure you want to continue connecting (yes/no)? yes</span>
+<span class="hljs-string">Warning: Permanently added &#x27;</span>ng1<span class="hljs-string">&#x27; (ECDSA) to the list of known hosts.</span>
+<span class="hljs-string">root@ng1&#x27;</span>s password: 
+start ng2
+The authenticity of host <span class="hljs-string">&#x27;ng2 (192.168.111.133)&#x27;</span> can<span class="hljs-string">&#x27;t be established.</span>
+<span class="hljs-string">ECDSA key fingerprint is SHA256:A1I43wcavqxvxEqTh2XYzqdYlXZZVbavUpmoQffE26Y.</span>
+<span class="hljs-string">ECDSA key fingerprint is MD5:5d:9c:99:d7:70:51:5f:f0:e5:c7:cc:0d:54:e5:b6:f9.</span>
+<span class="hljs-string">Are you sure you want to continue connecting (yes/no)? yes</span>
+<span class="hljs-string">Warning: Permanently added &#x27;</span>ng2,192.168.111.133<span class="hljs-string">&#x27; (ECDSA) to the list of known hosts.</span>
+<span class="hljs-string">root@ng2&#x27;</span>s password: 
+Processing Storage<span class="hljs-built_in"> Service </span><span class="hljs-built_in">..</span>.
+start ng1
+root@ng1<span class="hljs-string">&#x27;s password: </span>
+<span class="hljs-string">start ng2</span>
+<span class="hljs-string">root@ng2&#x27;</span>s password: 
+Processing Graph<span class="hljs-built_in"> Service </span><span class="hljs-built_in">..</span>.
+start ng1
+root@ng1<span class="hljs-string">&#x27;s password: </span>
+<span class="hljs-string">start ng2</span>
+<span class="hljs-string">root@ng2&#x27;</span>s password:</code></pre></li>
+<li>配置免密登录</li>
+</ol>
+<ul>
+<li>因为nebula自身是没有从属关系的，这里把ng1当作Master节点，ng2当作slave节点<pre><code class="hljs awk">首先生成 Master 节点的公匙，在Master 节点的终端中执行（因为改过主机名，所以还需要删掉原有的再重新生成一次）：
+cd ~/.ssh               <span class="hljs-comment"># 如果没有该目录，先执行一次ssh localhost</span>
+rm ./id_rsa*            <span class="hljs-comment"># 删除之前生成的公匙（如果有）</span>
+ssh-keygen -t rsa       <span class="hljs-comment"># 一直按回车就可以</span>
+
+让Master节点需能无密码SSH 本机，在 Master节点上执行： 
+cat .<span class="hljs-regexp">/id_rsa.pub &gt;&gt; ./</span>authorized_keys
+
+完成后可执行 ssh ng1 验证一下（可能需要输入 yes，成功后执行 <span class="hljs-keyword">exit</span> 返回原来的终端）。接着在 Master 节点将上公匙传输到 ng2 节点：
+scp ~<span class="hljs-regexp">/.ssh/i</span>d_rsa.pub leox@ng2:<span class="hljs-regexp">/home/</span>hadoop/
+
+接着在 ng2 节点上，将 ssh 公匙加入授权：
+mkdir ~/.ssh       <span class="hljs-comment"># 如果不存在该文件夹需先创建，若已存在则忽略</span>
+cat ~<span class="hljs-regexp">/id_rsa.pub &gt;&gt; ~/</span>.ssh/authorized_keys
+rm ~/id_rsa.pub    <span class="hljs-comment"># 用完就可以删掉了</span>
+
+如果有其他 Slave 节点，也要执行将 Master公匙传输到 Slave节点、在 Slave 节点上加入授权这两步。
+这样，在Master节点上就可以无密码 SSH 到各个 Slave节点了</code></pre></li>
+<li>配置成功后再次启动结果如下<pre><code class="hljs routeros">[root@ng1 nebula]# ./jiqunRestart.sh 
+Processing Meta<span class="hljs-built_in"> Service </span><span class="hljs-built_in">..</span>.
+start ng1
+start ng2
+Processing Storage<span class="hljs-built_in"> Service </span><span class="hljs-built_in">..</span>.
+start ng1
+start ng2
+Processing Graph<span class="hljs-built_in"> Service </span><span class="hljs-built_in">..</span>.
+start ng1
+start ng2
+<span class="hljs-comment"># 进入命令行</span>
+[root@ng1 nebula]# ./login.sh 
+Welcome <span class="hljs-keyword">to</span> Nebula Graph (Version 1.0.0-rc4)
+(user@127.0.0.1:3699) [(none)]&gt;</code></pre>
+
+</li>
+</ul>
+<h1 id="3-可视化安装"><a href="#3-可视化安装" class="headerlink" title="3.可视化安装"></a>3.可视化安装</h1><h2 id="3-1-因为可视化组件需要使用docker安装，所以需要先安装docker"><a href="#3-1-因为可视化组件需要使用docker安装，所以需要先安装docker" class="headerlink" title="3.1 因为可视化组件需要使用docker安装，所以需要先安装docker"></a>3.1 因为可视化组件需要使用docker安装，所以需要先安装docker</h2><pre><code class="hljs awk"><span class="hljs-comment"># 见docker官方安装文档：</span>
+https:<span class="hljs-regexp">//</span>docs.docker.com<span class="hljs-regexp">/engine/i</span>nstall<span class="hljs-regexp">/centos/</span><span class="hljs-comment">#install-using-the-repository</span></code></pre>
+<h2 id="3-2-安装docker-compose"><a href="#3-2-安装docker-compose" class="headerlink" title="3.2 安装docker-compose"></a>3.2 安装docker-compose</h2><pre><code class="hljs awk">sudo curl -L <span class="hljs-string">&quot;https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)&quot;</span> -o <span class="hljs-regexp">/usr/</span>local<span class="hljs-regexp">/bin/</span>docker-compose</code></pre>
+
+<h2 id="3-3-安装并启动-Nebula-Graph-Studio"><a href="#3-3-安装并启动-Nebula-Graph-Studio" class="headerlink" title="3.3 安装并启动 Nebula Graph Studio"></a>3.3 安装并启动 Nebula Graph Studio</h2><ul>
+<li><p>在命令行中输入以下命令，下载 Nebula Graph Studio 安装包。</p>
+<pre><code class="hljs awk">git clone https:<span class="hljs-regexp">//gi</span>thub.com<span class="hljs-regexp">/vesoft-inc/</span>nebula-web-docker</code></pre></li>
+<li><p>在命令行中，进入到安装文件夹 nebula-web-docker(当前放在根目录下面)。</p>
+</li>
+<li><p>输入 systemctl start docker 启动docker</p>
+</li>
+<li><p>输入 docker-compose pull &amp;&amp; docker-compose up 启动 Nebula Graph Studio 服务。</p>
+<pre><code class="hljs gams"><span class="hljs-function"><span class="hljs-title">Creating</span></span> docker_importer_1 ... done
+<span class="hljs-function"><span class="hljs-title">Creating</span></span> docker_client_1   ... done
+<span class="hljs-function"><span class="hljs-title">Creating</span></span> docker_web_1      ... done
+<span class="hljs-function"><span class="hljs-title">Creating</span></span> docker_nginx_1    ... done</code></pre>
+<blockquote>
+<p>这一步可能会出现“ERROR: Couldn’t connect to Docker daemon at http+docker://localhost - is it running?<br>If it’s at a non-standard location, specify the URL with the DOCKER_HOST environment variable.的问题”，是因为需要给用户登录，直接su给root权限启动就可以了</p>
+</blockquote>
+</li>
+<li><p>启动成功，访问: <a href="http://0.0.0.0:7001（本机为192.168.111.135:7001）">http://0.0.0.0:7001（本机为192.168.111.135:7001）</a></p>
+</li>
+<li><p>配置数据库的相关信息</p>
+<pre><code class="hljs angelscript">Host :<span class="hljs-number">192.168</span><span class="hljs-number">.111</span><span class="hljs-number">.135</span>:<span class="hljs-number">3699</span>
+用户名:user
+密码:password</code></pre>
+
+</li>
+</ul>
+<h1 id="4-遇到问题及解决"><a href="#4-遇到问题及解决" class="headerlink" title="4. 遇到问题及解决"></a>4. 遇到问题及解决</h1><h2 id="0-1-某个服务无法启动，查看日志中发现”failed-to-set-SO-REUSEPORT-on-async-server-socket-Protocol-not-available”问题。"><a href="#0-1-某个服务无法启动，查看日志中发现”failed-to-set-SO-REUSEPORT-on-async-server-socket-Protocol-not-available”问题。" class="headerlink" title="0.1  某个服务无法启动，查看日志中发现”failed to set SO_REUSEPORT on async server socket Protocol not available”问题。"></a>0.1  某个服务无法启动，查看日志中发现”failed to set SO_REUSEPORT on async server socket Protocol not available”问题。</h2><ul>
+<li>问题原因<blockquote>
+<p> 使用的版本为centos6.5， 内核版本是小于3.9<br> SO_REUSEPORT 在linux 3.9 及以上才支持的</p>
+</blockquote>
+</li>
+<li>解决方法</li>
+</ul>
+<blockquote>
+<p>修改系统版本为centos7.5 内核版本为3.10即可解决</p>
+</blockquote>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%B7%A5%E4%BD%9C%E7%9B%B8%E5%85%B3/">工作相关</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93/">图数据库</a>
+                    
+                      <a class="hover-with-bg" href="/tags/nebula-graph/">nebula-graph</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/05/11/HBase%E5%9F%BA%E7%A1%80/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">HBase基础</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/04/13/python%E6%89%93%E5%8C%85%E7%A8%8B%E5%BA%8F%E7%A7%BB%E6%A4%8D%E5%88%B0%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83redhat%E5%87%BA%E7%8E%B0%E7%9A%84%E9%97%AE%E9%A2%98/">
+                        <span class="hidden-mobile">python打包程序移植到生产环境redhat出现的问题</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments">
+                
+                
+  <div id="vcomments"></div>
+  <script type="text/javascript">
+    function loadValine() {
+      addScript('https://cdn.staticfile.org/valine/1.4.14/Valine.min.js', function () {
+        new Valine({
+          el: "#vcomments",
+          app_id: "fuCGMO98CkmL7yo4PnW8pU01-gzGzoHsz",
+          app_key: "QgEPoTG9NK3OTaJIzm2LBdb8",
+          placeholder: "say something",
+          path: window.location.pathname,
+          avatar: "retro",
+          meta: ["nick","mail","link"],
+          pageSize: "10",
+          lang: "zh-CN",
+          highlight: false,
+          recordIP: true,
+          serverURLs: "https://fucgmo98.lc-cn-n1-shared.com",
+        });
+      });
+    }
+    waitElementVisible('vcomments', loadValine);
+  </script>
+  <noscript>Please enable JavaScript to view the <a target="_blank" href="https://valine.js.org" rel="nofollow noopener noopener">comments
+      powered by Valine.</a></noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "图数据库nebula-graph的安装与集群部署&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript">
+      //定义获取词语下标
+      var a_idx = 0;
+      jQuery(document).ready(function ($) {
+        //点击body时触发事件
+        $("body").click(function (e) {
+          //需要显示的词语
+          var a = new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正", "法治", "爱国", "敬业", "诚信", "友善");
+          //设置词语给span标签
+          var $i = $("<span/>").text(a[a_idx]);
+          //下标等于原来下标+1  余 词语总数
+          a_idx = (a_idx + 1) % a.length;
+          //获取鼠标指针的位置，分别相对于文档的左和右边缘。
+          //获取x和y的指针坐标
+          var x = e.pageX, y = e.pageY;
+          //在鼠标的指针的位置给$i定义的span标签添加css样式
+          $i.css({
+            "z-index": 999,
+            "top": y - 20,
+            "left": x,
+            "position": "absolute",
+            "font-weight": "bold",
+            "color": rand_color()
+          });
+          // 随机颜色
+          function rand_color() {
+            return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+          }
+          //在body添加这个标签
+          $("body").append($i);
+          //animate() 方法执行 CSS 属性集的自定义动画。
+          //该方法通过CSS样式将元素从一个状态改变为另一个状态。CSS属性值是逐渐改变的，这样就可以创建动画效果。
+          //详情请看http://www.w3school.com.cn/jquery/effect_animate.asp
+          $i.animate({
+            //将原来的位置向上移动180
+            "top": y - 180,
+            "opacity": 0
+            //1500动画的速度
+          }, 1500, function () {
+            //时间到了自动删除
+            $i.remove();
+          });
+        });
+      })
+      ;
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?71f2748195d61de7d95360410c8b74c1";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+</body>
+</html>

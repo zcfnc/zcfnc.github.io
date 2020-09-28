@@ -1,0 +1,738 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/self.jpg">
+  <link rel="icon" type="image/png" href="/img/self.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="zhousan">
+  <meta name="keywords" content="">
+  <title>从0开始学大数据笔记 - 周三</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+    
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_pf9vaxs7x7b.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>周三的精神家园</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2019-12-25 14:18" pubdate>
+        2019年12月25日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.6k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      37
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">从0开始学大数据笔记</h1>
+            
+            <div class="markdown-body" id="post-body">
+              <h1 id="1-感想"><a href="#1-感想" class="headerlink" title="1.感想"></a>1.感想</h1><p>融会贯通</p>
+<h2 id="2-1-章节摘录"><a href="#2-1-章节摘录" class="headerlink" title="2.1 章节摘录"></a>2.1 章节摘录</h2><h3 id="2-1-1-07-为什么说MapReduce既是编程模型又是计算框架？"><a href="#2-1-1-07-为什么说MapReduce既是编程模型又是计算框架？" class="headerlink" title="2.1.1 07 | 为什么说MapReduce既是编程模型又是计算框架？"></a>2.1.1 07 | 为什么说MapReduce既是编程模型又是计算框架？</h3><blockquote>
+<p>模型是人们对一类事物的概括与抽象，可以帮助我们更好地理解事物的本质，更方便地解决问题。比如，数学公式是我们对物理与数学规律的抽象，地图和沙盘是我们对地理空间的抽象，软件架构图是软件工程师对软件系统的抽象。</p>
+</blockquote>
+<blockquote>
+<p>通过抽象，我们更容易把握事物的内在规律，而不是被纷繁复杂的事物表象所迷惑，更进一步深刻地认识这个世界。通过抽象，伽利略发现力是改变物体运动的原因，而不是使物体运动的原因，为全人类打开了现代科学的大门。</p>
+</blockquote>
+<blockquote>
+<p>这些年，我自己认识了很多优秀的人，他们各有所长、各有特点，但是无一例外都有个共同的特征，就是对事物的洞察力。他们能够穿透事物的层层迷雾，直指问题的核心和要害，不会犹豫和迷茫，轻松出手就搞定了其他人看起来无比艰难的事情。有时候光是看他们做事就能感受到一种美感，让人意醉神迷。</p>
+</blockquote>
+<blockquote>
+<p>这种洞察力就是来源于他们对事物的抽象能力，虽然我不知道这种能力缘何而来，但是见识了这种能力以后，我也非常渴望拥有对事物的抽象能力。所以在遇到问题的时候，我就会停下来思考：这个问题为什么会出现，它揭示出来背后的规律是什么，我应该如何做。甚至有时候会把这些优秀的人带入进思考：如果是戴老师、如果是潘大侠，他会如何看待、如何解决这个问题。通过这种不断地训练，虽然和那些最优秀的人相比还是有巨大的差距，但是仍然能够感受到自己的进步，这些小小的进步也会让自己产生大大的快乐，一种不荒废光阴、没有虚度此生的感觉。</p>
+</blockquote>
+<blockquote>
+<p>我希望你也能够不断训练自己，遇到问题的时候，停下来思考一下：这些现象背后的规律是什么。有时候并不需要多么艰深的思考，仅仅就是停一下，就会让你察觉到以前不曾注意到的一些情况，进而发现事物的深层规律。这就是洞察力。</p>
+</blockquote>
+<h3 id="2-1-2-06-新技术层出不穷，HDFS依然是存储的王者"><a href="#2-1-2-06-新技术层出不穷，HDFS依然是存储的王者" class="headerlink" title="2.1.2 06 | 新技术层出不穷，HDFS依然是存储的王者"></a>2.1.2 06 | 新技术层出不穷，HDFS依然是存储的王者</h3><ul>
+<li>1.如何设计分布式文件系统<blockquote>
+<p>DataNode 负责文件数据的存储和读写操作，HDFS 将文件数据分割成若干数据块（Block），每个 DataNode 存储一部分数据块，这样文件就分布存储在整个 HDFS 服务器集群中.<br>NameNode 负责整个分布式文件系统的元数据（MetaData）管理，也就是文件路径名、数据块的 ID 以及存储位置等信息，相当于操作系统中文件分配表（FAT）的角色。 </p>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<p>NameNode 负责整个分布式文件系统的元数据（MetaData）管理，也就是文件路径名、数据块的 ID 以及存储位置等信息，相当于操作系统中文件分配表（FAT）的角色</p>
+</blockquote>
+<ul>
+<li>2.HDFS的高可用设计</li>
+</ul>
+<ol>
+<li>数据存储故障容错<blockquote>
+<p>磁盘介质在存储过程中受环境或者老化影响，其存储的数据可能会出现错乱。HDFS 的应对措施是，对于存储在 DataNode 上的数据块，计算并存储校验和（CheckSum）。在读取数据的时候，重新计算读取出来的数据的校验和，如果校验不正确就抛出异常，应用程序捕获异常后就到其他 DataNode 上读取备份数据。</p>
+</blockquote>
+</li>
+<li>磁盘故障容错<blockquote>
+<p>如果 DataNode 监测到本机的某块磁盘损坏，就将该块磁盘上存储的所有 BlockID 报告给 NameNode，NameNode 检查这些数据块还在哪些 DataNode 上有备份，通知相应的 DataNode 服务器将对应的数据块复制到其他服务器上，以保证数据块的备份数满足要求。</p>
+</blockquote>
+</li>
+<li>DataNode 故障容错<blockquote>
+<p>DataNode 会通过心跳和 NameNode 保持通信，如果 DataNode 超时未发送心跳，NameNode 就会认为这个 DataNode 已经宕机失效，立即查找这个 DataNode 上存储的数据块有哪些，以及这些数据块还存储在哪些服务器上，随后通知这些服务器再复制一份数据块到其他服务器上，保证 HDFS 存储的数据块备份数符合用户设置的数目，即使再出现服务器宕机，也不会丢失数据。</p>
+</blockquote>
+</li>
+<li>NameNode 故障容错<blockquote>
+<p>NameNode 是整个 HDFS 的核心，记录着 HDFS 文件分配表信息，所有的文件路径和数据块存储信息都保存在 NameNode，如果 NameNode 故障，整个 HDFS 系统集群都无法使用；如果 NameNode 上记录的数据丢失，整个集群所有 DataNode 存储的数据也就没用了。</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="2-1-3-13-同样的本质，为何Spark可以更高效？"><a href="#2-1-3-13-同样的本质，为何Spark可以更高效？" class="headerlink" title="2.1.3 13 | 同样的本质，为何Spark可以更高效？"></a>2.1.3 13 | 同样的本质，为何Spark可以更高效？</h3><ol>
+<li>spark的计算阶段<blockquote>
+<p>MapReduce 一个应用一次只运行一个 map 和一个 reduce 不同，Spark 可以根据应用的复杂程度，分割成更多的计算阶段（stage），这些计算阶段组成一个有向无环图 DAG，Spark 任务调度器可以根据 DAG 的依赖关系执行计算阶段。</p>
+</blockquote>
+<h3 id="2-1-4-18-如何自己开发一个大数据SQL引擎？"><a href="#2-1-4-18-如何自己开发一个大数据SQL引擎？" class="headerlink" title="2.1.4 18 | 如何自己开发一个大数据SQL引擎？"></a>2.1.4 18 | 如何自己开发一个大数据SQL引擎？</h3><blockquote>
+<p>如果只是作为学习者，被动接受总是困难的。但如果从开发者的视角看，很多东西就豁然开朗了，明白了原理，有时甚至不需要学习，顺着原理就可以推导出各种实现细节。</p>
+</blockquote>
+</li>
+</ol>
+<blockquote>
+<p>各种知识从表象上看，总是杂乱无章的，如果只是学习这些繁杂的知识点，固然自己的知识面是有限的，并且遇到问题的应变能力也很难提高。所以有些高手看起来似乎无所不知，不论谈论起什么技术，都能头头是道，其实并不是他们学习、掌握了所有技术，而是他们是在谈到这个问题的时候，才开始进行推导，并迅速得出结论。</p>
+</blockquote>
+<blockquote>
+<p>我在 Intel 的时候，面试过一个交大的实习生，她大概只学过一点 MapReduce 的基本知识，我问她如何用 MapReduce 实现数据库的 join 操作，可以明显看出她没学习过这部分知识。她说：我想一下，然后盯着桌子看了两三秒的时间，就开始回答，基本跟 Hive 的实现机制一样。从她的回答就能看出这个女生就是一个高手，高手不一定要很资深、经验丰富，把握住了技术的核心本质，掌握了快速分析推导的能力，能够迅速将自己的知识技能推进到陌生的领域，就是高手。</p>
+</blockquote>
+<h2 id="2-1-4-23-大数据基准测试可以带来什么好处？"><a href="#2-1-4-23-大数据基准测试可以带来什么好处？" class="headerlink" title="2.1.4 23 | 大数据基准测试可以带来什么好处？"></a>2.1.4 23 | 大数据基准测试可以带来什么好处？</h2><p>大数据测试工具：HiBeach<br>HiBench 内置了若干主要的大数据计算程序作为基准测试的负载（workload）。</p>
+<h2 id="2-1-5-24-从大数据性能测试工具Dew看如何快速开发大数据系统"><a href="#2-1-5-24-从大数据性能测试工具Dew看如何快速开发大数据系统" class="headerlink" title="2.1.5 24 | 从大数据性能测试工具Dew看如何快速开发大数据系统"></a>2.1.5 24 | 从大数据性能测试工具Dew看如何快速开发大数据系统</h2><h3 id="1-Akka-原理与应用"><a href="#1-Akka-原理与应用" class="headerlink" title="1. Akka 原理与应用"></a>1. Akka 原理与应用</h3><blockquote>
+<p>Akka 使用一种叫 Actor 的编程模型，Actor 编程模型是和面向对象编程模型平行的一种编程模型。面向对象认为一切都是对象，对象之间通过消息传递，也就是方法调用实现复杂的功能。</p>
+</blockquote>
+<blockquote>
+<p>而 Actor 编程模型认为一切都是 Actor，Actor 之间也是通过消息传递实现复杂的功能，但是这里的消息是真正意义上的消息。不同于面向对象编程时，方法调用是同步阻塞的，也就是被调用者在处理完成之前，调用者必须阻塞等待；给 Actor 发送消息不需要等待 Actor 处理，消息发送完就不用管了，也就是说，消息是<strong>异步</strong>的。</p>
+</blockquote>
+<h3 id="2-主要原理"><a href="#2-主要原理" class="headerlink" title="2. 主要原理"></a>2. 主要原理</h3><blockquote>
+<p>Akka 实现异步消息的主要原理是，Actor 之间的消息传输是通过一个收件箱 Mailbox 完成的，发送者 Actor 的消息发到接收者 Actor 的收件箱，接收者 Actor 一个接一个地串行从收件箱取消息调用自己的 receive 方法进行处理。如下图<br><a target="_blank" rel="noopener" href="https://static001.geekbang.org/resource/image/26/13/269b28c63c69444dd9dcb0c3124e0713.png">https://static001.geekbang.org/resource/image/26/13/269b28c63c69444dd9dcb0c3124e0713.png</a></p>
+</blockquote>
+<blockquote>
+<p>发送者通过调用一个 Actor 的引用 ActorRef 来发送消息，ActorRef 将消息放到 Actor 的 Mailbox 里就返回了，发送者不需要阻塞等待消息被处理，这是和传统的面向对象编程最大的不同，对象一定要等到被调用者返回结果才继续向下执行。</p>
+</blockquote>
+<blockquote>
+<p>通过这种异步消息方式，Akka 也顺便实现了并发编程：消息同时异步发送给多个 Actor，这些 Actor 看起来就是在同时执行，即并发执行。</p>
+</blockquote>
+<h2 id="2-1-6-25-模块答疑：我能从大厂的大数据开发实践中学到什么？"><a href="#2-1-6-25-模块答疑：我能从大厂的大数据开发实践中学到什么？" class="headerlink" title="2.1.6 25 | 模块答疑：我能从大厂的大数据开发实践中学到什么？"></a>2.1.6 25 | 模块答疑：我能从大厂的大数据开发实践中学到什么？</h2><h3 id="1-学习方法"><a href="#1-学习方法" class="headerlink" title="1. 学习方法"></a>1. 学习方法</h3><p>学习一样新技术的时候，不会到处乱找资料，而是直接读原始论文。通过原始论文掌握核心设计原理以后，如果需要进一步学习，就去官网看官方文档；如果还需要再进一步参与开发，就去读源代码。</p>
+<p>我刚开始读论文时感觉很费劲，但是后面习惯以后，发现读论文真的是最快的学习方法，因为最核心的东西就在其中，一旦看懂，就真的懂了，而且可以触类旁通，整个软件从使用到开发，很多细节通过脑补就可以猜个八九不离十。而且越是优秀的产品，越是厉害的作者，论文反而越是容易读懂，可能是因为这些作者是真的高手，自己理得越清楚，写出来的论文越是脉络清晰、结构合理、逻辑严谨。</p>
+<h3 id="2-典型的互联网大数据平台的架构。"><a href="#2-典型的互联网大数据平台的架构。" class="headerlink" title="2. 典型的互联网大数据平台的架构。"></a>2. 典型的互联网大数据平台的架构。</h3><p>如图<br><a target="_blank" rel="noopener" href="https://static001.geekbang.org/resource/image/5f/1f/5f0515ad5740575ff79ac8c68990071f.png">https://static001.geekbang.org/resource/image/5f/1f/5f0515ad5740575ff79ac8c68990071f.png</a></p>
+<h2 id="2-1-7-35-如何利用大数据成为“增长黑客”？"><a href="#2-1-7-35-如何利用大数据成为“增长黑客”？" class="headerlink" title="2.1.7 35 | 如何利用大数据成为“增长黑客”？"></a>2.1.7 35 | 如何利用大数据成为“增长黑客”？</h2><h3 id="1-AARRR-用户增长模型"><a href="#1-AARRR-用户增长模型" class="headerlink" title="1. AARRR 用户增长模型"></a>1. AARRR 用户增长模型</h3><blockquote>
+<p>关于用户增长有一个著名的 AARRR 模型，它描述了用户增长的 5 个关键环节，分别是：获取用户（Acquisition）、提高活跃度（Activation）、提高留存率（Retention）、获取收入（Revenue）和自传播（Refer）。<br>获取用户：通过各种推广手段，使产品触达用户并吸引用户，让用户访问我们的产品。</p>
+</blockquote>
+<blockquote>
+<p><strong>提高活跃度</strong>：用户访问我们的产品后，如果发现没意思、体验差，就很难再次打开，产品的价值也就无法实现。因此需要结合产品内容、运营活动各种手段吸引用户，提升产品的活跃度。</p>
+</blockquote>
+<blockquote>
+<p><strong>提高留存率</strong>：留住一个老用户的成本远低于获取一个新用户，而真正为产品带来营收利润的通常是老用户，因此需要提高留存率。提高留存率的常用手段有：针对老用户推出各种优惠和活动；建立会员等级体系，注册时间越长等级越高；对于一段时间没有访问的疑似流失用户进行消息短信推送以实现用户挽回等。</p>
+</blockquote>
+<blockquote>
+<p><strong>获取收</strong>入：做企业不是做慈善，开发、运营互联网产品的最终目的还是为了赚钱，即获取收入。互联网产品收入主要有用户付费和广告收入，有些互联网产品看起来是用户付费，但其实主要营收是广告收入，比如淘宝。<br>自传播：让用户利用利用自己的社交网络进行产品推广就是自传播，几乎所有的互联网产品都有“分享到”这样一个功能按钮，促进用户社交传播。有些产品还会利用“帮我砍价”“帮我抢票”等产品功能推动用户进行分享，实现产品的裂变式传播、病毒式营销。</p>
+</blockquote>
+<h3 id="2-拼多多如何利用-AARRR-模型实现用户快速增长。"><a href="#2-拼多多如何利用-AARRR-模型实现用户快速增长。" class="headerlink" title="2. 拼多多如何利用 AARRR 模型实现用户快速增长。"></a>2. 拼多多如何利用 AARRR 模型实现用户快速增长。</h3><blockquote>
+<p>拼多多是近几年互联网产品中将自传播发挥到极致的一个产品。拼多多用户群体主要为三四线以下城市人群，社交成本比较低，愿意为了砍几块钱发动自己的各种社交资源，因此拼多多就利用“帮好友砍价”这一功能实现产品的快速裂变传播。事实上，拼多多非常准确地抓住了这一群体的社交痛点：交往不多的朋友，与其尬聊维持友谊，不如帮我砍价来的更实惠更亲密。</p>
+</blockquote>
+<blockquote>
+<p><strong>自传播</strong>也是拼多多主要获取用户的手段。比如帮好友砍价时，拼多多会提示“下载 App 可以帮好友砍更多价”，于是用户量呈指数级增长。<br>拼多多为了让新来的用户快速上手、增加活跃度，用户第一次使用拼多多的时候，并不需要注册登录，直接就可以挑选商品和购买，在后面订单环节再让用户注册，这时用户已经产生购买冲动，进行注册也更容易被接受。<br>拼多多通过各种消息推送促使用户打开 App（或者微信小程序），并在开屏页面的优惠信息给用户制造惊喜，达到留存用户的目的。</p>
+</blockquote>
+<blockquote>
+<p>拼多多的主要交易模式为<strong>拼团</strong>，拼团属于冲动型购买，拼多多为了<strong>减少用户的思考时间、维持购买冲动，将购买路径设计得尽可能短，使用户可以尽快完成付费，企业获取收入。</strong></p>
+</blockquote>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/03/27/%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97%E5%92%8C%E6%A2%AF%E5%BA%A6%E5%86%B3%E7%AD%96%E6%A0%91%EF%BC%88GBDT%EF%BC%89/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">随机森林和梯度决策树（GBDT）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/12/19/linux%E5%91%BD%E4%BB%A4/">
+                        <span class="hidden-mobile">linux命令</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments">
+                
+                
+  <div id="vcomments"></div>
+  <script type="text/javascript">
+    function loadValine() {
+      addScript('https://cdn.staticfile.org/valine/1.4.14/Valine.min.js', function () {
+        new Valine({
+          el: "#vcomments",
+          app_id: "fuCGMO98CkmL7yo4PnW8pU01-gzGzoHsz",
+          app_key: "QgEPoTG9NK3OTaJIzm2LBdb8",
+          placeholder: "say something",
+          path: window.location.pathname,
+          avatar: "retro",
+          meta: ["nick","mail","link"],
+          pageSize: "10",
+          lang: "zh-CN",
+          highlight: false,
+          recordIP: true,
+          serverURLs: "https://fucgmo98.lc-cn-n1-shared.com",
+        });
+      });
+    }
+    waitElementVisible('vcomments', loadValine);
+  </script>
+  <noscript>Please enable JavaScript to view the <a target="_blank" href="https://valine.js.org" rel="nofollow noopener noopener">comments
+      powered by Valine.</a></noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "从0开始学大数据笔记&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript">
+      //定义获取词语下标
+      var a_idx = 0;
+      jQuery(document).ready(function ($) {
+        //点击body时触发事件
+        $("body").click(function (e) {
+          //需要显示的词语
+          var a = new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正", "法治", "爱国", "敬业", "诚信", "友善");
+          //设置词语给span标签
+          var $i = $("<span/>").text(a[a_idx]);
+          //下标等于原来下标+1  余 词语总数
+          a_idx = (a_idx + 1) % a.length;
+          //获取鼠标指针的位置，分别相对于文档的左和右边缘。
+          //获取x和y的指针坐标
+          var x = e.pageX, y = e.pageY;
+          //在鼠标的指针的位置给$i定义的span标签添加css样式
+          $i.css({
+            "z-index": 999,
+            "top": y - 20,
+            "left": x,
+            "position": "absolute",
+            "font-weight": "bold",
+            "color": rand_color()
+          });
+          // 随机颜色
+          function rand_color() {
+            return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+          }
+          //在body添加这个标签
+          $("body").append($i);
+          //animate() 方法执行 CSS 属性集的自定义动画。
+          //该方法通过CSS样式将元素从一个状态改变为另一个状态。CSS属性值是逐渐改变的，这样就可以创建动画效果。
+          //详情请看http://www.w3school.com.cn/jquery/effect_animate.asp
+          $i.animate({
+            //将原来的位置向上移动180
+            "top": y - 180,
+            "opacity": 0
+            //1500动画的速度
+          }, 1500, function () {
+            //时间到了自动删除
+            $i.remove();
+          });
+        });
+      })
+      ;
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?71f2748195d61de7d95360410c8b74c1";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+</body>
+</html>

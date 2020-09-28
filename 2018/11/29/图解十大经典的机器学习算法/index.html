@@ -1,0 +1,713 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/self.jpg">
+  <link rel="icon" type="image/png" href="/img/self.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="zhousan">
+  <meta name="keywords" content="">
+  <title>图解十大经典的机器学习算法（转自网络） - 周三</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+    
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_pf9vaxs7x7b.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>周三的精神家园</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-11-29 15:13" pubdate>
+        2018年11月29日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      22
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">图解十大经典的机器学习算法（转自网络）</h1>
+            
+            <div class="markdown-body" id="post-body">
+              <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><ul>
+<li>决策树</li>
+<li>随机森林</li>
+<li>逻辑回归</li>
+<li>SVM</li>
+<li>bayes</li>
+<li>Knn</li>
+<li>k-means</li>
+<li>Adaboost</li>
+<li>神经网络</li>
+<li>HMM</li>
+</ul>
+<a id="more"></a>
+
+<p>下图是一部典型的智能手机上安装的一些常见应用程序，可能很多人都猜不到，人工智能技术已经是手机上很多应用程序的核心驱动力。</p>
+<p><img src="https://p3.pstatp.com/large/43500001eb4471788557" srcset="/img/loading.gif" alt="image"><br>    图1 智能手机上的相关应用</p>
+<p>传统的机器学习算法包括决策树、聚类、贝叶斯分类、支持向量机、EM、Adaboost等等。这篇文章将对常用算法做常识性的介绍，没有代码，也没有复杂的理论推导，就是图解一下，知道这些算法是什么，它们是怎么应用的。</p>
+<h2 id="决策树"><a href="#决策树" class="headerlink" title="决策树"></a>决策树</h2><p>根据一些 feature（特征） 进行分类，每个节点提一个问题，通过判断，将数据分为两类，再继续提问。这些问题是根据已有数据学习出来的，再投入新数据的时候，就可以根据这棵树上的问题，将数据划分到合适的叶子上。</p>
+<p><img src="https://p3.pstatp.com/large/435200006b668ea633bd" srcset="/img/loading.gif" alt="image"><br>图2 决策树原理示意图</p>
+<h2 id="随机森林"><a href="#随机森林" class="headerlink" title="随机森林"></a>随机森林</h2><p>在源数据中随机选取数据，组成几个子集：<br><img src="https://p1.pstatp.com/large/434f0001f5ed801daccf" srcset="/img/loading.gif" alt="image"></p>
+<p>图3-1 随机森林原理示意图</p>
+<p>S矩阵是源数据，有1-N条数据，A、B、C 是feature，最后一列C是类别：</p>
+<p><img src="https://p1.pstatp.com/large/435200006bcfcb4c5948" srcset="/img/loading.gif" alt="image"></p>
+<p>由S随机生成M个子矩阵：</p>
+<p><img src="https://p1.pstatp.com/large/434f0001f6466bf0d67d" srcset="/img/loading.gif" alt="image"></p>
+<p>这M个子集得到 M 个决策树：将新数据投入到这M个树中，得到M个分类结果，计数看预测成哪一类的数目最多，就将此类别作为最后的预测结果。</p>
+<p> <img src="https://p3.pstatp.com/large/434e00020cea24ad72ac" srcset="/img/loading.gif" alt="image"></p>
+<p>图3-2 随机森林效果展示图</p>
+<h2 id="逻辑回归"><a href="#逻辑回归" class="headerlink" title="逻辑回归"></a>逻辑回归</h2><p>当预测目标是概率这样的，值域需要满足大于等于0，小于等于1的，这个时候单纯的线性模型是做不到的，因为在定义域不在某个范围之内时，值域也超出了规定区间。</p>
+<p><img src="https://p1.pstatp.com/large/4352000088a0cca901dc" srcset="/img/loading.gif" alt="image"></p>
+<p>图4-1 线性模型图</p>
+<p>所以此时需要这样的形状的模型会比较好：</p>
+<p><img src="https://p9.pstatp.com/large/43500002088dadd37cd2" srcset="/img/loading.gif" alt="image"></p>
+<p>图4-2</p>
+<p>那么怎么得到这样的模型呢？</p>
+<p>这个模型需要满足两个条件 “大于等于0”，“小于等于1” 。大于等于0 的模型可以选择绝对值，平方值，这里用指数函数，一定大于0；小于等于1 用除法，分子是自己，分母是自身加上1，那一定是小于1的了。</p>
+<p><img src="https://p1.pstatp.com/large/43520000890f09d83fe9" srcset="/img/loading.gif" alt="image"><br>图4-3</p>
+<p>再做一下变形，就得到了 logistic regressions 模型：</p>
+<p><img src="https://p9.pstatp.com/large/4351000204be99bba336" srcset="/img/loading.gif" alt="image"><br>图4-4</p>
+<p>通过源数据计算可以得到相应的系数了：<br> <img src="https://p3.pstatp.com/large/4353000003f6ba0e0f8d" srcset="/img/loading.gif" alt="image"><br>图4-5<br><img src="https://p1.pstatp.com/large/435100020586720b85a6" srcset="/img/loading.gif" alt="image"><br>图4-6 LR模型曲线图</p>
+<h2 id="支持向量机"><a href="#支持向量机" class="headerlink" title="支持向量机"></a>支持向量机</h2><p>要将两类分开，想要得到一个超平面，最优的超平面是到两类的 margin 达到最大，margin就是超平面与离它最近一点的距离，如下图，Z2&gt;Z1，所以绿色的超平面比较好。</p>
+<p>图解十大经典的机器学习算法<br><img src="https://p3.pstatp.com/large/435000020b04838dcf31" srcset="/img/loading.gif" alt="image"><br>图5 分类问题示意图</p>
+<p>将这个超平面表示成一个线性方程，在线上方的一类，都大于等于1，另一类小于等于－1：</p>
+<p><img src="https://p1.pstatp.com/large/435000020b4ac6b506a0" srcset="/img/loading.gif" alt="image"></p>
+<p>点到面的距离根据图中的公式计算：</p>
+<p><img src="https://p3.pstatp.com/large/435200008bc2bf7f5517" srcset="/img/loading.gif" alt="image"></p>
+<p>所以得到total margin的表达式如下，目标是最大化这个margin，就需要最小化分母，于是变成了一个优化问题：</p>
+<p><img src="https://p3.pstatp.com/large/43530000059e39d73a18" srcset="/img/loading.gif" alt="image"></p>
+<p>举个例子，三个点，找到最优的超平面，定义了 weight vector＝（2，3）－（1，1）：</p>
+<p><img src="https://p1.pstatp.com/large/4353000005c7816fdd59" srcset="/img/loading.gif" alt="image"></p>
+<p>得到weight vector为（a，2a），将两个点代入方程，代入（2，3）另其值＝1，代入（1，1）另其值＝-1，求解出 a 和 截矩 w0 的值，进而得到超平面的表达式。</p>
+<p><img src="https://p9.pstatp.com/large/43510002070c383b6105" srcset="/img/loading.gif" alt="image"></p>
+<p>a求出来后，代入（a，2a）得到的就是support vector，a和w0代入超平面的方程就是support vector machine。</p>
+<h2 id="朴素贝叶斯"><a href="#朴素贝叶斯" class="headerlink" title="朴素贝叶斯"></a>朴素贝叶斯</h2><p>举个在 NLP 的应用：给一段文字，返回情感分类，这段文字的态度是positive，还是negative：<br><img src="https://p3.pstatp.com/large/43530000063edd668c55" srcset="/img/loading.gif" alt="image"><br>图6-1 问题案例</p>
+<p>为了解决这个问题，可以只看其中的一些单词：<br><img src="https://p9.pstatp.com/large/435200008cd4629a6bc4" srcset="/img/loading.gif" alt="image"><br>这段文字，将仅由一些单词和它们的计数代表：<br><img src="https://p1.pstatp.com/large/434e00022df729f719f3" srcset="/img/loading.gif" alt="image"></p>
+<p>原始问题是：给你一句话，它属于哪一类 ？通过bayes rules变成一个比较简单容易求得的问题：<br><img src="https://p3.pstatp.com/large/434d00022ba607261510" srcset="/img/loading.gif" alt="image"></p>
+<p>问题变成，这一类中这句话出现的概率是多少，当然，别忘了公式里的另外两个概率。例子：单词“love”在positive的情况下出现的概率是 0.1，在negative的情况下出现的概率是0.001。</p>
+<p><img src="https://p3.pstatp.com/large/43510002080ef9b94c91" srcset="/img/loading.gif" alt="image"><br>图6-2 NB算法结果展示图</p>
+<h2 id="K近邻算法"><a href="#K近邻算法" class="headerlink" title="K近邻算法"></a>K近邻算法</h2><p>给一个新的数据时，离它最近的 k 个点中，哪个类别多，这个数据就属于哪一类。</p>
+<p>例子：要区分“猫”和“狗”，通过“claws”和“sound”两个feature来判断的话，圆形和三角形是已知分类的了，那么这个“star”代表的是哪一类呢？<br><img src="https://p3.pstatp.com/large/434e00022edc52fa300b" srcset="/img/loading.gif" alt="image"><br>图7-1 问题案例</p>
+<p>k＝3时，这三条线链接的点就是最近的三个点，那么圆形多一些，所以这个star就是属于猫。<br><img src="https://p3.pstatp.com/large/4351000208a4639fb593" srcset="/img/loading.gif" alt="image"><br>图7-2 算法步骤展示图</p>
+<h2 id="K均值算法"><a href="#K均值算法" class="headerlink" title="K均值算法"></a>K均值算法</h2><p>先要将一组数据，分为三类，粉色数值大，黄色数值小 。最开始先初始化，这里面选了最简单的 3，2，1 作为各类的初始值 。剩下的数据里，每个都与三个初始值计算距离，然后归类到离它最近的初始值所在类别。<br><img src="https://p3.pstatp.com/large/43530000080920d7643e" srcset="/img/loading.gif" alt="image"><br>图8-1 问题案例</p>
+<p>分好类后，计算每一类的平均值，作为新一轮的中心点：<br><img src="https://p3.pstatp.com/large/435200008ec651b49844" srcset="/img/loading.gif" alt="image"><br>图8-2</p>
+<p>几轮之后，分组不再变化了，就可以停止了：<br><img src="https://p3.pstatp.com/large/434e0002300572baeba6" srcset="/img/loading.gif" alt="image"><br><img src="https://p1.pstatp.com/large/434e00023018f6a2f245" srcset="/img/loading.gif" alt="image"><br>图8-3 算法结果展示</p>
+<h2 id="Adaboost"><a href="#Adaboost" class="headerlink" title="Adaboost"></a>Adaboost</h2><p>Adaboost 是 Boosting 的方法之一。Boosting就是把若干个分类效果并不好的分类器综合起来考虑，会得到一个效果比较好的分类器。</p>
+<p>下图，左右两个决策树，单个看是效果不怎么好的，但是把同样的数据投入进去，把两个结果加起来考虑，就会增加可信度。<br><img src="https://p1.pstatp.com/large/435100020a32bbefadfd" srcset="/img/loading.gif" alt="image"><br>图9-1 算法原理展示</p>
+<p>Adaboost 的例子，手写识别中，在画板上可以抓取到很多features（特征），例如始点的方向，始点和终点的距离等等。<br><img src="https://p3.pstatp.com/large/434d00022e7cc9792c98" srcset="/img/loading.gif" alt="image"><br>图9-2</p>
+<p>training的时候，会得到每个feature的weight（权重），例如2和3的开头部分很像，这个feature对分类起到的作用很小，它的权重也就会较小。<br><img src="https://p1.pstatp.com/large/435000021041994467f7" srcset="/img/loading.gif" alt="image"><br>图9-3</p>
+<p>而这个alpha角就具有很强的识别性，这个feature的权重就会较大，最后的预测结果是综合考虑这些feature的结果。</p>
+<p><img src="https://p1.pstatp.com/large/434e000231a8b19cc6a0" srcset="/img/loading.gif" alt="image"><br>图9-4</p>
+<h2 id="神经网络"><a href="#神经网络" class="headerlink" title="神经网络"></a>神经网络</h2><p>Neural Networks适合一个input可能落入至少两个类别里：NN由若干层神经元，和它们之间的联系组成。 第一层是input层，最后一层是output层。在hidden层和output层都有自己的classifier。<br><img src="https://p3.pstatp.com/large/435100020b63904aa0f0" srcset="/img/loading.gif" alt="image"><br>图10-1 神经网络结构</p>
+<p>input输入到网络中，被激活，计算的分数被传递到下一层，激活后面的神经层，最后output层的节点上的分数代表属于各类的分数，下图例子得到分类结果为class 1；同样的input被传输到不同的节点上，之所以会得到不同的结果是因为各自节点有不同的weights 和bias，这也就是forward propagation。<br><img src="https://p3.pstatp.com/large/434d00022fbafcfbfa77" srcset="/img/loading.gif" alt="image"><br>图10-2 算法结果展示</p>
+<h2 id="马尔科夫"><a href="#马尔科夫" class="headerlink" title="马尔科夫"></a>马尔科夫</h2><p>Markov Chains由state（状态）和transitions（转移）组成。例子，根据这一句话 ‘the quick brown fox jumps over the lazy dog’，要得到markov chains。</p>
+<p>步骤，先给每一个单词设定成一个状态，然后计算状态间转换的概率。<br><img src="https://p3.pstatp.com/large/435200009180de2aa4a9" srcset="/img/loading.gif" alt="image"><br>图11-1 马尔科夫原理图</p>
+<p>这是一句话计算出来的概率，当你用大量文本去做统计的时候，会得到更大的状态转移矩阵，例如the后面可以连接的单词，及相应的概率。<br><img src="https://p3.pstatp.com/large/435300000b3f99003259" srcset="/img/loading.gif" alt="image"><br>图11-2 算法结果展示</p>
+<p>上述十大类机器学习算法是人工智能发展的践行者，即使在当下，依然在数据挖掘以及小样本的人工智能问题中被广泛使用。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">机器学习笔记</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/machine-learning/">machine learning</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/04/19/%E6%AF%95%E8%AE%BE%E8%AE%B0%E5%BD%95/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">毕设记录</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/11/21/%E6%89%8B%E5%86%99%E8%AF%86%E5%88%AB%E5%9B%BE%E7%89%87%E9%A2%84%E5%A4%84%E7%90%86/">
+                        <span class="hidden-mobile">手写识别图片预处理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments">
+                
+                
+  <div id="vcomments"></div>
+  <script type="text/javascript">
+    function loadValine() {
+      addScript('https://cdn.staticfile.org/valine/1.4.14/Valine.min.js', function () {
+        new Valine({
+          el: "#vcomments",
+          app_id: "fuCGMO98CkmL7yo4PnW8pU01-gzGzoHsz",
+          app_key: "QgEPoTG9NK3OTaJIzm2LBdb8",
+          placeholder: "say something",
+          path: window.location.pathname,
+          avatar: "retro",
+          meta: ["nick","mail","link"],
+          pageSize: "10",
+          lang: "zh-CN",
+          highlight: false,
+          recordIP: true,
+          serverURLs: "https://fucgmo98.lc-cn-n1-shared.com",
+        });
+      });
+    }
+    waitElementVisible('vcomments', loadValine);
+  </script>
+  <noscript>Please enable JavaScript to view the <a target="_blank" href="https://valine.js.org" rel="nofollow noopener noopener">comments
+      powered by Valine.</a></noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "图解十大经典的机器学习算法（转自网络）&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript">
+      //定义获取词语下标
+      var a_idx = 0;
+      jQuery(document).ready(function ($) {
+        //点击body时触发事件
+        $("body").click(function (e) {
+          //需要显示的词语
+          var a = new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正", "法治", "爱国", "敬业", "诚信", "友善");
+          //设置词语给span标签
+          var $i = $("<span/>").text(a[a_idx]);
+          //下标等于原来下标+1  余 词语总数
+          a_idx = (a_idx + 1) % a.length;
+          //获取鼠标指针的位置，分别相对于文档的左和右边缘。
+          //获取x和y的指针坐标
+          var x = e.pageX, y = e.pageY;
+          //在鼠标的指针的位置给$i定义的span标签添加css样式
+          $i.css({
+            "z-index": 999,
+            "top": y - 20,
+            "left": x,
+            "position": "absolute",
+            "font-weight": "bold",
+            "color": rand_color()
+          });
+          // 随机颜色
+          function rand_color() {
+            return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+          }
+          //在body添加这个标签
+          $("body").append($i);
+          //animate() 方法执行 CSS 属性集的自定义动画。
+          //该方法通过CSS样式将元素从一个状态改变为另一个状态。CSS属性值是逐渐改变的，这样就可以创建动画效果。
+          //详情请看http://www.w3school.com.cn/jquery/effect_animate.asp
+          $i.animate({
+            //将原来的位置向上移动180
+            "top": y - 180,
+            "opacity": 0
+            //1500动画的速度
+          }, 1500, function () {
+            //时间到了自动删除
+            $i.remove();
+          });
+        });
+      })
+      ;
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?71f2748195d61de7d95360410c8b74c1";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+</body>
+</html>

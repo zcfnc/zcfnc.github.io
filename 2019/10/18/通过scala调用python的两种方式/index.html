@@ -1,0 +1,837 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/self.jpg">
+  <link rel="icon" type="image/png" href="/img/self.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="zhousan">
+  <meta name="keywords" content="">
+  <title>通过scala调用python的两种方式 - 周三</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+    
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_pf9vaxs7x7b.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>周三的精神家园</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2019-10-18 15:05" pubdate>
+        2019年10月18日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.5k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      23
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">通过scala调用python的两种方式</h1>
+            
+            <div class="markdown-body" id="post-body">
+              <h1 id="1-模仿cmd命令方式"><a href="#1-模仿cmd命令方式" class="headerlink" title="1. 模仿cmd命令方式"></a>1. 模仿cmd命令方式</h1><p>使用“Runtime.getRuntime.exec(exeStr)”方法，传入要执行的cmd命令就可以了。</p>
+<pre><code class="hljs stata">def TestCmdExec(<span class="hljs-keyword">args</span>: Array[String]) &#123;
+  <span class="hljs-keyword">var</span> exeStr = <span class="hljs-string">&quot;python D:/ckk_software/BDZbiandianzhan_py/scalaExcute.py &quot;</span>
+  exeStr += <span class="hljs-string">&quot; 李庄10 &quot;</span> + <span class="hljs-string">&quot; 0130343451706 &quot;</span>
+  <span class="hljs-keyword">var</span> proc = Runtime.getRuntime.exec(exeStr)
+  <span class="hljs-keyword">var</span> <span class="hljs-keyword">ir</span> = new InputStreamReader(proc.getInputStream, <span class="hljs-string">&quot;GBK&quot;</span>)
+  <span class="hljs-keyword">var</span> <span class="hljs-keyword">input</span> = new LineNumberReader(<span class="hljs-keyword">ir</span>)
+  <span class="hljs-keyword">var</span> result = <span class="hljs-keyword">input</span>.readLine()
+  <span class="hljs-keyword">while</span> (result != <span class="hljs-string">&quot;match fail&quot;</span> &amp;&amp; result != null) &#123;
+    println(result)
+    result = <span class="hljs-keyword">input</span>.readLine()
+  &#125;
+  <span class="hljs-keyword">input</span>.<span class="hljs-keyword">close</span>()
+  <span class="hljs-keyword">ir</span>.<span class="hljs-keyword">close</span>()
+  println(proc.waitFor())
+  proc.waitFor()
+&#125;</code></pre>
+<ul>
+<li>优点：操作简单，对于简单的命令什么的可以直接使用</li>
+<li>缺点：对于批量调用python程序比较复杂，也比较愚蠢，关于路径什么的都需要修改，不建议使用。</li>
+</ul>
+<h2 id="2-编写restful接口，在scala内部发送http请求来调用"><a href="#2-编写restful接口，在scala内部发送http请求来调用" class="headerlink" title="2. 编写restful接口，在scala内部发送http请求来调用"></a>2. 编写restful接口，在scala内部发送http请求来调用</h2><p>restful服务：URL定位资源，用HTTP动词（GET,POST,DELETE,DETC）描述操作。</p>
+<h3 id="1-编写接口"><a href="#1-编写接口" class="headerlink" title="1. 编写接口"></a>1. 编写接口</h3><blockquote>
+<p>因为要调用的程序是python程序，所以要使用python的flask来编写接口。</p>
+</blockquote>
+<pre><code class="hljs python"><span class="hljs-keyword">from</span> function <span class="hljs-keyword">import</span> *
+<span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
+<span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask,url_for,request
+<span class="hljs-keyword">import</span> json
+
+data = pd.ExcelFile(<span class="hljs-string">&quot;cidain2.xlsx&quot;</span>)
+data = data.parse(<span class="hljs-string">&quot;Sheet1&quot;</span>)
+cidian = data[<span class="hljs-string">&#x27;PMS_LINE_NAME&#x27;</span>].values.tolist()
+org_no = data[<span class="hljs-string">&#x27;PI_ORG_NO&#x27;</span>].values.tolist()
+id = data[<span class="hljs-string">&#x27;PMS_LINE_ID&#x27;</span>].values.tolist()
+<span class="hljs-comment"># go方法为需要scala端调用的程序</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">go</span>(<span class="hljs-params">text,org_id,cidian,org_no,id</span>):</span>
+    <span class="hljs-string">&#x27;&#x27;&#x27;</span>
+<span class="hljs-string">    :param text: &quot;高庄10&quot;</span>
+<span class="hljs-string">    :param org: 130343451706</span>
+<span class="hljs-string">    :return:</span>
+<span class="hljs-string">    &#x27;&#x27;&#x27;</span>
+    org_type = <span class="hljs-string">&quot;04&quot;</span>
+    <span class="hljs-keyword">if</span> org_type == <span class="hljs-number">3</span>:
+        org = str(org_id)[:<span class="hljs-number">-2</span>]
+    <span class="hljs-keyword">else</span>:
+        org = str(org_id)
+    label, cidian, id = fun(org, text, cidian, org_no, id)
+    label, id = filt(label, cidian, id)
+    <span class="hljs-keyword">if</span> len(label) &gt; <span class="hljs-number">0</span> :
+        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(<span class="hljs-number">0</span>,len(label)):    
+            print(label[i]+<span class="hljs-string">&quot;\t&quot;</span>+id[i])
+    <span class="hljs-keyword">else</span> :
+        print(<span class="hljs-string">&quot;match fail&quot;</span>)
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;\t&quot;</span>.join(label)+<span class="hljs-string">&quot;\t&quot;</span>+<span class="hljs-string">&quot;\t&quot;</span>.join (id)
+<span class="hljs-comment"># 注册flaskapp,接收get请求进行处理</span>
+app = Flask(__name__)
+<span class="hljs-comment"># get请求参数在url中，访问“http：//127.0.0.1：5000/reason/orgId”</span>
+<span class="hljs-meta">@app.route(&quot;/&lt;reason&gt;/&lt;orgId&gt;&quot;)</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">exeFlask</span>(<span class="hljs-params">reason,orgId</span>):</span> 
+    preResult = go(reason,orgId)
+    <span class="hljs-keyword">return</span> str(preResult)
+<span class="hljs-comment"># 接收post请求，请求参数封装在客户端的request中请求中</span>
+<span class="hljs-comment"># 访问“http：//127.0.0.1：5000/”</span>
+<span class="hljs-meta">@app.route(&#x27;/&#x27;,methods=[&#x27;POST&#x27;])</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">postRestful</span>():</span>
+    data = json.loads(str(request.data,<span class="hljs-string">&#x27;utf-8&#x27;</span>))
+    reason = data[<span class="hljs-string">&#x27;reason&#x27;</span>]
+    orgId =data[<span class="hljs-string">&#x27;orgId&#x27;</span>] 
+    print(<span class="hljs-string">&quot;reason: &quot;</span> + reason + <span class="hljs-string">&quot;\torgId:\t&quot;</span> + orgId)
+    preResult = go(reason,orgId,cidian,org_no,id)
+    <span class="hljs-keyword">return</span> str(preResult)
+<span class="hljs-comment"># 启动接口，run方法内可以不设参数，默认本地的5000端口</span>
+<span class="hljs-comment"># 如果要允许同内网访问的话要把host设置为“0.0.0.0”</span>
+app.run(host=<span class="hljs-string">&quot;0.0.0.0&quot;</span>,port=<span class="hljs-string">&quot;5000&quot;</span>)</code></pre>
+<h3 id="2-scala端发送请求（httpclient4-5-5和httpclient3-0-1两种版本）"><a href="#2-scala端发送请求（httpclient4-5-5和httpclient3-0-1两种版本）" class="headerlink" title="2. scala端发送请求（httpclient4.5.5和httpclient3.0.1两种版本）"></a>2. scala端发送请求（httpclient4.5.5和httpclient3.0.1两种版本）</h3><ul>
+<li>前言：httpclient4和httpclient3的差别还是蛮大的，所以使用需要注意版本的问题，而且就网上查阅的资料来看httpclient和httpcore的版本冲突还是蛮多的，还有和spark的版本兼容性问题也是。<h4 id="1-httpclient4-5-5"><a href="#1-httpclient4-5-5" class="headerlink" title="1. httpclient4.5.5"></a>1. httpclient4.5.5</h4></li>
+<li>httpclient4.5.5是用在spark2.3上面的，maven添加依赖方法略<blockquote>
+<p>get请求示例</p>
+</blockquote>
+</li>
+</ul>
+<pre><code class="hljs properties"><span class="hljs-attr">def</span> <span class="hljs-string">TestHttpGet(url: String): String = &#123;</span>
+   <span class="hljs-attr">import</span> <span class="hljs-string">org.apache.http.client.methods.&#123; HttpGet &#125;</span>
+   <span class="hljs-attr">import</span> <span class="hljs-string">org.apache.http.impl.client.HttpClients</span>
+   <span class="hljs-attr">import</span> <span class="hljs-string">org.apache.http.util.EntityUtils</span>
+
+   <span class="hljs-attr">var</span> <span class="hljs-string">host = &quot;http://10.138.72.199:5000/&quot;</span>
+   <span class="hljs-attr">var</span> <span class="hljs-string">orgId = &quot;/0130343451006&quot;</span>
+   <span class="hljs-attr">var</span> <span class="hljs-string">rawText = &quot;_霍邱县开发区杭庙村石船 </span>
+   <span class="hljs-attr">var</span> <span class="hljs-string">url = host + rawText + orgId</span>
+   <span class="hljs-attr">var</span> <span class="hljs-string">HttpClient = HttpClients.createDefault()</span>
+   <span class="hljs-attr">val</span> <span class="hljs-string">get = new HttpGet(url)</span>
+   <span class="hljs-attr">var</span> <span class="hljs-string">response = HttpClient.execute(get)</span>
+   <span class="hljs-attr">EntityUtils.toString(response.getEntity)</span>
+ <span class="hljs-attr">&#125;</span></code></pre>
+<blockquote>
+<p>post请求示例</p>
+</blockquote>
+<pre><code class="hljs scala"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">restful</span></span>()&#123;
+    <span class="hljs-keyword">import</span> org.apache.http.&#123; <span class="hljs-type">HttpEntity</span>, <span class="hljs-type">HttpResponse</span> &#125;
+    <span class="hljs-keyword">import</span> org.apache.http.client.methods.<span class="hljs-type">HttpPost</span>
+    <span class="hljs-keyword">import</span> org.apache.http.entity.<span class="hljs-type">StringEntity</span>
+    <span class="hljs-keyword">import</span> org.apache.http.impl.client.<span class="hljs-type">DefaultHttpClient</span>
+    <span class="hljs-keyword">import</span> org.apache.http.protocol.<span class="hljs-type">HTTP</span>
+    <span class="hljs-keyword">import</span> org.apache.http.util.<span class="hljs-type">EntityUtils</span>
+    <span class="hljs-keyword">val</span> httpclient = <span class="hljs-keyword">new</span> <span class="hljs-type">DefaultHttpClient</span>
+    <span class="hljs-keyword">try</span> &#123;
+      <span class="hljs-keyword">val</span> url = <span class="hljs-string">&quot;http://10.138.72.199:5000&quot;</span>
+      <span class="hljs-keyword">val</span> reason = <span class="hljs-string">&quot;_池河大道交警队处_交警队外台区新架设低压电缆释放&quot;</span>
+      <span class="hljs-keyword">val</span> orgId = <span class="hljs-string">&quot;0130343451304&quot;</span> <span class="hljs-comment">//经度</span>
+      <span class="hljs-keyword">val</span> dtype = <span class="hljs-string">&quot;json&quot;</span> <span class="hljs-comment">//返回数据的格式,xml或json，默认json</span>
+      <span class="hljs-keyword">val</span> jsonParams = <span class="hljs-string">&quot;&#123;\&quot;reason\&quot;:\&quot;&quot;</span> + reason + <span class="hljs-string">&quot;\&quot;,\&quot;orgId\&quot;: \&quot;&quot;</span> +orgId + <span class="hljs-string">&quot;\&quot;,\&quot;dtype\&quot;:\&quot;&quot;</span> + dtype + <span class="hljs-string">&quot;\&quot;&#125;&quot;</span>
+     
+      <span class="hljs-comment">//创建</span>
+      <span class="hljs-keyword">val</span> httpost = <span class="hljs-keyword">new</span> <span class="hljs-type">HttpPost</span>(url)
+      println(<span class="hljs-string">&quot;参数：&quot;</span> + jsonParams)
+      <span class="hljs-comment">//json字符串,准备发送</span>
+
+      <span class="hljs-keyword">try</span> &#123;
+        <span class="hljs-keyword">val</span> stringEntity = <span class="hljs-keyword">new</span> <span class="hljs-type">StringEntity</span>(jsonParams, <span class="hljs-type">HTTP</span>.<span class="hljs-type">UTF_8</span>)
+        stringEntity.setContentType(<span class="hljs-string">&quot;application/json;charset=utf-8&quot;</span>)
+        httpost.setEntity(stringEntity)
+        <span class="hljs-keyword">var</span> response: <span class="hljs-type">HttpResponse</span> = <span class="hljs-literal">null</span>
+        response = httpclient.execute(httpost)
+        <span class="hljs-keyword">val</span> entity: <span class="hljs-type">HttpEntity</span> = response.getEntity
+        <span class="hljs-keyword">try</span> &#123;
+          <span class="hljs-comment">//必需触发</span>
+          println(<span class="hljs-type">EntityUtils</span>.toString(entity))
+        &#125; <span class="hljs-keyword">catch</span> &#123;
+          <span class="hljs-keyword">case</span> appleException: <span class="hljs-type">Exception</span> =&gt; println(appleException.toString)
+        &#125;
+      &#125; <span class="hljs-keyword">catch</span> &#123;
+        <span class="hljs-keyword">case</span> e: <span class="hljs-type">Exception</span> =&gt; &#123;
+          println(<span class="hljs-string">&quot;Exception is &quot;</span> + e.toString)
+        &#125;
+      &#125;
+    &#125; <span class="hljs-keyword">catch</span> &#123;
+      <span class="hljs-keyword">case</span> sendE: <span class="hljs-type">Exception</span> =&gt; &#123; <span class="hljs-keyword">throw</span> sendE &#125;
+    &#125; <span class="hljs-keyword">finally</span> &#123;
+      <span class="hljs-comment">//关闭</span>
+      httpclient.getConnectionManager.shutdown
+    &#125;
+  &#125;</code></pre>
+<h4 id="2-httpclient3-0-1"><a href="#2-httpclient3-0-1" class="headerlink" title="2.httpclient3.0.1"></a>2.httpclient3.0.1</h4><ul>
+<li>httpclient3主要是支持spark1.6使用的，但是在spark2.3上面也同样兼容，但是httpclient4不支持spark1.6，因为手上的项目是spark1.6的，所以需要使用httpclient3。而且httpclient3的版本也比较古老，所以网上很少可以用的参考资料。这里是参考java版本写的scala版本的调用接口。<blockquote>
+<p>依赖</p>
+</blockquote>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+		<span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>commons-httpclient<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+		<span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>commons-httpclient<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+		<span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>3.0.1<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+	<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
+<blockquote>
+<p>post客户请求方法（这里因为只需要用到post方法就只写了这个版本的）</p>
+</blockquote>
+<pre><code class="hljs reasonml">def <span class="hljs-constructor">TestHttpClient3()</span>&#123;
+      import org.apache.commons.httpclient._
+      import org.apache.commons.httpclient.methods._
+   
+      <span class="hljs-keyword">val</span> client = <span class="hljs-keyword">new</span> HttpClient
+<span class="hljs-comment">//      val method = new PostMethod(&quot;http://10.138.72.199:5000&quot;)</span>
+      <span class="hljs-keyword">val</span> <span class="hljs-keyword">method</span> = <span class="hljs-keyword">new</span> <span class="hljs-constructor">PostMethod(<span class="hljs-string">&quot;http://127.0.0.1:5000&quot;</span>)</span>
+      <span class="hljs-keyword">val</span> reason = <span class="hljs-string">&quot;_徽州区富溪乡_田里3817台区改造：横担金具安装、拉线制作，低压导线展放等。&quot;</span>
+      <span class="hljs-keyword">val</span> orgId = <span class="hljs-string">&quot;01303434512&quot;</span> <span class="hljs-comment">//orgId</span>
+      <span class="hljs-keyword">val</span> dtype = <span class="hljs-string">&quot;json&quot;</span> <span class="hljs-comment">//返回数据的格式,xml或json，默认json</span>
+      <span class="hljs-keyword">val</span> jsonParams = <span class="hljs-string">&quot;&#123;\&quot;reason\&quot;:\&quot;&quot;</span> + reason + <span class="hljs-string">&quot;\&quot;,\&quot;orgId\&quot;: \&quot;&quot;</span> + orgId + <span class="hljs-string">&quot;\&quot;,\&quot;dtype\&quot;:\&quot;&quot;</span> + dtype + <span class="hljs-string">&quot;\&quot;&#125;&quot;</span>
+      <span class="hljs-comment">//设置传输头文件和json参数</span>
+      println(jsonParams)
+      <span class="hljs-keyword">method</span>.set<span class="hljs-constructor">RequestHeader(<span class="hljs-string">&quot;Content-Type&quot;</span>,<span class="hljs-string">&quot;application/json&quot;</span>)</span>
+      <span class="hljs-keyword">method</span>.set<span class="hljs-constructor">Parameter(<span class="hljs-string">&quot;requestdata&quot;</span>, <span class="hljs-params">jsonParams</span>)</span>
+      <span class="hljs-keyword">val</span> se = <span class="hljs-keyword">new</span> <span class="hljs-constructor">StringRequestEntity(<span class="hljs-params">jsonParams</span>,<span class="hljs-string">&quot;application/json&quot;</span>,<span class="hljs-string">&quot;UTF-8&quot;</span>)</span>
+      <span class="hljs-keyword">method</span>.set<span class="hljs-constructor">RequestEntity(<span class="hljs-params">se</span>)</span>
+      <span class="hljs-comment">//执行请求</span>
+      <span class="hljs-keyword">val</span> statusCode = client.execute<span class="hljs-constructor">Method(<span class="hljs-params">method</span>)</span>
+      print(statusCode)
+      <span class="hljs-comment">//获取返回的结果</span>
+      <span class="hljs-keyword">val</span> responseBody = <span class="hljs-keyword">method</span>.get<span class="hljs-constructor">ResponseBodyAsStream()</span>
+      <span class="hljs-keyword">val</span> resp = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">IOUtils</span>.</span></span><span class="hljs-keyword">to</span><span class="hljs-constructor">String(<span class="hljs-params">responseBody</span>,<span class="hljs-string">&quot;utf8&quot;</span>)</span>
+      println(resp)
+      <span class="hljs-comment">//关闭连接</span>
+      <span class="hljs-keyword">method</span>.release<span class="hljs-constructor">Connection()</span>
+    &#125;</code></pre>
+<blockquote>
+<p>python服务器端</p>
+</blockquote>
+<pre><code class="hljs vala"><span class="hljs-comment">//创建连接</span>
+<span class="hljs-meta">#app = Flask(__name__)</span>
+<span class="hljs-meta">#@app.route(&#x27;/&#x27;,methods=[&#x27;POST&#x27;])</span>
+<span class="hljs-meta">#def postRestful():</span>
+<span class="hljs-meta">#   。。。。。。</span>
+<span class="hljs-meta">#  此处为要执行的python程序体</span>
+<span class="hljs-meta">#</span>
+<span class="hljs-comment">//开启服务，0.0.0.0表示允许局域网访问，5000是端口</span>
+<span class="hljs-meta">#app.run(host=&quot;0.0.0.0&quot;,port=&quot;5000&quot;)</span></code></pre></li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/python/">python</a>
+                    
+                      <a class="hover-with-bg" href="/tags/scala/">scala</a>
+                    
+                      <a class="hover-with-bg" href="/tags/flask/">flask</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/11/14/git%E5%AD%A6%E4%B9%A0/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">git学习</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/07/14/%E5%AE%9E%E4%B9%A0%E8%AE%B0%E5%BD%95/">
+                        <span class="hidden-mobile">实习记录</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments">
+                
+                
+  <div id="vcomments"></div>
+  <script type="text/javascript">
+    function loadValine() {
+      addScript('https://cdn.staticfile.org/valine/1.4.14/Valine.min.js', function () {
+        new Valine({
+          el: "#vcomments",
+          app_id: "fuCGMO98CkmL7yo4PnW8pU01-gzGzoHsz",
+          app_key: "QgEPoTG9NK3OTaJIzm2LBdb8",
+          placeholder: "say something",
+          path: window.location.pathname,
+          avatar: "retro",
+          meta: ["nick","mail","link"],
+          pageSize: "10",
+          lang: "zh-CN",
+          highlight: false,
+          recordIP: true,
+          serverURLs: "https://fucgmo98.lc-cn-n1-shared.com",
+        });
+      });
+    }
+    waitElementVisible('vcomments', loadValine);
+  </script>
+  <noscript>Please enable JavaScript to view the <a target="_blank" href="https://valine.js.org" rel="nofollow noopener noopener">comments
+      powered by Valine.</a></noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "通过scala调用python的两种方式&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript">
+      //定义获取词语下标
+      var a_idx = 0;
+      jQuery(document).ready(function ($) {
+        //点击body时触发事件
+        $("body").click(function (e) {
+          //需要显示的词语
+          var a = new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正", "法治", "爱国", "敬业", "诚信", "友善");
+          //设置词语给span标签
+          var $i = $("<span/>").text(a[a_idx]);
+          //下标等于原来下标+1  余 词语总数
+          a_idx = (a_idx + 1) % a.length;
+          //获取鼠标指针的位置，分别相对于文档的左和右边缘。
+          //获取x和y的指针坐标
+          var x = e.pageX, y = e.pageY;
+          //在鼠标的指针的位置给$i定义的span标签添加css样式
+          $i.css({
+            "z-index": 999,
+            "top": y - 20,
+            "left": x,
+            "position": "absolute",
+            "font-weight": "bold",
+            "color": rand_color()
+          });
+          // 随机颜色
+          function rand_color() {
+            return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+          }
+          //在body添加这个标签
+          $("body").append($i);
+          //animate() 方法执行 CSS 属性集的自定义动画。
+          //该方法通过CSS样式将元素从一个状态改变为另一个状态。CSS属性值是逐渐改变的，这样就可以创建动画效果。
+          //详情请看http://www.w3school.com.cn/jquery/effect_animate.asp
+          $i.animate({
+            //将原来的位置向上移动180
+            "top": y - 180,
+            "opacity": 0
+            //1500动画的速度
+          }, 1500, function () {
+            //时间到了自动删除
+            $i.remove();
+          });
+        });
+      })
+      ;
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?71f2748195d61de7d95360410c8b74c1";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+</body>
+</html>

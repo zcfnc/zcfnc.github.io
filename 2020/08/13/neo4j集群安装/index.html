@@ -1,0 +1,780 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/self.jpg">
+  <link rel="icon" type="image/png" href="/img/self.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="zhousan">
+  <meta name="keywords" content="">
+  <title>neo4j集群安装步骤 - 周三</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+    
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_pf9vaxs7x7b.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>周三的精神家园</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-08-13 16:57" pubdate>
+        2020年8月13日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.4k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      20
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">neo4j集群安装步骤</h1>
+            
+            <div class="markdown-body" id="post-body">
+              <h1 id="1-neo4j集群安装"><a href="#1-neo4j集群安装" class="headerlink" title="1. neo4j集群安装"></a>1. neo4j集群安装</h1><ol start="0">
+<li>文件说明：</li>
+</ol>
+<ul>
+<li>neo4j-enterprise-3.4.18-unix.tar.gz为软件压缩包</li>
+<li>如下其余的都是第三方包，后面只需要移动到后面指定的文件夹中即可<pre><code class="hljs apache"><span class="hljs-attribute">apoc</span>-<span class="hljs-number">3.4.0.4</span>-<span class="hljs-literal">all</span>.jar                hive-service-<span class="hljs-number">1</span>.<span class="hljs-number">1</span>.<span class="hljs-number">0</span>-cdh<span class="hljs-number">5</span>.<span class="hljs-number">15</span>.<span class="hljs-number">2</span>.jar
+<span class="hljs-attribute">graph</span>-algorithms-algo-<span class="hljs-number">3.4.12.7</span>.jar  httpclient-<span class="hljs-number">4</span>.<span class="hljs-number">2</span>.<span class="hljs-number">5</span>.jar
+<span class="hljs-attribute">hive</span>-exec-<span class="hljs-number">1</span>.<span class="hljs-number">1</span>.<span class="hljs-number">0</span>-cdh<span class="hljs-number">5</span>.<span class="hljs-number">15</span>.<span class="hljs-number">2</span>.jar       httpcore-<span class="hljs-number">4</span>.<span class="hljs-number">2</span>.<span class="hljs-number">5</span>.jar
+<span class="hljs-attribute">hive</span>-jdbc-<span class="hljs-number">1</span>.<span class="hljs-number">1</span>.<span class="hljs-number">0</span>-cdh<span class="hljs-number">5</span>.<span class="hljs-number">15</span>.<span class="hljs-number">2</span>.jar       libfb<span class="hljs-number">303</span>-<span class="hljs-number">0</span>.<span class="hljs-number">9</span>.<span class="hljs-number">3</span>.jar
+<span class="hljs-attribute">hive</span>-metastore-<span class="hljs-number">1</span>.<span class="hljs-number">1</span>.<span class="hljs-number">0</span>-cdh<span class="hljs-number">5</span>.<span class="hljs-number">15</span>.<span class="hljs-number">2</span>.jar  libthrift-<span class="hljs-number">0</span>.<span class="hljs-number">9</span>.<span class="hljs-number">3</span>.jar</code></pre></li>
+</ul>
+<ol>
+<li>说明<blockquote>
+<p>安装目录这里假设为根目录下面的opt文件夹<code>/opt</code>,具体视现场情况而定。配置集群方式可以通过先修改一份配置文件，然后将整个文件包发送到另外两个节点上。最后再修改neo4j的id即可。以下为此种安装方式的步骤</p>
+</blockquote>
+</li>
+</ol>
+<blockquote>
+<p>测试主机配置ip分别为：</p>
+</blockquote>
+<blockquote>
+<p>172.16.221.100/172.16.221.102/172.16.221.9，</p>
+</blockquote>
+<blockquote>
+<p>对应的hostname分别为master/slave01/slave02，</p>
+</blockquote>
+<blockquote>
+<p>对应的neo4j集群id分别为1/2/3<br>（具体视现场情况而定,neo4j集群id只是一个标识）</p>
+</blockquote>
+<ol start="2">
+<li>获取软件包之后然后在安装目录下直接解压缩，命令如下<pre><code class="hljs apache"><span class="hljs-attribute">tar</span> -vxf neo<span class="hljs-number">4</span>j-enterprise-<span class="hljs-number">3</span>.<span class="hljs-number">4</span>.<span class="hljs-number">18</span>-unix.tar.gz</code></pre></li>
+<li>开启http页面服务外部访问</li>
+</ol>
+<ul>
+<li>修改neo4j-enterprise-3.4.18/conf/neo4j.conf文件</li>
+</ul>
+<p>删除</p>
+<pre><code class="hljs angelscript"># dbms.connectors.default_listen_address=<span class="hljs-number">0.0</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span></code></pre>
+<p>行前面的井号</p>
+<pre><code class="hljs vala"><span class="hljs-meta"># vim中打开文件然后输入“/+字符串”然后回车可以进行字符串搜索，使用n键调整上下匹配</span></code></pre>
+<ol start="4">
+<li>配置ip地址及页面缓存大小</li>
+</ol>
+<ul>
+<li>修改neo4j-enterprise-3.4.18/conf/neo4j.conf文件<pre><code class="hljs ini"><span class="hljs-comment"># 修改文件中的不带井号行的数据为如下值</span>
+
+<span class="hljs-comment"># Unique server id for this Neo4j instance</span>
+<span class="hljs-comment"># can not be negative id and must be unique</span>
+<span class="hljs-attr">ha.server_id</span>=<span class="hljs-number">1</span> 
+<span class="hljs-comment"># List of other known instances in this cluster</span>
+<span class="hljs-comment"># Alternatively, use IP addresses:</span>
+<span class="hljs-attr">ha.initial_hosts</span>=<span class="hljs-number">172.16</span>.<span class="hljs-number">221.100</span>:<span class="hljs-number">5001</span>,<span class="hljs-number">172.16</span>.<span class="hljs-number">221.102</span>:<span class="hljs-number">5001</span>,<span class="hljs-number">172.16</span>.<span class="hljs-number">221.9</span>:<span class="hljs-number">5001</span>(这里根据实际id进行修改，端口默认不变)
+<span class="hljs-comment"># HA - High Availability</span>
+<span class="hljs-comment"># SINGLE - Single mode, default.</span>
+<span class="hljs-attr">dbms.mode</span>=HA
+<span class="hljs-comment"># HTTP Connector</span>
+<span class="hljs-attr">dbms.connector.http.enabled</span>=<span class="hljs-literal">true</span>
+<span class="hljs-attr">dbms.connector.http.listen_address</span>=:<span class="hljs-number">7474</span>
+<span class="hljs-comment"># 设置堆内存和页面缓存大小</span>
+<span class="hljs-attr">dbms.memory.heap.initial_size</span>=<span class="hljs-number">10</span>g
+<span class="hljs-attr">dbms.memory.heap.max_size</span>=<span class="hljs-number">10</span>g
+<span class="hljs-attr">dbms.memory.pagecache.size</span>=<span class="hljs-number">10</span>g</code></pre>
+</li>
+</ul>
+<ol start="5">
+<li><p>将第0步里面所述的所有第三方包放到<code>/opt/neo4j-enterprise-3.4.18/plugins</code>目录下</p>
+</li>
+<li><p>将整个neo4j文件夹<code>opt/neo4j-enterprise-3.4.18</code>复制到要安装的从节点对应的目录下</p>
+<pre><code class="hljs angelscript">scp -r ./opt/neo4j-enterprise<span class="hljs-number">-3.4</span><span class="hljs-number">.18</span>/ <span class="hljs-symbol">root@</span><span class="hljs-number">172.16</span><span class="hljs-number">.221</span><span class="hljs-number">.102</span>:/opt/
+scp -r ./opt/neo4j-enterprise<span class="hljs-number">-3.4</span><span class="hljs-number">.18</span>/ <span class="hljs-symbol">root@</span><span class="hljs-number">172.16</span><span class="hljs-number">.221</span><span class="hljs-number">.9</span>:/opt/</code></pre></li>
+<li><p>修改从节点的neo4jID</p>
+</li>
+</ol>
+<ul>
+<li>修改从节点的neo4j-enterprise-3.4.18/conf/neo4j.conf文件</li>
+<li>找到neo4j.conf文件中的如下部分，将两个从节点中的ha.server_id分别修改为2和3<pre><code class="hljs ini"><span class="hljs-comment"># Unique server id for this Neo4j instance</span>
+<span class="hljs-comment"># can not be negative id and must be unique</span>
+<span class="hljs-attr">ha.server_id</span>=<span class="hljs-number">1</span></code></pre></li>
+</ul>
+<ol start="8">
+<li>然后分别<strong>启动三个集群</strong>，主从节点启动顺序不定，<strong>集群配置必须三个节点都启动服务才能启动成功。单独启动一个节点是无法启动成功的</strong>。</li>
+</ol>
+<p>在<code>/opt/neo4j-enterprise-3.4.18/bin</code>目录下分别输入</p>
+<pre><div class="caption"><span>start``` ，并等待数秒即可</span></div><code class="hljs ./neo4j">
+&gt; 重启和关闭的命令将上面的start改成restart或者stop即可
+
+
+9. web客户端查看是否启动成功
+
+客户端页面为“http:&#x2F;&#x2F;172.16.221.100:7474&#x2F;browser&#x2F;”,
+第一次登陆的时候会强制修改密码,
+默认账号密码为:neo4j&#x2F;neo4j。
+点击页面上的System information框内的monitor键如下显示表示成功启动。
+（id为1，2，3的节点状态都是alive）</code></pre>
+<p>Cluster<br>Id    Alive    Available    Is Master<br>1    true    true    yes<br>2    true    true    -<br>3    true    true</p>
+<pre><code class="hljs">
+
+# 2.启动可能遇到问题:
+
+## 2.1  ERROR Failed to start Neo4j
+&gt;  ERROR Failed to start Neo4j: Starting Neo4j failed: Component &#x27;org.neo4j.server.database.LifecycleManagingDatabase@1e141e42&#x27; was successfully initialized, but failed to start. Please see the attached cause exception &quot;Conversation-response mapping:
+&gt;  &#123;1/13#=ResponseFuture&#123;conversationId=&#x27;1/13#&#x27;, initiatedByMessageType=join, response=null&#125;&#125;&quot;. Starting Neo4j failed: Component 
+
+如上错误说明三台机器之间访问出现了问题，不能相互感知，不能加入集群，还需要增加下面配置</code></pre>
+<h1 id="在neo4j-node1-neo4j-conf中添加"><a href="#在neo4j-node1-neo4j-conf中添加" class="headerlink" title="在neo4j-node1 neo4j.conf中添加"></a>在neo4j-node1 neo4j.conf中添加</h1><p>dbms.connectors.default_listen_address=172.16.221.100<br>dbms.connector.bolt.enabled=true<br>dbms.connector.bolt.listen_address=:7687</p>
+<h1 id="在neo4j-node2-neo4j-conf中添加"><a href="#在neo4j-node2-neo4j-conf中添加" class="headerlink" title="在neo4j-node2 neo4j.conf中添加"></a>在neo4j-node2 neo4j.conf中添加</h1><p>dbms.connectors.default_listen_address=172.16.221.102<br>dbms.connector.bolt.enabled=true<br>dbms.connector.bolt.listen_address=:7687</p>
+<h1 id="在neo4j-node3-neo4j-conf中添加"><a href="#在neo4j-node3-neo4j-conf中添加" class="headerlink" title="在neo4j-node3 neo4j.conf中添加"></a>在neo4j-node3 neo4j.conf中添加</h1><p>dbms.connectors.default_listen_address=172.16.221.9<br>dbms.connector.bolt.enabled=true<br>dbms.connector.bolt.listen_address=:7687</p>
+<pre><code class="hljs angelscript">然后三台集群分别启动即可，无启动顺序。等待启动完成查看neo4j状态或者看日志都可以看到启动已经成功。
+
+## <span class="hljs-number">2.2</span> Neo4j-shell 报错Connection <span class="hljs-built_in">ref</span>used</code></pre>
+<p>cd /etc/neo4j<br>vim neo4j.conf<br>去掉 #dbms.shell.enabled=true 前面的#</p>
+<pre><code class="hljs awk">更改后重启neo4j即可
+
+<span class="hljs-comment"># 3. 部分需要脚本</span>
+**下面脚本都需要在文件解压后在“<span class="hljs-regexp">/opt/</span>neo4j-enterprise-<span class="hljs-number">3.4</span>.<span class="hljs-number">18</span>/bin”（解压文件的bin目录下）目录下手动建立相关的文件**
+
+
+<span class="hljs-comment">## 3.1 清空库脚本</span>
+- 路径：
+&gt; <span class="hljs-regexp">/opt/</span>neo4j-enterprise-<span class="hljs-number">3.4</span>.<span class="hljs-number">18</span><span class="hljs-regexp">/bin/</span>dropDataBase.sh
+
+- 内容：</code></pre>
+<p>#!/bin/bash</p>
+<h1 id="Neo4j删除边和顶点的脚本"><a href="#Neo4j删除边和顶点的脚本" class="headerlink" title="Neo4j删除边和顶点的脚本"></a>Neo4j删除边和顶点的脚本</h1><h1 id="删除边"><a href="#删除边" class="headerlink" title="删除边"></a>删除边</h1><p>/opt/neo4j-enterprise-3.4.18/bin/cypher-shell  “call apoc.periodic.iterate(‘match ()-[r]-() return r’,’delete r’,{batchsize:’100000’,iterateList:true,paraller:true,concurrency:8})”</p>
+<h1 id="删除点"><a href="#删除点" class="headerlink" title="删除点"></a>删除点</h1><p>/opt/neo4j-enterprise-3.4.18/bin/cypher-shell  “call apoc.periodic.iterate(‘match (n) return n’,’delete n’,{batchsize:’100000’,iterateList:true,paraller:true,concurrency:8})”</p>
+<pre><code class="hljs markdown"><span class="hljs-bullet">-</span> 说明：
+<span class="hljs-quote">&gt; 该脚本为删库脚本，需要删库的时候<span class="hljs-strong">**先执行删除边**</span>脚本<span class="hljs-strong">**再执行删除点**</span>脚本</span>
+
+<span class="hljs-section">## 3.2 服务崩溃自动启动脚本</span>
+<span class="hljs-bullet">-</span> 路径：
+<span class="hljs-quote">&gt; /opt/neo4j-enterprise-3.4.18/bin/selfStartUp.sh</span>
+
+<span class="hljs-bullet">-</span> 内容：</code></pre>
+<p>check_point(){<br>    echo “端口检测”<br>    netstat -tlpn grep “\b$1\b”<br>}<br>while true<br>do<br>if check_point 7474<br>then<br>    echo “已存在”<br>else<br>    echo “不在”<br>    ./neo4j start<br>fi<br>  sleep 10m<br>done</p>
+<p>```</p>
+<ul>
+<li>说明：</li>
+</ul>
+<blockquote>
+<p>该脚本需要在<strong>集群的三台机器上</strong>常驻执行，neo4j安装后执行<code>nohup  selfStartUp.sh  &amp; </code>启动</p>
+</blockquote>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93/">图数据库</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/neo4j/">neo4j</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93/">图数据库</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/09/08/python%E7%9B%B8%E5%85%B3/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">python相关</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/05/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+                        <span class="hidden-mobile">机器学习笔记</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments">
+                
+                
+  <div id="vcomments"></div>
+  <script type="text/javascript">
+    function loadValine() {
+      addScript('https://cdn.staticfile.org/valine/1.4.14/Valine.min.js', function () {
+        new Valine({
+          el: "#vcomments",
+          app_id: "fuCGMO98CkmL7yo4PnW8pU01-gzGzoHsz",
+          app_key: "QgEPoTG9NK3OTaJIzm2LBdb8",
+          placeholder: "say something",
+          path: window.location.pathname,
+          avatar: "retro",
+          meta: ["nick","mail","link"],
+          pageSize: "10",
+          lang: "zh-CN",
+          highlight: false,
+          recordIP: true,
+          serverURLs: "https://fucgmo98.lc-cn-n1-shared.com",
+        });
+      });
+    }
+    waitElementVisible('vcomments', loadValine);
+  </script>
+  <noscript>Please enable JavaScript to view the <a target="_blank" href="https://valine.js.org" rel="nofollow noopener noopener">comments
+      powered by Valine.</a></noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "neo4j集群安装步骤&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript">
+      //定义获取词语下标
+      var a_idx = 0;
+      jQuery(document).ready(function ($) {
+        //点击body时触发事件
+        $("body").click(function (e) {
+          //需要显示的词语
+          var a = new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正", "法治", "爱国", "敬业", "诚信", "友善");
+          //设置词语给span标签
+          var $i = $("<span/>").text(a[a_idx]);
+          //下标等于原来下标+1  余 词语总数
+          a_idx = (a_idx + 1) % a.length;
+          //获取鼠标指针的位置，分别相对于文档的左和右边缘。
+          //获取x和y的指针坐标
+          var x = e.pageX, y = e.pageY;
+          //在鼠标的指针的位置给$i定义的span标签添加css样式
+          $i.css({
+            "z-index": 999,
+            "top": y - 20,
+            "left": x,
+            "position": "absolute",
+            "font-weight": "bold",
+            "color": rand_color()
+          });
+          // 随机颜色
+          function rand_color() {
+            return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+          }
+          //在body添加这个标签
+          $("body").append($i);
+          //animate() 方法执行 CSS 属性集的自定义动画。
+          //该方法通过CSS样式将元素从一个状态改变为另一个状态。CSS属性值是逐渐改变的，这样就可以创建动画效果。
+          //详情请看http://www.w3school.com.cn/jquery/effect_animate.asp
+          $i.animate({
+            //将原来的位置向上移动180
+            "top": y - 180,
+            "opacity": 0
+            //1500动画的速度
+          }, 1500, function () {
+            //时间到了自动删除
+            $i.remove();
+          });
+        });
+      })
+      ;
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?71f2748195d61de7d95360410c8b74c1";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+</body>
+</html>
