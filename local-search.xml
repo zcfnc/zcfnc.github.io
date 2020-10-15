@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>熵权法计算权重</title>
+    <link href="/2020/10/15/%E7%86%B5%E6%9D%83%E6%B3%95%E8%AE%A1%E7%AE%97%E6%9D%83%E9%87%8D/"/>
+    <url>/2020/10/15/%E7%86%B5%E6%9D%83%E6%B3%95%E8%AE%A1%E7%AE%97%E6%9D%83%E9%87%8D/</url>
+    
+    <content type="html"><![CDATA[<h1 id="1-熵权法说明"><a href="#1-熵权法说明" class="headerlink" title="1.熵权法说明"></a>1.熵权法说明</h1><p>通过信息熵的大小判断某项数据在整体数据评测中所占的比重大小。</p><blockquote><p>一般来说，若某个指标的<strong>信息熵Ej越小</strong>，表明指标值得变异程度<strong>越大</strong>，提供的信息量越多，在综合评价中所能起到的作用也越大，其权重也就越大。相反，某个指标的<strong>信息熵越大</strong>，表明指标值得变异程度<strong>越小</strong>，提供的信息量也越少，在综合评价中所起到的作用也越小，其权重也就越小</p></blockquote><p>#2.计算步骤</p><h2 id="2-1-数据标准化"><a href="#2-1-数据标准化" class="headerlink" title="2.1 数据标准化"></a>2.1 数据标准化</h2><p>假设给定了<em>k</em>个指标（类别）$X_1$,$X_2$，……，$X_i$={$x_1$,$x_2$,……},</p><p>假设对各指标数据标准化后的值为 : $Y_1$,$Y_2$….$Y_k$</p><p>则$X_{ij}$表示第$i$个指标下的第$j$个值</p><p>那么标准化的$Y_{ij}$ =$\frac{X_{ij}-min(X_{ij})}{max(X_i) - min(X_i)}$</p><h2 id="2-2-计算各指标的信息熵"><a href="#2-2-计算各指标的信息熵" class="headerlink" title="2.2 计算各指标的信息熵"></a>2.2 计算各指标的信息熵</h2><p>信息熵   $E_j = -\frac{1}{lnn}∑^n_{i=1}p_{ij}lnp_{ij}$</p><p>其中   $p_{ij} = \frac{Y_{ij}}{\stackrel{n}{\stackrel{∑{Y_{ij}}}{i=1}}}$</p><p>如果： $p_{ij}=0$</p><p>则：$\stackrel{lim}{p_{ij-0}} p_{ij}lnp_{ij}=0$</p><h2 id="2-3-确定各指标权重"><a href="#2-3-确定各指标权重" class="headerlink" title="2.3 确定各指标权重"></a>2.3 确定各指标权重</h2><p>根据信息熵$E_j$的计算公式计算信息熵分别为$E_1,E_2,……E_k$</p><p>然后计算权重:</p><p>$W_i = \frac{1-E_i}{k-∑E_i}(i = 1,2,3….k)$</p><blockquote><p>这里的分母$k-∑E_i$通过上面计算出所有的信息熵E之后为一个固定的常数。</p></blockquote><h2 id="2-4-根据权重打分"><a href="#2-4-根据权重打分" class="headerlink" title="2.4 根据权重打分"></a>2.4 根据权重打分</h2><p>根据计算后：$X_1$,$X_2$，……，$X_i$={$x_1$,$x_2$,……}每一项指标分别对应的权重为$W_1,W_2,….W_i$</p><p>得到每个个体的得分计算为  </p><p>$R_1 = X_{11}W_1+X_{21}W_2+….+X_{i1}W_i$ </p>]]></content>
+    
+    
+    <categories>
+      
+      <category>工作</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>数据分析</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>本地安装faceswap与一键使用google的colab搭建faceswap两种方式</title>
     <link href="/2020/09/23/faceswap%E5%AE%89%E8%A3%85%E4%B8%8E%E8%B8%A9%E5%9D%91/"/>
     <url>/2020/09/23/faceswap%E5%AE%89%E8%A3%85%E4%B8%8E%E8%B8%A9%E5%9D%91/</url>

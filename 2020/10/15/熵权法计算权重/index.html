@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="zhousan">
   <meta name="keywords" content="">
-  <title>neo4j集群安装步骤 - 周三</title>
+  <title>熵权法计算权重 - 周三</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -177,8 +177,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2020-08-13 16:57" pubdate>
-        2020年8月13日 下午
+      <time datetime="2020-10-15 14:30" pubdate>
+        2020年10月15日 下午
       </time>
     </span>
   
@@ -189,7 +189,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.4k 字
+      419 字
     </span>
   
 
@@ -199,7 +199,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      20
+      5
        分钟
     </span>
   
@@ -237,150 +237,31 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto" id="post">
             <!-- SEO header -->
-            <h1 style="display: none">neo4j集群安装步骤</h1>
+            <h1 style="display: none">熵权法计算权重</h1>
             
             <div class="markdown-body" id="post-body">
-              <h1 id="1-neo4j集群安装"><a href="#1-neo4j集群安装" class="headerlink" title="1. neo4j集群安装"></a>1. neo4j集群安装</h1><ol start="0">
-<li>文件说明：</li>
-</ol>
-<ul>
-<li>neo4j-enterprise-3.4.18-unix.tar.gz为软件压缩包</li>
-<li>如下其余的都是第三方包，后面只需要移动到后面指定的文件夹中即可<pre><code class="hljs apache"><span class="hljs-attribute">apoc</span>-<span class="hljs-number">3.4.0.4</span>-<span class="hljs-literal">all</span>.jar                hive-service-<span class="hljs-number">1</span>.<span class="hljs-number">1</span>.<span class="hljs-number">0</span>-cdh<span class="hljs-number">5</span>.<span class="hljs-number">15</span>.<span class="hljs-number">2</span>.jar
-<span class="hljs-attribute">graph</span>-algorithms-algo-<span class="hljs-number">3.4.12.7</span>.jar  httpclient-<span class="hljs-number">4</span>.<span class="hljs-number">2</span>.<span class="hljs-number">5</span>.jar
-<span class="hljs-attribute">hive</span>-exec-<span class="hljs-number">1</span>.<span class="hljs-number">1</span>.<span class="hljs-number">0</span>-cdh<span class="hljs-number">5</span>.<span class="hljs-number">15</span>.<span class="hljs-number">2</span>.jar       httpcore-<span class="hljs-number">4</span>.<span class="hljs-number">2</span>.<span class="hljs-number">5</span>.jar
-<span class="hljs-attribute">hive</span>-jdbc-<span class="hljs-number">1</span>.<span class="hljs-number">1</span>.<span class="hljs-number">0</span>-cdh<span class="hljs-number">5</span>.<span class="hljs-number">15</span>.<span class="hljs-number">2</span>.jar       libfb<span class="hljs-number">303</span>-<span class="hljs-number">0</span>.<span class="hljs-number">9</span>.<span class="hljs-number">3</span>.jar
-<span class="hljs-attribute">hive</span>-metastore-<span class="hljs-number">1</span>.<span class="hljs-number">1</span>.<span class="hljs-number">0</span>-cdh<span class="hljs-number">5</span>.<span class="hljs-number">15</span>.<span class="hljs-number">2</span>.jar  libthrift-<span class="hljs-number">0</span>.<span class="hljs-number">9</span>.<span class="hljs-number">3</span>.jar</code></pre></li>
-</ul>
-<ol>
-<li>说明<blockquote>
-<p>安装目录这里假设为根目录下面的opt文件夹<code>/opt</code>,具体视现场情况而定。配置集群方式可以通过先修改一份配置文件，然后将整个文件包发送到另外两个节点上。最后再修改neo4j的id即可。以下为此种安装方式的步骤</p>
-</blockquote>
-</li>
-</ol>
+              <h1 id="1-熵权法说明"><a href="#1-熵权法说明" class="headerlink" title="1.熵权法说明"></a>1.熵权法说明</h1><p>通过信息熵的大小判断某项数据在整体数据评测中所占的比重大小。</p>
 <blockquote>
-<p>测试主机配置ip分别为：</p>
+<p>一般来说，若某个指标的<strong>信息熵Ej越小</strong>，表明指标值得变异程度<strong>越大</strong>，提供的信息量越多，在综合评价中所能起到的作用也越大，其权重也就越大。相反，某个指标的<strong>信息熵越大</strong>，表明指标值得变异程度<strong>越小</strong>，提供的信息量也越少，在综合评价中所起到的作用也越小，其权重也就越小</p>
 </blockquote>
+<p>#2.计算步骤</p>
+<h2 id="2-1-数据标准化"><a href="#2-1-数据标准化" class="headerlink" title="2.1 数据标准化"></a>2.1 数据标准化</h2><p>假设给定了<em>k</em>个指标（类别）$X_1$,$X_2$，……，$X_i$={$x_1$,$x_2$,……},</p>
+<p>假设对各指标数据标准化后的值为 : $Y_1$,$Y_2$….$Y_k$</p>
+<p>则$X_{ij}$表示第$i$个指标下的第$j$个值</p>
+<p>那么标准化的$Y_{ij}$ =$\frac{X_{ij}-min(X_{ij})}{max(X_i) - min(X_i)}$</p>
+<h2 id="2-2-计算各指标的信息熵"><a href="#2-2-计算各指标的信息熵" class="headerlink" title="2.2 计算各指标的信息熵"></a>2.2 计算各指标的信息熵</h2><p>信息熵   $E_j = -\frac{1}{lnn}∑^n_{i=1}p_{ij}lnp_{ij}$</p>
+<p>其中   $p_{ij} = \frac{Y_{ij}}{\stackrel{n}{\stackrel{∑{Y_{ij}}}{i=1}}}$</p>
+<p>如果： $p_{ij}=0$</p>
+<p>则：$\stackrel{lim}{p_{ij-0}} p_{ij}lnp_{ij}=0$</p>
+<h2 id="2-3-确定各指标权重"><a href="#2-3-确定各指标权重" class="headerlink" title="2.3 确定各指标权重"></a>2.3 确定各指标权重</h2><p>根据信息熵$E_j$的计算公式计算信息熵分别为$E_1,E_2,……E_k$</p>
+<p>然后计算权重:</p>
+<p>$W_i = \frac{1-E_i}{k-∑E_i}(i = 1,2,3….k)$</p>
 <blockquote>
-<p>172.16.221.100/172.16.221.102/172.16.221.9，</p>
+<p>这里的分母$k-∑E_i$通过上面计算出所有的信息熵E之后为一个固定的常数。</p>
 </blockquote>
-<blockquote>
-<p>对应的hostname分别为master/slave01/slave02，</p>
-</blockquote>
-<blockquote>
-<p>对应的neo4j集群id分别为1/2/3<br>（具体视现场情况而定,neo4j集群id只是一个标识）</p>
-</blockquote>
-<ol start="2">
-<li>获取软件包之后然后在安装目录下直接解压缩，命令如下<pre><code class="hljs apache"><span class="hljs-attribute">tar</span> -vxf neo<span class="hljs-number">4</span>j-enterprise-<span class="hljs-number">3</span>.<span class="hljs-number">4</span>.<span class="hljs-number">18</span>-unix.tar.gz</code></pre></li>
-<li>开启http页面服务外部访问</li>
-</ol>
-<ul>
-<li>修改neo4j-enterprise-3.4.18/conf/neo4j.conf文件</li>
-</ul>
-<p>删除</p>
-<pre><code class="hljs angelscript"># dbms.connectors.default_listen_address=<span class="hljs-number">0.0</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span></code></pre>
-<p>行前面的井号</p>
-<pre><code class="hljs vala"><span class="hljs-meta"># vim中打开文件然后输入“/+字符串”然后回车可以进行字符串搜索，使用n键调整上下匹配</span></code></pre>
-<ol start="4">
-<li>配置ip地址及页面缓存大小</li>
-</ol>
-<ul>
-<li>修改neo4j-enterprise-3.4.18/conf/neo4j.conf文件<pre><code class="hljs ini"><span class="hljs-comment"># 修改文件中的不带井号行的数据为如下值</span>
-
-<span class="hljs-comment"># Unique server id for this Neo4j instance</span>
-<span class="hljs-comment"># can not be negative id and must be unique</span>
-<span class="hljs-attr">ha.server_id</span>=<span class="hljs-number">1</span> 
-<span class="hljs-comment"># List of other known instances in this cluster</span>
-<span class="hljs-comment"># Alternatively, use IP addresses:</span>
-<span class="hljs-attr">ha.initial_hosts</span>=<span class="hljs-number">172.16</span>.<span class="hljs-number">221.100</span>:<span class="hljs-number">5001</span>,<span class="hljs-number">172.16</span>.<span class="hljs-number">221.102</span>:<span class="hljs-number">5001</span>,<span class="hljs-number">172.16</span>.<span class="hljs-number">221.9</span>:<span class="hljs-number">5001</span>(这里根据实际id进行修改，端口默认不变)
-<span class="hljs-comment"># HA - High Availability</span>
-<span class="hljs-comment"># SINGLE - Single mode, default.</span>
-<span class="hljs-attr">dbms.mode</span>=HA
-<span class="hljs-comment"># HTTP Connector</span>
-<span class="hljs-attr">dbms.connector.http.enabled</span>=<span class="hljs-literal">true</span>
-<span class="hljs-attr">dbms.connector.http.listen_address</span>=:<span class="hljs-number">7474</span>
-<span class="hljs-comment"># 设置堆内存和页面缓存大小</span>
-<span class="hljs-attr">dbms.memory.heap.initial_size</span>=<span class="hljs-number">10</span>g
-<span class="hljs-attr">dbms.memory.heap.max_size</span>=<span class="hljs-number">10</span>g
-<span class="hljs-attr">dbms.memory.pagecache.size</span>=<span class="hljs-number">10</span>g</code></pre>
-</li>
-</ul>
-<ol start="5">
-<li><p>将第0步里面所述的所有第三方包放到<code>/opt/neo4j-enterprise-3.4.18/plugins</code>目录下</p>
-</li>
-<li><p>将整个neo4j文件夹<code>opt/neo4j-enterprise-3.4.18</code>复制到要安装的从节点对应的目录下</p>
-<pre><code class="hljs angelscript">scp -r ./opt/neo4j-enterprise<span class="hljs-number">-3.4</span><span class="hljs-number">.18</span>/ <span class="hljs-symbol">root@</span><span class="hljs-number">172.16</span><span class="hljs-number">.221</span><span class="hljs-number">.102</span>:/opt/
-scp -r ./opt/neo4j-enterprise<span class="hljs-number">-3.4</span><span class="hljs-number">.18</span>/ <span class="hljs-symbol">root@</span><span class="hljs-number">172.16</span><span class="hljs-number">.221</span><span class="hljs-number">.9</span>:/opt/</code></pre></li>
-<li><p>修改从节点的neo4jID</p>
-</li>
-</ol>
-<ul>
-<li>修改从节点的neo4j-enterprise-3.4.18/conf/neo4j.conf文件</li>
-<li>找到neo4j.conf文件中的如下部分，将两个从节点中的ha.server_id分别修改为2和3<pre><code class="hljs ini"><span class="hljs-comment"># Unique server id for this Neo4j instance</span>
-<span class="hljs-comment"># can not be negative id and must be unique</span>
-<span class="hljs-attr">ha.server_id</span>=<span class="hljs-number">1</span></code></pre></li>
-</ul>
-<ol start="8">
-<li>然后分别<strong>启动三个集群</strong>，主从节点启动顺序不定，<strong>集群配置必须三个节点都启动服务才能启动成功。单独启动一个节点是无法启动成功的</strong>。</li>
-</ol>
-<p>在<code>/opt/neo4j-enterprise-3.4.18/bin</code>目录下分别输入</p>
-<pre><div class="caption"><span>start``` ，并等待数秒即可</span></div><code class="hljs ./neo4j">
-&gt; 重启和关闭的命令将上面的start改成restart或者stop即可
-
-
-9. web客户端查看是否启动成功
-
-客户端页面为“http:&#x2F;&#x2F;172.16.221.100:7474&#x2F;browser&#x2F;”,
-第一次登陆的时候会强制修改密码,
-默认账号密码为:neo4j&#x2F;neo4j。
-点击页面上的System information框内的monitor键如下显示表示成功启动。
-（id为1，2，3的节点状态都是alive）</code></pre>
-<p>Cluster<br>Id    Alive    Available    Is Master<br>1    true    true    yes<br>2    true    true    -<br>3    true    true</p>
-<pre><code class="hljs">
-
-# 2.启动可能遇到问题:
-
-## 2.1  ERROR Failed to start Neo4j
-&gt;  ERROR Failed to start Neo4j: Starting Neo4j failed: Component &#x27;org.neo4j.server.database.LifecycleManagingDatabase@1e141e42&#x27; was successfully initialized, but failed to start. Please see the attached cause exception &quot;Conversation-response mapping:
-&gt;  &#123;1/13#=ResponseFuture&#123;conversationId=&#x27;1/13#&#x27;, initiatedByMessageType=join, response=null&#125;&#125;&quot;. Starting Neo4j failed: Component 
-
-如上错误说明三台机器之间访问出现了问题，不能相互感知，不能加入集群，还需要增加下面配置</code></pre>
-<h1 id="在neo4j-node1-neo4j-conf中添加"><a href="#在neo4j-node1-neo4j-conf中添加" class="headerlink" title="在neo4j-node1 neo4j.conf中添加"></a>在neo4j-node1 neo4j.conf中添加</h1><p>dbms.connectors.default_listen_address=172.16.221.100<br>dbms.connector.bolt.enabled=true<br>dbms.connector.bolt.listen_address=:7687</p>
-<h1 id="在neo4j-node2-neo4j-conf中添加"><a href="#在neo4j-node2-neo4j-conf中添加" class="headerlink" title="在neo4j-node2 neo4j.conf中添加"></a>在neo4j-node2 neo4j.conf中添加</h1><p>dbms.connectors.default_listen_address=172.16.221.102<br>dbms.connector.bolt.enabled=true<br>dbms.connector.bolt.listen_address=:7687</p>
-<h1 id="在neo4j-node3-neo4j-conf中添加"><a href="#在neo4j-node3-neo4j-conf中添加" class="headerlink" title="在neo4j-node3 neo4j.conf中添加"></a>在neo4j-node3 neo4j.conf中添加</h1><p>dbms.connectors.default_listen_address=172.16.221.9<br>dbms.connector.bolt.enabled=true<br>dbms.connector.bolt.listen_address=:7687</p>
-<pre><code class="hljs angelscript">然后三台集群分别启动即可，无启动顺序。等待启动完成查看neo4j状态或者看日志都可以看到启动已经成功。
-
-## <span class="hljs-number">2.2</span> Neo4j-shell 报错Connection <span class="hljs-built_in">ref</span>used</code></pre>
-<p>cd /etc/neo4j<br>vim neo4j.conf<br>去掉 #dbms.shell.enabled=true 前面的#</p>
-<pre><code class="hljs awk">更改后重启neo4j即可
-
-<span class="hljs-comment"># 3. 部分需要脚本</span>
-**下面脚本都需要在文件解压后在“<span class="hljs-regexp">/opt/</span>neo4j-enterprise-<span class="hljs-number">3.4</span>.<span class="hljs-number">18</span>/bin”（解压文件的bin目录下）目录下手动建立相关的文件**
-
-
-<span class="hljs-comment">## 3.1 清空库脚本</span>
-- 路径：
-&gt; <span class="hljs-regexp">/opt/</span>neo4j-enterprise-<span class="hljs-number">3.4</span>.<span class="hljs-number">18</span><span class="hljs-regexp">/bin/</span>dropDataBase.sh
-
-- 内容：</code></pre>
-<p>#!/bin/bash</p>
-<h1 id="Neo4j删除边和顶点的脚本"><a href="#Neo4j删除边和顶点的脚本" class="headerlink" title="Neo4j删除边和顶点的脚本"></a>Neo4j删除边和顶点的脚本</h1><h1 id="删除边"><a href="#删除边" class="headerlink" title="删除边"></a>删除边</h1><p>/opt/neo4j-enterprise-3.4.18/bin/cypher-shell  “call apoc.periodic.iterate(‘match ()-[r]-() return r’,’delete r’,{batchsize:’100000’,iterateList:true,paraller:true,concurrency:8})”</p>
-<h1 id="删除点"><a href="#删除点" class="headerlink" title="删除点"></a>删除点</h1><p>/opt/neo4j-enterprise-3.4.18/bin/cypher-shell  “call apoc.periodic.iterate(‘match (n) return n’,’delete n’,{batchsize:’100000’,iterateList:true,paraller:true,concurrency:8})”</p>
-<pre><code class="hljs markdown"><span class="hljs-bullet">-</span> 说明：
-<span class="hljs-quote">&gt; 该脚本为删库脚本，需要删库的时候<span class="hljs-strong">**先执行删除边**</span>脚本<span class="hljs-strong">**再执行删除点**</span>脚本</span>
-
-<span class="hljs-section">## 3.2 服务崩溃自动启动脚本</span>
-<span class="hljs-bullet">-</span> 路径：
-<span class="hljs-quote">&gt; /opt/neo4j-enterprise-3.4.18/bin/selfStartUp.sh</span>
-
-<span class="hljs-bullet">-</span> 内容：</code></pre>
-<p>check_point(){<br>    echo “端口检测”<br>    netstat -tlpn grep “\b$1\b”<br>}<br>while true<br>do<br>if check_point 7474<br>then<br>    echo “已存在”<br>else<br>    echo “不在”<br>    ./neo4j start<br>fi<br>  sleep 10m<br>done</p>
-<p>```</p>
-<ul>
-<li>说明：</li>
-</ul>
-<blockquote>
-<p>该脚本需要在<strong>集群的三台机器上</strong>常驻执行，neo4j安装后执行<code>nohup  selfStartUp.sh  &amp; </code>启动</p>
-</blockquote>
+<h2 id="2-4-根据权重打分"><a href="#2-4-根据权重打分" class="headerlink" title="2.4 根据权重打分"></a>2.4 根据权重打分</h2><p>根据计算后：$X_1$,$X_2$，……，$X_i$={$x_1$,$x_2$,……}每一项指标分别对应的权重为$W_1,W_2,….W_i$</p>
+<p>得到每个个体的得分计算为  </p>
+<p>$R_1 = X_{11}W_1+X_{21}W_2+….+X_{i1}W_i$ </p>
 
             </div>
             <hr>
@@ -390,7 +271,7 @@ scp -r ./opt/neo4j-enterprise<span class="hljs-number">-3.4</span><span class="h
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93/">图数据库</a>
+                      <a class="hover-with-bg" href="/categories/%E5%B7%A5%E4%BD%9C/">工作</a>
                     
                   </div>
                 
@@ -398,9 +279,7 @@ scp -r ./opt/neo4j-enterprise<span class="hljs-number">-3.4</span><span class="h
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/neo4j/">neo4j</a>
-                    
-                      <a class="hover-with-bg" href="/tags/%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93/">图数据库</a>
+                      <a class="hover-with-bg" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/">数据分析</a>
                     
                   </div>
                 
@@ -413,18 +292,12 @@ scp -r ./opt/neo4j-enterprise<span class="hljs-number">-3.4</span><span class="h
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/09/08/python%E7%9B%B8%E5%85%B3/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">python相关</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/05/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
-                        <span class="hidden-mobile">机器学习笔记</span>
+                      <a href="/2020/09/23/faceswap%E5%AE%89%E8%A3%85%E4%B8%8E%E8%B8%A9%E5%9D%91/">
+                        <span class="hidden-mobile">本地安装faceswap与一键使用google的colab搭建faceswap两种方式</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -625,7 +498,7 @@ scp -r ./opt/neo4j-enterprise<span class="hljs-number">-3.4</span><span class="h
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "neo4j集群安装步骤&nbsp;",
+        "熵权法计算权重&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,
