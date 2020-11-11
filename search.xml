@@ -1,6 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Flask之缓慢的http拒绝服务攻击漏洞解决</title>
+    <url>/2020/11/06/Flask%E4%B9%8B%E7%BC%93%E6%85%A2%E7%9A%84http%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB%E6%BC%8F%E6%B4%9E%E8%A7%A3%E5%86%B3/</url>
+    <content><![CDATA[<h1 id="1-什么是缓慢的http拒绝服务攻击漏洞"><a href="#1-什么是缓慢的http拒绝服务攻击漏洞" class="headerlink" title="1.什么是缓慢的http拒绝服务攻击漏洞"></a>1.什么是缓慢的http拒绝服务攻击漏洞</h1><p>缓慢的http拒绝服务攻击是一种专门针对于Web的应用层拒绝服务攻击，攻击者操纵网络上的肉鸡，对目标Web服务器进行海量http request攻击，直到服务器带宽被打满，造成了拒绝服务。</p>
+<p>慢速HTTP拒绝服务攻击经过不断的演变和发展，主要有三种攻击类型，分别是Slow headers、Slow body、Slow read。</p>
+<ul>
+<li><p><code>slowloris</code>：完整的http请求是以 <code>\r\n\r\n</code> 结尾，攻击时仅发送 <code>\r\n</code>，少发送一个 <code>\r\n</code>，服务器认为请求还未发完，就会一直等待直至超时</p>
+</li>
+<li><p><code>slow post</code>：通过声明一个较大的content-length后，body缓慢发送，导致服务器一直等待</p>
+</li>
+<li><p><code>slow read</code>：向服务器发送一个正常合法的read请求，请求一个很大的文件，但把TCP滑动窗口设置得很小，服务器就会以滑动窗口的大小切割文件，然后发送，这时文件会长期存放在内存中，消耗资源</p>
+</li>
+</ul>
+<h1 id="2-Flask应对措施"><a href="#2-Flask应对措施" class="headerlink" title="2. Flask应对措施"></a>2. Flask应对措施</h1><ul>
+<li>限制每次请求数据的大小</li>
+<li>限制单个HTTP请求头的最大许可时间</li>
+<li>限制单个ip请求数量</li>
+<li>。。。。。。</li>
+</ul>
+<p>#3. 使用slowhttptest测试漏洞</p>
+<h2 id="3-1-slowhttptest的安装"><a href="#3-1-slowhttptest的安装" class="headerlink" title="3.1 slowhttptest的安装"></a>3.1 slowhttptest的安装</h2><blockquote>
+<p> 安装说明:<a href="https://github.com/shekyan/slowhttptest/wiki/InstallationAndUsage1">https://github.com/shekyan/slowhttptest/wiki/InstallationAndUsage1</a></p>
+</blockquote>
+<ol>
+<li><p>下载压缩包：<a href="https://github.com/shekyan/slowhttptest/releases">https://github.com/shekyan/slowhttptest/releases</a></p>
+</li>
+<li><p>安装libssl-dev<br><code>$ yum install openssl openssl-devel</code></p>
+</li>
+<li><p>安装C++编译器<br><code>$ yum install gcc-c++</code></p>
+</li>
+<li><p>解压</p>
+<p><code>$ tar -xzvf slowhttptest-x.x.tar.gz</code> </p>
+</li>
+<li><p>编译安装</p>
+<pre><code class="hljs powershell"><span class="hljs-variable">$</span> <span class="hljs-built_in">cd</span> slowhttp<span class="hljs-built_in">test-x</span>.x
+<span class="hljs-variable">$</span> ./configure -<span class="hljs-literal">-prefix</span>=PREFIX
+<span class="hljs-variable">$</span> make
+<span class="hljs-variable">$</span> sudo make install</code></pre>
+
+</li>
+</ol>
+<h2 id="3-2-参数说明及使用测试"><a href="#3-2-参数说明及使用测试" class="headerlink" title="3.2 参数说明及使用测试"></a>3.2 参数说明及使用测试</h2><pre><code class="hljs diff"><span class="hljs-deletion">-g      在测试完成后，以时间戳为名生成一个CVS和HTML文件的统计数据</span>
+<span class="hljs-deletion">-H      SlowLoris模式</span>
+<span class="hljs-deletion">-B      Slow POST模式</span>
+<span class="hljs-deletion">-R      Range Header模式</span>
+<span class="hljs-deletion">-X      Slow Read模式</span>
+<span class="hljs-deletion">-c      number of connections 测试时建立的连接数</span>
+<span class="hljs-deletion">-d      HTTP proxy host:port  为所有连接指定代理</span>
+<span class="hljs-deletion">-e      HTTP proxy host:port  为探测连接指定代理</span>
+<span class="hljs-deletion">-i      seconds 在slowrois和Slow POST模式中，指定发送数据间的间隔。</span>
+<span class="hljs-deletion">-l      seconds 测试维持时间</span>
+<span class="hljs-deletion">-n      seconds 在Slow Read模式下，指定每次操作的时间间隔。</span>
+<span class="hljs-deletion">-o      file name 使用-g参数时，可以使用此参数指定输出文件名</span>
+<span class="hljs-deletion">-p      seconds 指定等待时间来确认DoS攻击已经成功</span>
+<span class="hljs-deletion">-r      connections per second 每秒连接个数</span>
+<span class="hljs-deletion">-s      bytes 声明Content-Length header的值</span>
+<span class="hljs-deletion">-t      HTTP verb 在请求时使用什么操作，默认GET</span>
+<span class="hljs-deletion">-u      URL  指定目标url</span>
+<span class="hljs-deletion">-v      level 日志等级（详细度）</span>
+<span class="hljs-deletion">-w      bytes slow read模式中指定tcp窗口范围下限</span>
+<span class="hljs-deletion">-x      bytes 在slowloris and Slow POST tests模式中，指定发送的最大数据长度</span>
+<span class="hljs-deletion">-y      bytes slow read模式中指定tcp窗口范围上限</span>
+<span class="hljs-deletion">-z      bytes 在每次的read()中，从buffer中读取数据量</span></code></pre>
+
+<h2 id="3-2-1实例："><a href="#3-2-1实例：" class="headerlink" title="3.2.1实例："></a>3.2.1实例：</h2><p>slowloris模式：</p>
+<pre><code class="hljs apache"><span class="hljs-attribute">slowhttptest</span> -c <span class="hljs-number">1000</span> -H -g -o my_header_stats -i <span class="hljs-number">10</span> -r <span class="hljs-number">200</span> -t GET -u https://xxxxxx.xxxxx.xx -x <span class="hljs-number">24</span> -p <span class="hljs-number">3</span></code></pre>
+
+<p>slow post模式：</p>
+<pre><code class="hljs yaml"><span class="hljs-string">$</span> <span class="hljs-string">slowhttptest</span> <span class="hljs-string">-c</span> <span class="hljs-number">3000</span> <span class="hljs-string">-B</span> <span class="hljs-string">-g</span> <span class="hljs-string">-o</span> <span class="hljs-string">my_body_stats</span> <span class="hljs-string">-i</span> <span class="hljs-number">110</span> <span class="hljs-string">-r</span> <span class="hljs-number">200</span> <span class="hljs-string">-s</span> <span class="hljs-number">8192</span> <span class="hljs-string">-t</span> <span class="hljs-string">FAKEVERB</span> <span class="hljs-string">-u</span> <span class="hljs-string">http://xxx.xxx.xxx</span> <span class="hljs-string">-x</span> <span class="hljs-number">10</span> <span class="hljs-string">-p</span> <span class="hljs-number">3</span></code></pre>
+
+<p>slow read模式：</p>
+<pre><code class="hljs angelscript">$ slowhttptest -c <span class="hljs-number">8000</span> -X -r <span class="hljs-number">200</span> -w <span class="hljs-number">512</span> -y <span class="hljs-number">1024</span> -n <span class="hljs-number">5</span> -z <span class="hljs-number">32</span> -k <span class="hljs-number">3</span> -u https:<span class="hljs-comment">//xxx.xxx.xxx -p 3</span></code></pre>
+
+]]></content>
+      <categories>
+        <category>工作相关</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+        <tag>Flask</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>HBase基础</title>
     <url>/2020/05/11/HBase%E5%9F%BA%E7%A1%80/</url>
     <content><![CDATA[<h1 id="1-HBase的存储形式"><a href="#1-HBase的存储形式" class="headerlink" title="1. HBase的存储形式"></a>1. HBase的存储形式</h1><p>hbase的内部使用KeyValue的形式存储，其key是rowKey：family：column：logTime，value是其存储的内容。</p>
@@ -929,35 +1011,6 @@ ps ux grep | <span class="hljs-string">&#x27;python3&#x27;</span>   <span class=
       </tags>
   </entry>
   <entry>
-    <title>pyqt5使用及出现问题</title>
-    <url>/2020/09/17/pyqt5%E4%BD%BF%E7%94%A8%E5%8F%8A%E5%87%BA%E7%8E%B0%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<h1 id="1-pyqt5及qtdesigner的安装"><a href="#1-pyqt5及qtdesigner的安装" class="headerlink" title="1. pyqt5及qtdesigner的安装"></a>1. pyqt5及qtdesigner的安装</h1><h2 id="1-1-安装包"><a href="#1-1-安装包" class="headerlink" title="1.1 安装包"></a>1.1 安装包</h2><pre><code class="hljs cmake">pip <span class="hljs-keyword">install</span>  PyQt5-tools
-pip <span class="hljs-keyword">install</span> pyqt5
-pip <span class="hljs-keyword">install</span> sip</code></pre>
-
-<h2 id="1-2-配置pycharm"><a href="#1-2-配置pycharm" class="headerlink" title="1.2 配置pycharm"></a>1.2 配置pycharm</h2><ul>
-<li>报错:</li>
-</ul>
-<p><img src="/img/pyqt5%E4%BD%BF%E7%94%A8%E5%8F%8A%E5%87%BA%E7%8E%B0%E9%97%AE%E9%A2%98/1.png" alt="在这里插入图片描述"></p>
-<ul>
-<li><p>解决方法</p>
-<blockquote>
-<p>添加系统环境变量</p>
-<p>QT_QPA_PLATFORM_PLUGIN_PATH</p>
-<p>C:\ProgramData\Anaconda3\Lib\site-packages\PyQt5\Qt\plugins</p>
-</blockquote>
-</li>
-</ul>
-<h1 id="2-使用"><a href="#2-使用" class="headerlink" title="2. 使用"></a>2. 使用</h1>]]></content>
-      <categories>
-        <category>编程语言特性相关</category>
-      </categories>
-      <tags>
-        <tag>python</tag>
-        <tag>pyqt5</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>neo4j集群安装步骤</title>
     <url>/2020/08/13/neo4j%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/</url>
     <content><![CDATA[<h1 id="1-neo4j集群安装"><a href="#1-neo4j集群安装" class="headerlink" title="1. neo4j集群安装"></a>1. neo4j集群安装</h1><ol start="0">
@@ -1108,6 +1161,310 @@ scp -r ./opt/neo4j-enterprise<span class="hljs-number">-3.4</span><span class="h
       <tags>
         <tag>neo4j</tag>
         <tag>图数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python打包程序移植到生产环境redhat出现的问题</title>
+    <url>/2020/04/13/python%E6%89%93%E5%8C%85%E7%A8%8B%E5%BA%8F%E7%A7%BB%E6%A4%8D%E5%88%B0%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83redhat%E5%87%BA%E7%8E%B0%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<h1 id="1-出现问题及解决"><a href="#1-出现问题及解决" class="headerlink" title="1.出现问题及解决"></a>1.出现问题及解决</h1><h2 id="1-1-python打包访问oracle数据库无instantclient相关问题"><a href="#1-1-python打包访问oracle数据库无instantclient相关问题" class="headerlink" title="1.1 python打包访问oracle数据库无instantclient相关问题"></a>1.1 python打包访问oracle数据库无instantclient相关问题</h2><h3 id="1-1-1-问题1：cx-Oracle-DatabaseError-DPI-1047-64-bit-Oracle-Client-library-cannot-be-loaded解决方法”"><a href="#1-1-1-问题1：cx-Oracle-DatabaseError-DPI-1047-64-bit-Oracle-Client-library-cannot-be-loaded解决方法”" class="headerlink" title="1.1.1 问题1：cx_Oracle.DatabaseError: DPI-1047: 64-bit Oracle Client library cannot be loaded解决方法”"></a>1.1.1 问题1：cx_Oracle.DatabaseError: DPI-1047: 64-bit Oracle Client library cannot be loaded解决方法”</h3><blockquote>
+<p>解决方法：本机安装instantclient，安装步骤如下(参考：<a href="http://www.360doc.com/content/12/1103/21/8827884_245559524.shtml">http://www.360doc.com/content/12/1103/21/8827884_245559524.shtml</a>)</p>
+</blockquote>
+<ul>
+<li>第一步，先安装Oracle客户端，结合你的情况自己找合适的版本，我下载的是 oracle-instantclient11.2-basic-11.2.0.3.0-1.x86_64.rpm<br>下载地址为（<a href="http://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html%EF%BC%89">http://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html）</a></li>
+</ul>
+<pre><code class="hljs apache"><span class="hljs-attribute">rpm</span> -ivh oracle-instantclient<span class="hljs-number">11</span>.<span class="hljs-number">2</span>-basic-<span class="hljs-number">11.2.0.3</span>.<span class="hljs-number">0</span>-<span class="hljs-number">1</span>.x<span class="hljs-number">86</span>_<span class="hljs-number">64</span>.rpm</code></pre>
+
+<ul>
+<li><p>第二步，找出你的ORACLE_HOME，我安装之后在这里：/usr/lib/oracle/11.2/client64/lib/</p>
+</li>
+<li><p>第三步，下载oracle-instantclient11.2-sdk-11.2.0.1.0-1.x86_64.zip 下载地址。解压，把里面那个叫sdk的文件夹复制到 /usr/lib/oracle/11.2/client64/lib/</p>
+</li>
+<li><p>第四步，做一个软链：</p>
+<pre><code class="hljs crystal">$ cd /usr/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">oracle</span>/11.2/<span class="hljs-title">client64</span>/<span class="hljs-title">lib</span>/</span>
+$ ln -s libclntsh.so.<span class="hljs-number">11.1</span> libclntsh.so</code></pre></li>
+<li><p>第五步，安装cx_Oracle:</p>
+<pre><code class="hljs crystal">$ export ORACLE_HOME=<span class="hljs-regexp">/usr/lib</span><span class="hljs-regexp">/oracle/</span><span class="hljs-number">11.2</span>/client64/<span class="hljs-class"><span class="hljs-keyword">lib</span></span>
+$ export LD_LIBRARY_PATH=$<span class="hljs-symbol">LD_LIBRARY_PATH:</span>$ORACLE_HOME
+$ easy_install cx_Oracle</code></pre></li>
+<li><p>试一下：</p>
+<pre><code class="hljs elixir"><span class="hljs-variable">$ </span>python
+<span class="hljs-variable">$ </span><span class="hljs-keyword">import</span> cx_Oracle</code></pre>
+<p>  done.</p>
+</li>
+<li><p>不过还没配环境变量，一退再进去就不行了，在.bashrc里加入刚才安装之前的那两句：</p>
+</li>
+</ul>
+<pre><code class="hljs crystal">$cd vim ~<span class="hljs-regexp">/.bashrc</span>
+<span class="hljs-regexp">export ORACLE_HOME=/usr</span><span class="hljs-regexp">/lib/oracle</span><span class="hljs-regexp">/11.2/client</span>64/<span class="hljs-class"><span class="hljs-keyword">lib</span></span>
+export LD_LIBRARY_PATH=$<span class="hljs-symbol">LD_LIBRARY_PATH:</span>$ORACLE_HOME
+
+source ~<span class="hljs-regexp">/.bashrc</span></code></pre>
+
+<h3 id="1-1-2-问题2：上述问题解决后出现“cx-Oracle-DatabaseError-Error-while-trying-to-retrieve-text-for-error-ORA-01804”问题"><a href="#1-1-2-问题2：上述问题解决后出现“cx-Oracle-DatabaseError-Error-while-trying-to-retrieve-text-for-error-ORA-01804”问题" class="headerlink" title="1.1.2 问题2：上述问题解决后出现“cx_Oracle.DatabaseError: Error while trying to retrieve text for error ORA-01804”问题"></a>1.1.2 问题2：上述问题解决后出现“cx_Oracle.DatabaseError: Error while trying to retrieve text for error ORA-01804”问题</h3><blockquote>
+<p>解决方法（参考“<a href="https://blog.csdn.net/zklth/article/details/7184032%EF%BC%89%E2%80%9D%EF%BC%9A">https://blog.csdn.net/zklth/article/details/7184032）”：</a></p>
+</blockquote>
+<pre><code class="hljs dart">注释掉
+os.environ[<span class="hljs-string">&quot;LD_LIBRARY_PATH&quot;</span>] = <span class="hljs-string">&#x27;<span class="hljs-subst">$LD_LIBRARY_PATH</span>:<span class="hljs-subst">$ORACLE_HOME</span>:<span class="hljs-subst">$ORACLE_HOME</span>&#x27;</span></code></pre>
+<blockquote>
+<p>出现新问题 “cx_Oracle连接数据库错误ORA-21561: 生成 OID 失败”</p>
+</blockquote>
+<blockquote>
+<p>解决方法:参考“<a href="https://www.rookiefly.cn/detail/161%E2%80%9D">https://www.rookiefly.cn/detail/161”</a></p>
+</blockquote>
+<pre><code class="hljs accesslog">修改本机hostname名称，然后终于成功
+cat /etc/hosts  
+<span class="hljs-number">127.0.0.1</span>   localhost redhat6
+::<span class="hljs-number">1</span>         localhost redhat6</code></pre>
+<h2 id="1-1-3-问题3：数据库可以访问后出现-“from-numpy-testing-import-nosetester-ImportError-cannot-import-name-‘nosetester’”问题"><a href="#1-1-3-问题3：数据库可以访问后出现-“from-numpy-testing-import-nosetester-ImportError-cannot-import-name-‘nosetester’”问题" class="headerlink" title="1.1.3 问题3：数据库可以访问后出现 “from numpy.testing import nosetester  ImportError: cannot import name ‘nosetester’”问题"></a>1.1.3 问题3：数据库可以访问后出现 “from numpy.testing import nosetester  ImportError: cannot import name ‘nosetester’”问题</h2><blockquote>
+<p>问题原因：当前安装在python3.5.2的numpy版本和pandas版本冲突，修改版本<br>可用版本: </p>
+</blockquote>
+<pre><code class="hljs apache"><span class="hljs-attribute">numpy</span> (<span class="hljs-number">1</span>.<span class="hljs-number">11</span>.<span class="hljs-number">1</span>)
+<span class="hljs-attribute">pandas</span> (<span class="hljs-number">0</span>.<span class="hljs-number">18</span>.<span class="hljs-number">1</span>)</code></pre>
+<h2 id="1-1-4-问题4：打包报错“-File-“sklearn-metrics-pairwise-fast-pyx”-line-1-in-init-sklearn-metrics-pairwise-fast-ImportError-No-module-named-‘sklearn-utils-cython-blas’”"><a href="#1-1-4-问题4：打包报错“-File-“sklearn-metrics-pairwise-fast-pyx”-line-1-in-init-sklearn-metrics-pairwise-fast-ImportError-No-module-named-‘sklearn-utils-cython-blas’”" class="headerlink" title="1.1.4 问题4：打包报错“ File “sklearn/metrics/pairwise_fast.pyx”, line 1, in init sklearn.metrics.pairwise_fast ImportError: No module named ‘sklearn.utils._cython_blas’”"></a>1.1.4 问题4：打包报错“ File “sklearn/metrics/pairwise_fast.pyx”, line 1, in init sklearn.metrics.pairwise_fast ImportError: No module named ‘sklearn.utils._cython_blas’”</h2><blockquote>
+<p>问题原因：打包的时候无法自动加入sklearn包，手动添加即可</p>
+</blockquote>
+<blockquote>
+<p>解决方法：在main.spec中的hiddenimports属性中手动添加</p>
+</blockquote>
+<pre><code class="hljs sml">hiddenimports=[<span class="hljs-symbol">&#x27;cython&#x27;</span>,  <span class="hljs-symbol">&#x27;sklearn&#x27;</span>, <span class="hljs-symbol">&#x27;sklearn</span>.utils._cython_blas&#x27;,<span class="hljs-symbol">&#x27;sklearn</span>.neighbors.typedefs&#x27;,
+           <span class="hljs-symbol">&#x27;sklearn</span>.neighbors.quad_tree&#x27;,<span class="hljs-symbol">&#x27;sklearn</span>.tree&#x27;,<span class="hljs-symbol">&#x27;sklearn</span>.tree._utils&#x27;],</code></pre>
+
+<h2 id="1-1-5-问题5：打包后运行然后又报问题2，“cx-Oracle-DatabaseError-Error-while-trying-to-retrieve-text-for-error-ORA-01804”"><a href="#1-1-5-问题5：打包后运行然后又报问题2，“cx-Oracle-DatabaseError-Error-while-trying-to-retrieve-text-for-error-ORA-01804”" class="headerlink" title="1.1.5 问题5：打包后运行然后又报问题2，“cx_Oracle.DatabaseError: Error while trying to retrieve text for error ORA-01804”"></a>1.1.5 问题5：打包后运行然后又报问题2，“cx_Oracle.DatabaseError: Error while trying to retrieve text for error ORA-01804”</h2><blockquote>
+<p>问题原因：缺少相关的oracle包</p>
+</blockquote>
+<blockquote>
+<p>解决方法: 在main.spec中添加：</p>
+</blockquote>
+<pre><code class="hljs stylus"><span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> = <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> + [(<span class="hljs-string">&#x27;libclntsh.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libclntsh.so.11.1&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
+<span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> = <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> + [(<span class="hljs-string">&#x27;libnnz11.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libnnz11.so&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
+<span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> = <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> + [(<span class="hljs-string">&#x27;libocci.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libocci.so.11.1&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
+<span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> = <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> + [(<span class="hljs-string">&#x27;libociicus.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libociicus.so&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]</code></pre>
+
+<h2 id="1-1-6-问题6：添加上述包之后出现“Oracle-returned-an-error-ORA-12737-Instant-Client-Light-unsupported-server-character-set-SIMPLIFIED-CHINESE-CHINA-UTF8-”"><a href="#1-1-6-问题6：添加上述包之后出现“Oracle-returned-an-error-ORA-12737-Instant-Client-Light-unsupported-server-character-set-SIMPLIFIED-CHINESE-CHINA-UTF8-”" class="headerlink" title="1.1.6 问题6：添加上述包之后出现“Oracle returned an error. ORA-12737: Instant Client Light: unsupported server character set SIMPLIFIED CHINESE_CHINA.UTF8 ”"></a>1.1.6 问题6：添加上述包之后出现“Oracle returned an error. ORA-12737: Instant Client Light: unsupported server character set SIMPLIFIED CHINESE_CHINA.UTF8 ”</h2><blockquote>
+<p>问题原因： 见（<a href="https://thwack.solarwinds.com/t5/SAM-Discussions/Oracle-returned-an-error-ORA-12737-Instant-Client-Light/td-p/356034%EF%BC%89">https://thwack.solarwinds.com/t5/SAM-Discussions/Oracle-returned-an-error-ORA-12737-Instant-Client-Light/td-p/356034）</a><br>或<a href="https://www.cnblogs.com/chenjianhong/p/4144399.html">https://www.cnblogs.com/chenjianhong/p/4144399.html</a></p>
+</blockquote>
+<p>在Instant Client Light中，语言只能是美国语言，地区可以是任何受支持的地区，字符集可以是以下任意一项：</p>
+<p>＆＃9632; 单字节</p>
+<p>US7ASCII<br>WE8DEC<br>WE8MSWIN1252<br>WE8ISO8859P1<br>＆＃9632; 统一码</p>
+<p>UTF8<br>AL16UTF16<br>AL32UTF8<br>指定除列出为客户端或服务器字符集的字符集或国家字符集以外的字符集或国家字符集，或者在客户端上以NLS_LANG设置语言时，将引发以下错误之一：</p>
+<ul>
+<li>＆＃9632; ORA-12734</li>
+<li>＆＃9632; ORA-12735</li>
+<li>＆＃9632; ORA-12736</li>
+<li>＆＃9632; ORA-12737</li>
+</ul>
+<p>使用Instant Client Light，获得的错误消息仅是英文的。因此，NLS_LANG设置的有效值的类型为：American_territory.characterset ，其中，region可以是任何有效且受支持的领域，并且characterset可以</p>
+<p>可以是前面列出的任何字符集。Instant Client Light可以与在OCI_UTF16模式下创建的OCI环境句柄一起使用。</p>
+<blockquote>
+<p>解决方法：<br>修改文字编码：</p>
+</blockquote>
+<pre><code class="hljs lua">将<span class="hljs-built_in">os</span>.environ[<span class="hljs-string">&#x27;NLS_LANG&#x27;</span>] = <span class="hljs-string">&#x27;SIMPLIFIED CHINESE_CHINA.UTF8&#x27;</span>  修改为<span class="hljs-built_in">os</span>.environ[<span class="hljs-string">&#x27;NLS_LANG&#x27;</span>] = <span class="hljs-string">&#x27;AMERICAN_AMERICA.AL32UTF8&#x27;</span></code></pre>
+
+<h1 id="2-最终打包成功样例"><a href="#2-最终打包成功样例" class="headerlink" title="2.最终打包成功样例"></a>2.最终打包成功样例</h1><h2 id="步骤0：下载oracle客户端驱动文件"><a href="#步骤0：下载oracle客户端驱动文件" class="headerlink" title="步骤0：下载oracle客户端驱动文件"></a>步骤0：下载oracle客户端驱动文件</h2><pre><code class="hljs apache"><span class="hljs-attribute">instantclient</span>-sdk-linux.x<span class="hljs-number">64</span>-<span class="hljs-number">11.2.0.4</span>.<span class="hljs-number">0</span>_<span class="hljs-number">2</span>
+<span class="hljs-attribute">instantclient</span>-basic-linux.x<span class="hljs-number">64</span>-<span class="hljs-number">11.2.0.4</span>.<span class="hljs-number">0</span>
+<span class="hljs-comment"># basic中要包含libclntsh.so，libnnz11.so，libocci.so，libociicus.so这四个文件</span>
+<span class="hljs-comment"># 如果没有从instantclient-basiclite-linux.x64-11.2.0.4.0包中找</span>
+<span class="hljs-comment"># 官方下载链接“https://www.oracle.com/database/technologies/instant-client/downloads.html”</span></code></pre>
+<h2 id="步骤1-添加依赖链接在main-spec中"><a href="#步骤1-添加依赖链接在main-spec中" class="headerlink" title="步骤1:添加依赖链接在main.spec中"></a>步骤1:添加依赖链接在main.spec中</h2><pre><code class="hljs routeros">main.spec： pyinstaller打包的说明文件，里面编写一些打包的时候手动添加的文件
+
+<span class="hljs-comment"># -*- mode: python ; coding: utf-8 -*-</span>
+
+block_cipher = None
+
+a = Analysis([<span class="hljs-string">&#x27;main.py&#x27;</span>],
+             pathex=[<span class="hljs-string">&#x27;/home/redhat/Desktop/monthPredict&#x27;</span>],
+             datas=[],
+             hiddenimports=[<span class="hljs-string">&#x27;cython&#x27;</span>,  <span class="hljs-string">&#x27;sklearn&#x27;</span>, <span class="hljs-string">&#x27;sklearn.utils._cython_blas&#x27;</span>,<span class="hljs-string">&#x27;sklearn.neighbors.typedefs&#x27;</span>,
+             <span class="hljs-string">&#x27;sklearn.neighbors.quad_tree&#x27;</span>,<span class="hljs-string">&#x27;sklearn.tree&#x27;</span>,<span class="hljs-string">&#x27;sklearn.tree._utils&#x27;</span>],
+             hookspath=[],
+             runtime_hooks=[],
+             excludes=[],
+             <span class="hljs-attribute">win_no_prefer_redirects</span>=<span class="hljs-literal">False</span>,
+             <span class="hljs-attribute">win_private_assemblies</span>=<span class="hljs-literal">False</span>,
+             <span class="hljs-attribute">cipher</span>=block_cipher,
+             <span class="hljs-attribute">noarchive</span>=<span class="hljs-literal">False</span>)
+
+a.binaries = a.binaries + [(<span class="hljs-string">&#x27;libclntsh.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libclntsh.so.11.1&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
+a.binaries = a.binaries + [(<span class="hljs-string">&#x27;libnnz11.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libnnz11.so&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
+a.binaries = a.binaries + [(<span class="hljs-string">&#x27;libocci.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libocci.so.11.1&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
+a.binaries = a.binaries + [(<span class="hljs-string">&#x27;libociicus.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libociicus.so&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
+
+pyz = PYZ(a.pure, a.zipped_data,
+             <span class="hljs-attribute">cipher</span>=block_cipher)
+exe = EXE(pyz,
+          a.scripts,
+          a.binaries,
+          a.zipfiles,
+          a.datas,
+          [],
+          <span class="hljs-attribute">name</span>=<span class="hljs-string">&#x27;main&#x27;</span>,
+          <span class="hljs-attribute">debug</span>=<span class="hljs-literal">False</span>,
+          <span class="hljs-attribute">bootloader_ignore_signals</span>=<span class="hljs-literal">False</span>,
+          <span class="hljs-attribute">strip</span>=<span class="hljs-literal">False</span>,
+          <span class="hljs-attribute">upx</span>=<span class="hljs-literal">True</span>,
+          upx_exclude=[],
+          <span class="hljs-attribute">runtime_tmpdir</span>=None,
+          <span class="hljs-attribute">console</span>=<span class="hljs-literal">True</span> )
+</code></pre>
+<h2 id="步骤2：打包"><a href="#步骤2：打包" class="headerlink" title="步骤2：打包"></a>步骤2：打包</h2><pre><code class="hljs crmsh">使用 pyinstaller  main.<span class="hljs-keyword">spec</span> 命令打包</code></pre>]]></content>
+      <categories>
+        <category>工作相关</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>pyqt5使用及出现问题</title>
+    <url>/2020/09/17/pyqt5%E4%BD%BF%E7%94%A8%E5%8F%8A%E5%87%BA%E7%8E%B0%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<h1 id="1-pyqt5及qtdesigner的安装"><a href="#1-pyqt5及qtdesigner的安装" class="headerlink" title="1. pyqt5及qtdesigner的安装"></a>1. pyqt5及qtdesigner的安装</h1><h2 id="1-1-安装包"><a href="#1-1-安装包" class="headerlink" title="1.1 安装包"></a>1.1 安装包</h2><pre><code class="hljs cmake">pip <span class="hljs-keyword">install</span>  PyQt5-tools
+pip <span class="hljs-keyword">install</span> pyqt5
+pip <span class="hljs-keyword">install</span> sip</code></pre>
+
+<h2 id="1-2-配置pycharm"><a href="#1-2-配置pycharm" class="headerlink" title="1.2 配置pycharm"></a>1.2 配置pycharm</h2><ul>
+<li>报错:</li>
+</ul>
+<p><img src="/img/pyqt5%E4%BD%BF%E7%94%A8%E5%8F%8A%E5%87%BA%E7%8E%B0%E9%97%AE%E9%A2%98/1.png" alt="在这里插入图片描述"></p>
+<ul>
+<li><p>解决方法</p>
+<blockquote>
+<p>添加系统环境变量</p>
+<p>QT_QPA_PLATFORM_PLUGIN_PATH</p>
+<p>C:\ProgramData\Anaconda3\Lib\site-packages\PyQt5\Qt\plugins</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="2-使用"><a href="#2-使用" class="headerlink" title="2. 使用"></a>2. 使用</h1>]]></content>
+      <categories>
+        <category>编程语言特性相关</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+        <tag>pyqt5</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python相关</title>
+    <url>/2020/09/08/python%E7%9B%B8%E5%85%B3/</url>
+    <content><![CDATA[<h1 id="1-线程池ThreadPoolExecutor"><a href="#1-线程池ThreadPoolExecutor" class="headerlink" title="1.线程池ThreadPoolExecutor"></a>1.线程池ThreadPoolExecutor</h1><p><a href="https://www.jianshu.com/p/120b61aa4cee">https://www.jianshu.com/p/120b61aa4cee</a></p>
+<h1 id="2-装饰器"><a href="#2-装饰器" class="headerlink" title="2. 装饰器"></a>2. 装饰器</h1><p><strong>装饰器本质上是一个 Python 函数或类，它可以让其他函数或类在不需要做任何代码修改的前提下增加额外功能，装饰器的返回值也是一个函数/类对象。它经常用于有切面需求的场景，比如：插入日志、性能测试、事务处理、缓存、权限校验等场景，装饰器是解决这类问题的绝佳设计。有了装饰器，我们就可以抽离出大量与函数功能本身无关的雷同代码到装饰器中并继续重用。概括的讲，装饰器的作用就是为已经存在的对象添加额外的功能</strong>。<br>先来看一个简单例子，如果你要对多个函数进行统计运行时间，不使用装饰器会是这样的：</p>
+<pre><code class="hljs pgsql"><span class="hljs-keyword">from</span> <span class="hljs-type">time</span> <span class="hljs-keyword">import</span> <span class="hljs-type">time</span>, sleep
+
+def fun_one():
+    start = <span class="hljs-type">time</span>()
+    sleep(<span class="hljs-number">1</span>)
+    end = <span class="hljs-type">time</span>()
+    cost_time = <span class="hljs-keyword">end</span> - <span class="hljs-keyword">start</span>
+    print(&quot;func one run time &#123;&#125;&quot;.format(cost_time))
+    
+def fun_two():
+    start = <span class="hljs-type">time</span>()
+    sleep(<span class="hljs-number">1</span>)
+    end = <span class="hljs-type">time</span>()
+    cost_time = <span class="hljs-keyword">end</span> - <span class="hljs-keyword">start</span>
+    print(&quot;func two run time &#123;&#125;&quot;.format(cost_time))</code></pre>
+<p>在每个函数里都需要获取开始时间start、结束时间end、计算耗费时间cost_time、加上一个输出语句。<br>使用装饰器的方法是这样的</p>
+<p>简单装饰器</p>
+<pre><code class="hljs pgsql">def run_time(func):
+    def <span class="hljs-keyword">wrapper</span>():
+        start = <span class="hljs-type">time</span>()
+        func()                  # **函数在这里运行**
+        end = <span class="hljs-type">time</span>()
+        cost_time = <span class="hljs-keyword">end</span> - <span class="hljs-keyword">start</span>
+        print(&quot;func three run time &#123;&#125;&quot;.format(cost_time))
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">wrapper</span>
+
+@run_time
+def fun_one():
+    sleep(<span class="hljs-number">1</span>)
+    
+@run_time
+def fun_two():
+    sleep(<span class="hljs-number">1</span>)</code></pre>
+<h1 id="3-anconda升级python版本"><a href="#3-anconda升级python版本" class="headerlink" title="3.anconda升级python版本"></a>3.anconda升级python版本</h1><ul>
+<li>先查看本地镜像源，清华镜像源从2019年已经停用了，建议使用中科大的镜像源</li>
+<li>然后直接命令指定升级python版本即可，如果不升级镜像源的话可能报404或者下载速度慢</li>
+</ul>
+<h2 id="3-1-修改镜像源"><a href="#3-1-修改镜像源" class="headerlink" title="3.1 修改镜像源"></a>3.1 修改镜像源</h2><p>先查看已经安装过的镜像源，cmd窗口执行命令：</p>
+<pre><code class="hljs routeros">conda<span class="hljs-built_in"> config </span>--show</code></pre>
+<p>查看配置项channels，如果显示带有tsinghua，则说明已安装过清华镜像。</p>
+<pre><code class="hljs awk">channels:
+- https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/tensorflow/</span>linux<span class="hljs-regexp">/cpu/</span>
+- https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/anaconda/</span>cloud<span class="hljs-regexp">/msys2/</span>
+- https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/anaconda/</span>cloud<span class="hljs-regexp">/conda-forge/</span>
+- https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/anaconda/</span>pkgs<span class="hljs-regexp">/free/</span>
+- https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/anaconda/</span>cloud<span class="hljs-regexp">/pytorch/</span></code></pre>
+<p>下一步，使用<code>conda config --remove channels url地址</code>删除清华镜像，如下命令删除第一个。然后，依次删除所有镜像源</p>
+<pre><code class="hljs awk">conda config --remove channels https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/tensorflow/</span>linux<span class="hljs-regexp">/cpu/</span></code></pre>
+<p>添加目前可用的中科大镜像源：</p>
+<pre><code class="hljs awk">conda config --add channels https:<span class="hljs-regexp">//mi</span>rrors.ustc.edu.cn<span class="hljs-regexp">/anaconda/</span>pkgs<span class="hljs-regexp">/free/</span></code></pre>
+<p>并设置搜索时显示通道地址：</p>
+<pre><code class="hljs routeros">conda<span class="hljs-built_in"> config </span>--<span class="hljs-builtin-name">set</span> show_channel_urls <span class="hljs-literal">yes</span></code></pre>
+<p>确认是否安装镜像源成功，执行<code>conda config --show</code>，找到<code>channels</code>值为如下：</p>
+<pre><code class="hljs awk">channels:
+  - https:<span class="hljs-regexp">//mi</span>rrors.ustc.edu.cn<span class="hljs-regexp">/anaconda/</span>pkgs<span class="hljs-regexp">/free/</span>
+  - defaults</code></pre>
+<h2 id="3-2-升级python版本"><a href="#3-2-升级python版本" class="headerlink" title="3.2 升级python版本"></a>3.2 升级python版本</h2><p>打开Anaconda Prompt，<br>输入</p>
+<pre><code class="hljs apache"><span class="hljs-attribute">conda</span> create -n python<span class="hljs-number">36</span> python=<span class="hljs-number">3</span>.<span class="hljs-number">6</span> anaconda</code></pre>
+
+<h1 id="4-文件io"><a href="#4-文件io" class="headerlink" title="4.文件io"></a>4.文件io</h1><h2 id="4-1-文件打开方式，r-w-a-的说明"><a href="#4-1-文件打开方式，r-w-a-的说明" class="headerlink" title="4.1 文件打开方式，r/w/a/+的说明"></a>4.1 文件打开方式，r/w/a/+的说明</h2><ul>
+<li>r只读，r+读写(覆盖写)，不创建</li>
+<li>w新建只写，w+新建读写，二者都会将文件内容清零</li>
+<li>w+与r+区别：</li>
+<li><blockquote>
+<p>r+：可读可写，若文件不存在，报错；w+: 可读可写，若文件不存在，创建</p>
+</blockquote>
+</li>
+<li>a：附加写方式打开，不可读；</li>
+<li>a+: 附加读写方式打开</li>
+</ul>
+<p>#5. 代码规范性测试</p>
+<p>pylint代码规范测试</p>
+<h1 id="6-fileinput-懒惰行迭代"><a href="#6-fileinput-懒惰行迭代" class="headerlink" title="6. fileinput 懒惰行迭代"></a>6. fileinput 懒惰行迭代</h1><p>只读取实际需要的文件部分</p>
+<h1 id="7-编码规范"><a href="#7-编码规范" class="headerlink" title="7. 编码规范"></a>7. 编码规范</h1><ol>
+<li>多次使用的常量使用全大写命名，并考虑设置为全局变量</li>
+<li>创建单独的配置文件模块，保存一些配置的参数<blockquote>
+<p>简单配置或者使用configparser模块</p>
+</blockquote>
+</li>
+<li>在需要的时候使用日志记录（logging模块）</li>
+</ol>
+<h1 id="8-魔法方法理解"><a href="#8-魔法方法理解" class="headerlink" title="8.魔法方法理解"></a>8.魔法方法理解</h1><p>魔法方法是python内置方法，不需要主动调用，存在的目的是为了给python的解释器进行调用，几乎每个魔法方法都有一个对应的内置函数，或者运算符，当我们对这个对象使用这些函数或者运算符时就会调用类中的对应魔法方法，可以理解为重写内置函数</p>
+<p>实际上, 当我们调用x = SomeClass()的时候调用,__init__并不是第一个执行的, __new__才是。所以准确来说,是__new__和__init__共同构成了”构造函数”.</p>
+<p><strong>new</strong>() 是一种负责创建类实例的静态方法，它无需使用 staticmethod 装饰器修饰，且该方法会优先 <strong>init</strong>() 初始化方法被调用</p>
+<h1 id="9-正则表达式"><a href="#9-正则表达式" class="headerlink" title="9.正则表达式"></a>9.正则表达式</h1><p>##9.1 match()和search()比较</p>
+<pre><code class="hljs ruby">m = re.match(<span class="hljs-string">&#x27;foo&#x27;</span>, <span class="hljs-string">&#x27;seafood&#x27;</span>) 
+m.group()
+<span class="hljs-meta">&gt;&gt;</span>&gt; None    <span class="hljs-comment"># 匹配失败</span>
+
+m = re.search(<span class="hljs-string">&#x27;foo&#x27;</span>, <span class="hljs-string">&#x27;seafood&#x27;</span>) 
+m.group()
+<span class="hljs-meta">&gt;&gt;</span>&gt; <span class="hljs-string">&#x27;foo&#x27;</span> <span class="hljs-comment"># 搜索成功， 但是之前匹配失败</span></code></pre>
+<p>match是从字符串的起始部分开始匹配模式，把字符串当作一个整体来匹配，而search表示字符串中任意位置出现符合匹配模式的字符串，都将其提取出来。<br>##9.2  中括号（[cr][23][dp][o2]）和或运算符（r2d2|c3po）的区别</p>
+<ul>
+<li>[cr][23][dp][o2]<blockquote>
+<p>上述表示匹配由四个字符组成的类似‘ABCD’字符串，每一个字符匹配一个中括号内的两个字符中的一个</p>
+</blockquote>
+</li>
+<li>r2d2|c3po<blockquote>
+<p>上述表示匹配“r2d2”或“c3po”<br>##9.3 使用group()或groups()访问匹配组</p>
+</blockquote>
+</li>
+</ul>
+<p>pattern中每一个括号为一个匹配模式，返回的结果保存在group()中，而groups()可以查看所有的子组匹配结果（如果pattern中无括号分组模式则groups为空）。</p>
+<blockquote>
+<blockquote>
+<p>m = re.match(‘(\w\w\w)-(\d\d\d)’, ‘abc-123’)<br>m.group() # 完整匹配<br>‘abc-123’<br>m.group(1) # 子组 1<br>‘abc’<br>m.group(2) # 子组 2<br>‘123’<br>m.groups() # 全部子组<br>(‘abc’, ‘123’)</p>
+</blockquote>
+</blockquote>
+<h2 id="9-4-findall和search方法的区别"><a href="#9-4-findall和search方法的区别" class="headerlink" title="9.4 findall和search方法的区别"></a>9.4 findall和search方法的区别</h2><p>findall()查询字符串中某个正则表达式模式全部的非重复出现情况，和search类似，但是findall总是返回一个列表，<strong>当匹配失败时列表为空；当匹配成功时返回所有成功的匹配部分</strong>。</p>
+<h2 id="9-5-sub-和subn-，表示替换"><a href="#9-5-sub-和subn-，表示替换" class="headerlink" title="9.5 sub()和subn()，表示替换"></a>9.5 sub()和subn()，表示替换</h2><p>sub和subn基本一样，但是subn还返回了替换的次数。</p>
+]]></content>
+      <categories>
+        <category>编程语言特性相关</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
       </tags>
   </entry>
   <entry>
@@ -1273,130 +1630,6 @@ scp -r ./opt/neo4j-enterprise<span class="hljs-number">-3.4</span><span class="h
       </tags>
   </entry>
   <entry>
-    <title>python相关</title>
-    <url>/2020/09/08/python%E7%9B%B8%E5%85%B3/</url>
-    <content><![CDATA[<h1 id="1-线程池ThreadPoolExecutor"><a href="#1-线程池ThreadPoolExecutor" class="headerlink" title="1.线程池ThreadPoolExecutor"></a>1.线程池ThreadPoolExecutor</h1><p><a href="https://www.jianshu.com/p/120b61aa4cee">https://www.jianshu.com/p/120b61aa4cee</a></p>
-<h1 id="2-装饰器"><a href="#2-装饰器" class="headerlink" title="2. 装饰器"></a>2. 装饰器</h1><p><strong>装饰器本质上是一个 Python 函数或类，它可以让其他函数或类在不需要做任何代码修改的前提下增加额外功能，装饰器的返回值也是一个函数/类对象。它经常用于有切面需求的场景，比如：插入日志、性能测试、事务处理、缓存、权限校验等场景，装饰器是解决这类问题的绝佳设计。有了装饰器，我们就可以抽离出大量与函数功能本身无关的雷同代码到装饰器中并继续重用。概括的讲，装饰器的作用就是为已经存在的对象添加额外的功能</strong>。<br>先来看一个简单例子，如果你要对多个函数进行统计运行时间，不使用装饰器会是这样的：</p>
-<pre><code class="hljs pgsql"><span class="hljs-keyword">from</span> <span class="hljs-type">time</span> <span class="hljs-keyword">import</span> <span class="hljs-type">time</span>, sleep
-
-def fun_one():
-    start = <span class="hljs-type">time</span>()
-    sleep(<span class="hljs-number">1</span>)
-    end = <span class="hljs-type">time</span>()
-    cost_time = <span class="hljs-keyword">end</span> - <span class="hljs-keyword">start</span>
-    print(&quot;func one run time &#123;&#125;&quot;.format(cost_time))
-    
-def fun_two():
-    start = <span class="hljs-type">time</span>()
-    sleep(<span class="hljs-number">1</span>)
-    end = <span class="hljs-type">time</span>()
-    cost_time = <span class="hljs-keyword">end</span> - <span class="hljs-keyword">start</span>
-    print(&quot;func two run time &#123;&#125;&quot;.format(cost_time))</code></pre>
-<p>在每个函数里都需要获取开始时间start、结束时间end、计算耗费时间cost_time、加上一个输出语句。<br>使用装饰器的方法是这样的</p>
-<p>简单装饰器</p>
-<pre><code class="hljs pgsql">def run_time(func):
-    def <span class="hljs-keyword">wrapper</span>():
-        start = <span class="hljs-type">time</span>()
-        func()                  # **函数在这里运行**
-        end = <span class="hljs-type">time</span>()
-        cost_time = <span class="hljs-keyword">end</span> - <span class="hljs-keyword">start</span>
-        print(&quot;func three run time &#123;&#125;&quot;.format(cost_time))
-    <span class="hljs-keyword">return</span> <span class="hljs-keyword">wrapper</span>
-
-@run_time
-def fun_one():
-    sleep(<span class="hljs-number">1</span>)
-    
-@run_time
-def fun_two():
-    sleep(<span class="hljs-number">1</span>)</code></pre>
-<h1 id="3-anconda升级python版本"><a href="#3-anconda升级python版本" class="headerlink" title="3.anconda升级python版本"></a>3.anconda升级python版本</h1><ul>
-<li>先查看本地镜像源，清华镜像源从2019年已经停用了，建议使用中科大的镜像源</li>
-<li>然后直接命令指定升级python版本即可，如果不升级镜像源的话可能报404或者下载速度慢</li>
-</ul>
-<h2 id="3-1-修改镜像源"><a href="#3-1-修改镜像源" class="headerlink" title="3.1 修改镜像源"></a>3.1 修改镜像源</h2><p>先查看已经安装过的镜像源，cmd窗口执行命令：</p>
-<pre><code class="hljs routeros">conda<span class="hljs-built_in"> config </span>--show</code></pre>
-<p>查看配置项channels，如果显示带有tsinghua，则说明已安装过清华镜像。</p>
-<pre><code class="hljs awk">channels:
-- https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/tensorflow/</span>linux<span class="hljs-regexp">/cpu/</span>
-- https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/anaconda/</span>cloud<span class="hljs-regexp">/msys2/</span>
-- https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/anaconda/</span>cloud<span class="hljs-regexp">/conda-forge/</span>
-- https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/anaconda/</span>pkgs<span class="hljs-regexp">/free/</span>
-- https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/anaconda/</span>cloud<span class="hljs-regexp">/pytorch/</span></code></pre>
-<p>下一步，使用<code>conda config --remove channels url地址</code>删除清华镜像，如下命令删除第一个。然后，依次删除所有镜像源</p>
-<pre><code class="hljs awk">conda config --remove channels https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/tensorflow/</span>linux<span class="hljs-regexp">/cpu/</span></code></pre>
-<p>添加目前可用的中科大镜像源：</p>
-<pre><code class="hljs awk">conda config --add channels https:<span class="hljs-regexp">//mi</span>rrors.ustc.edu.cn<span class="hljs-regexp">/anaconda/</span>pkgs<span class="hljs-regexp">/free/</span></code></pre>
-<p>并设置搜索时显示通道地址：</p>
-<pre><code class="hljs routeros">conda<span class="hljs-built_in"> config </span>--<span class="hljs-builtin-name">set</span> show_channel_urls <span class="hljs-literal">yes</span></code></pre>
-<p>确认是否安装镜像源成功，执行<code>conda config --show</code>，找到<code>channels</code>值为如下：</p>
-<pre><code class="hljs awk">channels:
-  - https:<span class="hljs-regexp">//mi</span>rrors.ustc.edu.cn<span class="hljs-regexp">/anaconda/</span>pkgs<span class="hljs-regexp">/free/</span>
-  - defaults</code></pre>
-<h2 id="3-2-升级python版本"><a href="#3-2-升级python版本" class="headerlink" title="3.2 升级python版本"></a>3.2 升级python版本</h2><p>打开Anaconda Prompt，<br>输入</p>
-<pre><code class="hljs apache"><span class="hljs-attribute">conda</span> create -n python<span class="hljs-number">36</span> python=<span class="hljs-number">3</span>.<span class="hljs-number">6</span> anaconda</code></pre>
-
-<h1 id="4-文件io"><a href="#4-文件io" class="headerlink" title="4.文件io"></a>4.文件io</h1><h2 id="4-1-文件打开方式，r-w-a-的说明"><a href="#4-1-文件打开方式，r-w-a-的说明" class="headerlink" title="4.1 文件打开方式，r/w/a/+的说明"></a>4.1 文件打开方式，r/w/a/+的说明</h2><ul>
-<li>r只读，r+读写(覆盖写)，不创建</li>
-<li>w新建只写，w+新建读写，二者都会将文件内容清零</li>
-<li>w+与r+区别：</li>
-<li><blockquote>
-<p>r+：可读可写，若文件不存在，报错；w+: 可读可写，若文件不存在，创建</p>
-</blockquote>
-</li>
-<li>a：附加写方式打开，不可读；</li>
-<li>a+: 附加读写方式打开</li>
-</ul>
-<p>#5. 代码规范性测试</p>
-<p>pylint代码规范测试</p>
-<h1 id="6-fileinput-懒惰行迭代"><a href="#6-fileinput-懒惰行迭代" class="headerlink" title="6. fileinput 懒惰行迭代"></a>6. fileinput 懒惰行迭代</h1><p>只读取实际需要的文件部分</p>
-<h1 id="7-编码规范"><a href="#7-编码规范" class="headerlink" title="7. 编码规范"></a>7. 编码规范</h1><ol>
-<li>多次使用的常量使用全大写命名，并考虑设置为全局变量</li>
-<li>创建单独的配置文件模块，保存一些配置的参数<blockquote>
-<p>简单配置或者使用configparser模块</p>
-</blockquote>
-</li>
-<li>在需要的时候使用日志记录（logging模块）</li>
-</ol>
-<h1 id="8-魔法方法理解"><a href="#8-魔法方法理解" class="headerlink" title="8.魔法方法理解"></a>8.魔法方法理解</h1><p>魔法方法是python内置方法，不需要主动调用，存在的目的是为了给python的解释器进行调用，几乎每个魔法方法都有一个对应的内置函数，或者运算符，当我们对这个对象使用这些函数或者运算符时就会调用类中的对应魔法方法，可以理解为重写内置函数</p>
-<p>实际上, 当我们调用x = SomeClass()的时候调用,__init__并不是第一个执行的, __new__才是。所以准确来说,是__new__和__init__共同构成了”构造函数”.</p>
-<p><strong>new</strong>() 是一种负责创建类实例的静态方法，它无需使用 staticmethod 装饰器修饰，且该方法会优先 <strong>init</strong>() 初始化方法被调用</p>
-<h1 id="9-正则表达式"><a href="#9-正则表达式" class="headerlink" title="9.正则表达式"></a>9.正则表达式</h1><p>##9.1 match()和search()比较</p>
-<pre><code class="hljs ruby">m = re.match(<span class="hljs-string">&#x27;foo&#x27;</span>, <span class="hljs-string">&#x27;seafood&#x27;</span>) 
-m.group()
-<span class="hljs-meta">&gt;&gt;</span>&gt; None    <span class="hljs-comment"># 匹配失败</span>
-
-m = re.search(<span class="hljs-string">&#x27;foo&#x27;</span>, <span class="hljs-string">&#x27;seafood&#x27;</span>) 
-m.group()
-<span class="hljs-meta">&gt;&gt;</span>&gt; <span class="hljs-string">&#x27;foo&#x27;</span> <span class="hljs-comment"># 搜索成功， 但是之前匹配失败</span></code></pre>
-<p>match是从字符串的起始部分开始匹配模式，把字符串当作一个整体来匹配，而search表示字符串中任意位置出现符合匹配模式的字符串，都将其提取出来。<br>##9.2  中括号（[cr][23][dp][o2]）和或运算符（r2d2|c3po）的区别</p>
-<ul>
-<li>[cr][23][dp][o2]<blockquote>
-<p>上述表示匹配由四个字符组成的类似‘ABCD’字符串，每一个字符匹配一个中括号内的两个字符中的一个</p>
-</blockquote>
-</li>
-<li>r2d2|c3po<blockquote>
-<p>上述表示匹配“r2d2”或“c3po”<br>##9.3 使用group()或groups()访问匹配组</p>
-</blockquote>
-</li>
-</ul>
-<p>pattern中每一个括号为一个匹配模式，返回的结果保存在group()中，而groups()可以查看所有的子组匹配结果（如果pattern中无括号分组模式则groups为空）。</p>
-<blockquote>
-<blockquote>
-<p>m = re.match(‘(\w\w\w)-(\d\d\d)’, ‘abc-123’)<br>m.group() # 完整匹配<br>‘abc-123’<br>m.group(1) # 子组 1<br>‘abc’<br>m.group(2) # 子组 2<br>‘123’<br>m.groups() # 全部子组<br>(‘abc’, ‘123’)</p>
-</blockquote>
-</blockquote>
-<h2 id="9-4-findall和search方法的区别"><a href="#9-4-findall和search方法的区别" class="headerlink" title="9.4 findall和search方法的区别"></a>9.4 findall和search方法的区别</h2><p>findall()查询字符串中某个正则表达式模式全部的非重复出现情况，和search类似，但是findall总是返回一个列表，<strong>当匹配失败时列表为空；当匹配成功时返回所有成功的匹配部分</strong>。</p>
-<h2 id="9-5-sub-和subn-，表示替换"><a href="#9-5-sub-和subn-，表示替换" class="headerlink" title="9.5 sub()和subn()，表示替换"></a>9.5 sub()和subn()，表示替换</h2><p>sub和subn基本一样，但是subn还返回了替换的次数。</p>
-]]></content>
-      <categories>
-        <category>编程语言特性相关</category>
-      </categories>
-      <tags>
-        <tag>python</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>从0开始学大数据笔记</title>
     <url>/2019/12/25/%E4%BB%8E0%E5%BC%80%E5%A7%8B%E5%AD%A6%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<h1 id="1-感想"><a href="#1-感想" class="headerlink" title="1.感想"></a>1.感想</h1><p>融会贯通</p>
@@ -1509,154 +1742,90 @@ m.group()
       </tags>
   </entry>
   <entry>
-    <title>python打包程序移植到生产环境redhat出现的问题</title>
-    <url>/2020/04/13/python%E6%89%93%E5%8C%85%E7%A8%8B%E5%BA%8F%E7%A7%BB%E6%A4%8D%E5%88%B0%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83redhat%E5%87%BA%E7%8E%B0%E7%9A%84%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<h1 id="1-出现问题及解决"><a href="#1-出现问题及解决" class="headerlink" title="1.出现问题及解决"></a>1.出现问题及解决</h1><h2 id="1-1-python打包访问oracle数据库无instantclient相关问题"><a href="#1-1-python打包访问oracle数据库无instantclient相关问题" class="headerlink" title="1.1 python打包访问oracle数据库无instantclient相关问题"></a>1.1 python打包访问oracle数据库无instantclient相关问题</h2><h3 id="1-1-1-问题1：cx-Oracle-DatabaseError-DPI-1047-64-bit-Oracle-Client-library-cannot-be-loaded解决方法”"><a href="#1-1-1-问题1：cx-Oracle-DatabaseError-DPI-1047-64-bit-Oracle-Client-library-cannot-be-loaded解决方法”" class="headerlink" title="1.1.1 问题1：cx_Oracle.DatabaseError: DPI-1047: 64-bit Oracle Client library cannot be loaded解决方法”"></a>1.1.1 问题1：cx_Oracle.DatabaseError: DPI-1047: 64-bit Oracle Client library cannot be loaded解决方法”</h3><blockquote>
-<p>解决方法：本机安装instantclient，安装步骤如下(参考：<a href="http://www.360doc.com/content/12/1103/21/8827884_245559524.shtml">http://www.360doc.com/content/12/1103/21/8827884_245559524.shtml</a>)</p>
-</blockquote>
-<ul>
-<li>第一步，先安装Oracle客户端，结合你的情况自己找合适的版本，我下载的是 oracle-instantclient11.2-basic-11.2.0.3.0-1.x86_64.rpm<br>下载地址为（<a href="http://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html%EF%BC%89">http://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html）</a></li>
+    <title>图解十大经典的机器学习算法（转自网络）</title>
+    <url>/2018/11/29/%E5%9B%BE%E8%A7%A3%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><ul>
+<li>决策树</li>
+<li>随机森林</li>
+<li>逻辑回归</li>
+<li>SVM</li>
+<li>bayes</li>
+<li>Knn</li>
+<li>k-means</li>
+<li>Adaboost</li>
+<li>神经网络</li>
+<li>HMM</li>
 </ul>
-<pre><code class="hljs apache"><span class="hljs-attribute">rpm</span> -ivh oracle-instantclient<span class="hljs-number">11</span>.<span class="hljs-number">2</span>-basic-<span class="hljs-number">11.2.0.3</span>.<span class="hljs-number">0</span>-<span class="hljs-number">1</span>.x<span class="hljs-number">86</span>_<span class="hljs-number">64</span>.rpm</code></pre>
+<a id="more"></a>
 
-<ul>
-<li><p>第二步，找出你的ORACLE_HOME，我安装之后在这里：/usr/lib/oracle/11.2/client64/lib/</p>
-</li>
-<li><p>第三步，下载oracle-instantclient11.2-sdk-11.2.0.1.0-1.x86_64.zip 下载地址。解压，把里面那个叫sdk的文件夹复制到 /usr/lib/oracle/11.2/client64/lib/</p>
-</li>
-<li><p>第四步，做一个软链：</p>
-<pre><code class="hljs crystal">$ cd /usr/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">oracle</span>/11.2/<span class="hljs-title">client64</span>/<span class="hljs-title">lib</span>/</span>
-$ ln -s libclntsh.so.<span class="hljs-number">11.1</span> libclntsh.so</code></pre></li>
-<li><p>第五步，安装cx_Oracle:</p>
-<pre><code class="hljs crystal">$ export ORACLE_HOME=<span class="hljs-regexp">/usr/lib</span><span class="hljs-regexp">/oracle/</span><span class="hljs-number">11.2</span>/client64/<span class="hljs-class"><span class="hljs-keyword">lib</span></span>
-$ export LD_LIBRARY_PATH=$<span class="hljs-symbol">LD_LIBRARY_PATH:</span>$ORACLE_HOME
-$ easy_install cx_Oracle</code></pre></li>
-<li><p>试一下：</p>
-<pre><code class="hljs elixir"><span class="hljs-variable">$ </span>python
-<span class="hljs-variable">$ </span><span class="hljs-keyword">import</span> cx_Oracle</code></pre>
-<p>  done.</p>
-</li>
-<li><p>不过还没配环境变量，一退再进去就不行了，在.bashrc里加入刚才安装之前的那两句：</p>
-</li>
-</ul>
-<pre><code class="hljs crystal">$cd vim ~<span class="hljs-regexp">/.bashrc</span>
-<span class="hljs-regexp">export ORACLE_HOME=/usr</span><span class="hljs-regexp">/lib/oracle</span><span class="hljs-regexp">/11.2/client</span>64/<span class="hljs-class"><span class="hljs-keyword">lib</span></span>
-export LD_LIBRARY_PATH=$<span class="hljs-symbol">LD_LIBRARY_PATH:</span>$ORACLE_HOME
-
-source ~<span class="hljs-regexp">/.bashrc</span></code></pre>
-
-<h3 id="1-1-2-问题2：上述问题解决后出现“cx-Oracle-DatabaseError-Error-while-trying-to-retrieve-text-for-error-ORA-01804”问题"><a href="#1-1-2-问题2：上述问题解决后出现“cx-Oracle-DatabaseError-Error-while-trying-to-retrieve-text-for-error-ORA-01804”问题" class="headerlink" title="1.1.2 问题2：上述问题解决后出现“cx_Oracle.DatabaseError: Error while trying to retrieve text for error ORA-01804”问题"></a>1.1.2 问题2：上述问题解决后出现“cx_Oracle.DatabaseError: Error while trying to retrieve text for error ORA-01804”问题</h3><blockquote>
-<p>解决方法（参考“<a href="https://blog.csdn.net/zklth/article/details/7184032%EF%BC%89%E2%80%9D%EF%BC%9A">https://blog.csdn.net/zklth/article/details/7184032）”：</a></p>
-</blockquote>
-<pre><code class="hljs dart">注释掉
-os.environ[<span class="hljs-string">&quot;LD_LIBRARY_PATH&quot;</span>] = <span class="hljs-string">&#x27;<span class="hljs-subst">$LD_LIBRARY_PATH</span>:<span class="hljs-subst">$ORACLE_HOME</span>:<span class="hljs-subst">$ORACLE_HOME</span>&#x27;</span></code></pre>
-<blockquote>
-<p>出现新问题 “cx_Oracle连接数据库错误ORA-21561: 生成 OID 失败”</p>
-</blockquote>
-<blockquote>
-<p>解决方法:参考“<a href="https://www.rookiefly.cn/detail/161%E2%80%9D">https://www.rookiefly.cn/detail/161”</a></p>
-</blockquote>
-<pre><code class="hljs accesslog">修改本机hostname名称，然后终于成功
-cat /etc/hosts  
-<span class="hljs-number">127.0.0.1</span>   localhost redhat6
-::<span class="hljs-number">1</span>         localhost redhat6</code></pre>
-<h2 id="1-1-3-问题3：数据库可以访问后出现-“from-numpy-testing-import-nosetester-ImportError-cannot-import-name-‘nosetester’”问题"><a href="#1-1-3-问题3：数据库可以访问后出现-“from-numpy-testing-import-nosetester-ImportError-cannot-import-name-‘nosetester’”问题" class="headerlink" title="1.1.3 问题3：数据库可以访问后出现 “from numpy.testing import nosetester  ImportError: cannot import name ‘nosetester’”问题"></a>1.1.3 问题3：数据库可以访问后出现 “from numpy.testing import nosetester  ImportError: cannot import name ‘nosetester’”问题</h2><blockquote>
-<p>问题原因：当前安装在python3.5.2的numpy版本和pandas版本冲突，修改版本<br>可用版本: </p>
-</blockquote>
-<pre><code class="hljs apache"><span class="hljs-attribute">numpy</span> (<span class="hljs-number">1</span>.<span class="hljs-number">11</span>.<span class="hljs-number">1</span>)
-<span class="hljs-attribute">pandas</span> (<span class="hljs-number">0</span>.<span class="hljs-number">18</span>.<span class="hljs-number">1</span>)</code></pre>
-<h2 id="1-1-4-问题4：打包报错“-File-“sklearn-metrics-pairwise-fast-pyx”-line-1-in-init-sklearn-metrics-pairwise-fast-ImportError-No-module-named-‘sklearn-utils-cython-blas’”"><a href="#1-1-4-问题4：打包报错“-File-“sklearn-metrics-pairwise-fast-pyx”-line-1-in-init-sklearn-metrics-pairwise-fast-ImportError-No-module-named-‘sklearn-utils-cython-blas’”" class="headerlink" title="1.1.4 问题4：打包报错“ File “sklearn/metrics/pairwise_fast.pyx”, line 1, in init sklearn.metrics.pairwise_fast ImportError: No module named ‘sklearn.utils._cython_blas’”"></a>1.1.4 问题4：打包报错“ File “sklearn/metrics/pairwise_fast.pyx”, line 1, in init sklearn.metrics.pairwise_fast ImportError: No module named ‘sklearn.utils._cython_blas’”</h2><blockquote>
-<p>问题原因：打包的时候无法自动加入sklearn包，手动添加即可</p>
-</blockquote>
-<blockquote>
-<p>解决方法：在main.spec中的hiddenimports属性中手动添加</p>
-</blockquote>
-<pre><code class="hljs sml">hiddenimports=[<span class="hljs-symbol">&#x27;cython&#x27;</span>,  <span class="hljs-symbol">&#x27;sklearn&#x27;</span>, <span class="hljs-symbol">&#x27;sklearn</span>.utils._cython_blas&#x27;,<span class="hljs-symbol">&#x27;sklearn</span>.neighbors.typedefs&#x27;,
-           <span class="hljs-symbol">&#x27;sklearn</span>.neighbors.quad_tree&#x27;,<span class="hljs-symbol">&#x27;sklearn</span>.tree&#x27;,<span class="hljs-symbol">&#x27;sklearn</span>.tree._utils&#x27;],</code></pre>
-
-<h2 id="1-1-5-问题5：打包后运行然后又报问题2，“cx-Oracle-DatabaseError-Error-while-trying-to-retrieve-text-for-error-ORA-01804”"><a href="#1-1-5-问题5：打包后运行然后又报问题2，“cx-Oracle-DatabaseError-Error-while-trying-to-retrieve-text-for-error-ORA-01804”" class="headerlink" title="1.1.5 问题5：打包后运行然后又报问题2，“cx_Oracle.DatabaseError: Error while trying to retrieve text for error ORA-01804”"></a>1.1.5 问题5：打包后运行然后又报问题2，“cx_Oracle.DatabaseError: Error while trying to retrieve text for error ORA-01804”</h2><blockquote>
-<p>问题原因：缺少相关的oracle包</p>
-</blockquote>
-<blockquote>
-<p>解决方法: 在main.spec中添加：</p>
-</blockquote>
-<pre><code class="hljs stylus"><span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> = <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> + [(<span class="hljs-string">&#x27;libclntsh.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libclntsh.so.11.1&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
-<span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> = <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> + [(<span class="hljs-string">&#x27;libnnz11.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libnnz11.so&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
-<span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> = <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> + [(<span class="hljs-string">&#x27;libocci.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libocci.so.11.1&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
-<span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> = <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> + [(<span class="hljs-string">&#x27;libociicus.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libociicus.so&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]</code></pre>
-
-<h2 id="1-1-6-问题6：添加上述包之后出现“Oracle-returned-an-error-ORA-12737-Instant-Client-Light-unsupported-server-character-set-SIMPLIFIED-CHINESE-CHINA-UTF8-”"><a href="#1-1-6-问题6：添加上述包之后出现“Oracle-returned-an-error-ORA-12737-Instant-Client-Light-unsupported-server-character-set-SIMPLIFIED-CHINESE-CHINA-UTF8-”" class="headerlink" title="1.1.6 问题6：添加上述包之后出现“Oracle returned an error. ORA-12737: Instant Client Light: unsupported server character set SIMPLIFIED CHINESE_CHINA.UTF8 ”"></a>1.1.6 问题6：添加上述包之后出现“Oracle returned an error. ORA-12737: Instant Client Light: unsupported server character set SIMPLIFIED CHINESE_CHINA.UTF8 ”</h2><blockquote>
-<p>问题原因： 见（<a href="https://thwack.solarwinds.com/t5/SAM-Discussions/Oracle-returned-an-error-ORA-12737-Instant-Client-Light/td-p/356034%EF%BC%89">https://thwack.solarwinds.com/t5/SAM-Discussions/Oracle-returned-an-error-ORA-12737-Instant-Client-Light/td-p/356034）</a><br>或<a href="https://www.cnblogs.com/chenjianhong/p/4144399.html">https://www.cnblogs.com/chenjianhong/p/4144399.html</a></p>
-</blockquote>
-<p>在Instant Client Light中，语言只能是美国语言，地区可以是任何受支持的地区，字符集可以是以下任意一项：</p>
-<p>＆＃9632; 单字节</p>
-<p>US7ASCII<br>WE8DEC<br>WE8MSWIN1252<br>WE8ISO8859P1<br>＆＃9632; 统一码</p>
-<p>UTF8<br>AL16UTF16<br>AL32UTF8<br>指定除列出为客户端或服务器字符集的字符集或国家字符集以外的字符集或国家字符集，或者在客户端上以NLS_LANG设置语言时，将引发以下错误之一：</p>
-<ul>
-<li>＆＃9632; ORA-12734</li>
-<li>＆＃9632; ORA-12735</li>
-<li>＆＃9632; ORA-12736</li>
-<li>＆＃9632; ORA-12737</li>
-</ul>
-<p>使用Instant Client Light，获得的错误消息仅是英文的。因此，NLS_LANG设置的有效值的类型为：American_territory.characterset ，其中，region可以是任何有效且受支持的领域，并且characterset可以</p>
-<p>可以是前面列出的任何字符集。Instant Client Light可以与在OCI_UTF16模式下创建的OCI环境句柄一起使用。</p>
-<blockquote>
-<p>解决方法：<br>修改文字编码：</p>
-</blockquote>
-<pre><code class="hljs lua">将<span class="hljs-built_in">os</span>.environ[<span class="hljs-string">&#x27;NLS_LANG&#x27;</span>] = <span class="hljs-string">&#x27;SIMPLIFIED CHINESE_CHINA.UTF8&#x27;</span>  修改为<span class="hljs-built_in">os</span>.environ[<span class="hljs-string">&#x27;NLS_LANG&#x27;</span>] = <span class="hljs-string">&#x27;AMERICAN_AMERICA.AL32UTF8&#x27;</span></code></pre>
-
-<h1 id="2-最终打包成功样例"><a href="#2-最终打包成功样例" class="headerlink" title="2.最终打包成功样例"></a>2.最终打包成功样例</h1><h2 id="步骤0：下载oracle客户端驱动文件"><a href="#步骤0：下载oracle客户端驱动文件" class="headerlink" title="步骤0：下载oracle客户端驱动文件"></a>步骤0：下载oracle客户端驱动文件</h2><pre><code class="hljs apache"><span class="hljs-attribute">instantclient</span>-sdk-linux.x<span class="hljs-number">64</span>-<span class="hljs-number">11.2.0.4</span>.<span class="hljs-number">0</span>_<span class="hljs-number">2</span>
-<span class="hljs-attribute">instantclient</span>-basic-linux.x<span class="hljs-number">64</span>-<span class="hljs-number">11.2.0.4</span>.<span class="hljs-number">0</span>
-<span class="hljs-comment"># basic中要包含libclntsh.so，libnnz11.so，libocci.so，libociicus.so这四个文件</span>
-<span class="hljs-comment"># 如果没有从instantclient-basiclite-linux.x64-11.2.0.4.0包中找</span>
-<span class="hljs-comment"># 官方下载链接“https://www.oracle.com/database/technologies/instant-client/downloads.html”</span></code></pre>
-<h2 id="步骤1-添加依赖链接在main-spec中"><a href="#步骤1-添加依赖链接在main-spec中" class="headerlink" title="步骤1:添加依赖链接在main.spec中"></a>步骤1:添加依赖链接在main.spec中</h2><pre><code class="hljs routeros">main.spec： pyinstaller打包的说明文件，里面编写一些打包的时候手动添加的文件
-
-<span class="hljs-comment"># -*- mode: python ; coding: utf-8 -*-</span>
-
-block_cipher = None
-
-a = Analysis([<span class="hljs-string">&#x27;main.py&#x27;</span>],
-             pathex=[<span class="hljs-string">&#x27;/home/redhat/Desktop/monthPredict&#x27;</span>],
-             datas=[],
-             hiddenimports=[<span class="hljs-string">&#x27;cython&#x27;</span>,  <span class="hljs-string">&#x27;sklearn&#x27;</span>, <span class="hljs-string">&#x27;sklearn.utils._cython_blas&#x27;</span>,<span class="hljs-string">&#x27;sklearn.neighbors.typedefs&#x27;</span>,
-             <span class="hljs-string">&#x27;sklearn.neighbors.quad_tree&#x27;</span>,<span class="hljs-string">&#x27;sklearn.tree&#x27;</span>,<span class="hljs-string">&#x27;sklearn.tree._utils&#x27;</span>],
-             hookspath=[],
-             runtime_hooks=[],
-             excludes=[],
-             <span class="hljs-attribute">win_no_prefer_redirects</span>=<span class="hljs-literal">False</span>,
-             <span class="hljs-attribute">win_private_assemblies</span>=<span class="hljs-literal">False</span>,
-             <span class="hljs-attribute">cipher</span>=block_cipher,
-             <span class="hljs-attribute">noarchive</span>=<span class="hljs-literal">False</span>)
-
-a.binaries = a.binaries + [(<span class="hljs-string">&#x27;libclntsh.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libclntsh.so.11.1&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
-a.binaries = a.binaries + [(<span class="hljs-string">&#x27;libnnz11.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libnnz11.so&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
-a.binaries = a.binaries + [(<span class="hljs-string">&#x27;libocci.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libocci.so.11.1&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
-a.binaries = a.binaries + [(<span class="hljs-string">&#x27;libociicus.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libociicus.so&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
-
-pyz = PYZ(a.pure, a.zipped_data,
-             <span class="hljs-attribute">cipher</span>=block_cipher)
-exe = EXE(pyz,
-          a.scripts,
-          a.binaries,
-          a.zipfiles,
-          a.datas,
-          [],
-          <span class="hljs-attribute">name</span>=<span class="hljs-string">&#x27;main&#x27;</span>,
-          <span class="hljs-attribute">debug</span>=<span class="hljs-literal">False</span>,
-          <span class="hljs-attribute">bootloader_ignore_signals</span>=<span class="hljs-literal">False</span>,
-          <span class="hljs-attribute">strip</span>=<span class="hljs-literal">False</span>,
-          <span class="hljs-attribute">upx</span>=<span class="hljs-literal">True</span>,
-          upx_exclude=[],
-          <span class="hljs-attribute">runtime_tmpdir</span>=None,
-          <span class="hljs-attribute">console</span>=<span class="hljs-literal">True</span> )
-</code></pre>
-<h2 id="步骤2：打包"><a href="#步骤2：打包" class="headerlink" title="步骤2：打包"></a>步骤2：打包</h2><pre><code class="hljs crmsh">使用 pyinstaller  main.<span class="hljs-keyword">spec</span> 命令打包</code></pre>]]></content>
+<p>下图是一部典型的智能手机上安装的一些常见应用程序，可能很多人都猜不到，人工智能技术已经是手机上很多应用程序的核心驱动力。</p>
+<p><img src="https://p3.pstatp.com/large/43500001eb4471788557" alt="image"><br>    图1 智能手机上的相关应用</p>
+<p>传统的机器学习算法包括决策树、聚类、贝叶斯分类、支持向量机、EM、Adaboost等等。这篇文章将对常用算法做常识性的介绍，没有代码，也没有复杂的理论推导，就是图解一下，知道这些算法是什么，它们是怎么应用的。</p>
+<h2 id="决策树"><a href="#决策树" class="headerlink" title="决策树"></a>决策树</h2><p>根据一些 feature（特征） 进行分类，每个节点提一个问题，通过判断，将数据分为两类，再继续提问。这些问题是根据已有数据学习出来的，再投入新数据的时候，就可以根据这棵树上的问题，将数据划分到合适的叶子上。</p>
+<p><img src="https://p3.pstatp.com/large/435200006b668ea633bd" alt="image"><br>图2 决策树原理示意图</p>
+<h2 id="随机森林"><a href="#随机森林" class="headerlink" title="随机森林"></a>随机森林</h2><p>在源数据中随机选取数据，组成几个子集：<br><img src="https://p1.pstatp.com/large/434f0001f5ed801daccf" alt="image"></p>
+<p>图3-1 随机森林原理示意图</p>
+<p>S矩阵是源数据，有1-N条数据，A、B、C 是feature，最后一列C是类别：</p>
+<p><img src="https://p1.pstatp.com/large/435200006bcfcb4c5948" alt="image"></p>
+<p>由S随机生成M个子矩阵：</p>
+<p><img src="https://p1.pstatp.com/large/434f0001f6466bf0d67d" alt="image"></p>
+<p>这M个子集得到 M 个决策树：将新数据投入到这M个树中，得到M个分类结果，计数看预测成哪一类的数目最多，就将此类别作为最后的预测结果。</p>
+<p> <img src="https://p3.pstatp.com/large/434e00020cea24ad72ac" alt="image"></p>
+<p>图3-2 随机森林效果展示图</p>
+<h2 id="逻辑回归"><a href="#逻辑回归" class="headerlink" title="逻辑回归"></a>逻辑回归</h2><p>当预测目标是概率这样的，值域需要满足大于等于0，小于等于1的，这个时候单纯的线性模型是做不到的，因为在定义域不在某个范围之内时，值域也超出了规定区间。</p>
+<p><img src="https://p1.pstatp.com/large/4352000088a0cca901dc" alt="image"></p>
+<p>图4-1 线性模型图</p>
+<p>所以此时需要这样的形状的模型会比较好：</p>
+<p><img src="https://p9.pstatp.com/large/43500002088dadd37cd2" alt="image"></p>
+<p>图4-2</p>
+<p>那么怎么得到这样的模型呢？</p>
+<p>这个模型需要满足两个条件 “大于等于0”，“小于等于1” 。大于等于0 的模型可以选择绝对值，平方值，这里用指数函数，一定大于0；小于等于1 用除法，分子是自己，分母是自身加上1，那一定是小于1的了。</p>
+<p><img src="https://p1.pstatp.com/large/43520000890f09d83fe9" alt="image"><br>图4-3</p>
+<p>再做一下变形，就得到了 logistic regressions 模型：</p>
+<p><img src="https://p9.pstatp.com/large/4351000204be99bba336" alt="image"><br>图4-4</p>
+<p>通过源数据计算可以得到相应的系数了：<br> <img src="https://p3.pstatp.com/large/4353000003f6ba0e0f8d" alt="image"><br>图4-5<br><img src="https://p1.pstatp.com/large/435100020586720b85a6" alt="image"><br>图4-6 LR模型曲线图</p>
+<h2 id="支持向量机"><a href="#支持向量机" class="headerlink" title="支持向量机"></a>支持向量机</h2><p>要将两类分开，想要得到一个超平面，最优的超平面是到两类的 margin 达到最大，margin就是超平面与离它最近一点的距离，如下图，Z2&gt;Z1，所以绿色的超平面比较好。</p>
+<p>图解十大经典的机器学习算法<br><img src="https://p3.pstatp.com/large/435000020b04838dcf31" alt="image"><br>图5 分类问题示意图</p>
+<p>将这个超平面表示成一个线性方程，在线上方的一类，都大于等于1，另一类小于等于－1：</p>
+<p><img src="https://p1.pstatp.com/large/435000020b4ac6b506a0" alt="image"></p>
+<p>点到面的距离根据图中的公式计算：</p>
+<p><img src="https://p3.pstatp.com/large/435200008bc2bf7f5517" alt="image"></p>
+<p>所以得到total margin的表达式如下，目标是最大化这个margin，就需要最小化分母，于是变成了一个优化问题：</p>
+<p><img src="https://p3.pstatp.com/large/43530000059e39d73a18" alt="image"></p>
+<p>举个例子，三个点，找到最优的超平面，定义了 weight vector＝（2，3）－（1，1）：</p>
+<p><img src="https://p1.pstatp.com/large/4353000005c7816fdd59" alt="image"></p>
+<p>得到weight vector为（a，2a），将两个点代入方程，代入（2，3）另其值＝1，代入（1，1）另其值＝-1，求解出 a 和 截矩 w0 的值，进而得到超平面的表达式。</p>
+<p><img src="https://p9.pstatp.com/large/43510002070c383b6105" alt="image"></p>
+<p>a求出来后，代入（a，2a）得到的就是support vector，a和w0代入超平面的方程就是support vector machine。</p>
+<h2 id="朴素贝叶斯"><a href="#朴素贝叶斯" class="headerlink" title="朴素贝叶斯"></a>朴素贝叶斯</h2><p>举个在 NLP 的应用：给一段文字，返回情感分类，这段文字的态度是positive，还是negative：<br><img src="https://p3.pstatp.com/large/43530000063edd668c55" alt="image"><br>图6-1 问题案例</p>
+<p>为了解决这个问题，可以只看其中的一些单词：<br><img src="https://p9.pstatp.com/large/435200008cd4629a6bc4" alt="image"><br>这段文字，将仅由一些单词和它们的计数代表：<br><img src="https://p1.pstatp.com/large/434e00022df729f719f3" alt="image"></p>
+<p>原始问题是：给你一句话，它属于哪一类 ？通过bayes rules变成一个比较简单容易求得的问题：<br><img src="https://p3.pstatp.com/large/434d00022ba607261510" alt="image"></p>
+<p>问题变成，这一类中这句话出现的概率是多少，当然，别忘了公式里的另外两个概率。例子：单词“love”在positive的情况下出现的概率是 0.1，在negative的情况下出现的概率是0.001。</p>
+<p><img src="https://p3.pstatp.com/large/43510002080ef9b94c91" alt="image"><br>图6-2 NB算法结果展示图</p>
+<h2 id="K近邻算法"><a href="#K近邻算法" class="headerlink" title="K近邻算法"></a>K近邻算法</h2><p>给一个新的数据时，离它最近的 k 个点中，哪个类别多，这个数据就属于哪一类。</p>
+<p>例子：要区分“猫”和“狗”，通过“claws”和“sound”两个feature来判断的话，圆形和三角形是已知分类的了，那么这个“star”代表的是哪一类呢？<br><img src="https://p3.pstatp.com/large/434e00022edc52fa300b" alt="image"><br>图7-1 问题案例</p>
+<p>k＝3时，这三条线链接的点就是最近的三个点，那么圆形多一些，所以这个star就是属于猫。<br><img src="https://p3.pstatp.com/large/4351000208a4639fb593" alt="image"><br>图7-2 算法步骤展示图</p>
+<h2 id="K均值算法"><a href="#K均值算法" class="headerlink" title="K均值算法"></a>K均值算法</h2><p>先要将一组数据，分为三类，粉色数值大，黄色数值小 。最开始先初始化，这里面选了最简单的 3，2，1 作为各类的初始值 。剩下的数据里，每个都与三个初始值计算距离，然后归类到离它最近的初始值所在类别。<br><img src="https://p3.pstatp.com/large/43530000080920d7643e" alt="image"><br>图8-1 问题案例</p>
+<p>分好类后，计算每一类的平均值，作为新一轮的中心点：<br><img src="https://p3.pstatp.com/large/435200008ec651b49844" alt="image"><br>图8-2</p>
+<p>几轮之后，分组不再变化了，就可以停止了：<br><img src="https://p3.pstatp.com/large/434e0002300572baeba6" alt="image"><br><img src="https://p1.pstatp.com/large/434e00023018f6a2f245" alt="image"><br>图8-3 算法结果展示</p>
+<h2 id="Adaboost"><a href="#Adaboost" class="headerlink" title="Adaboost"></a>Adaboost</h2><p>Adaboost 是 Boosting 的方法之一。Boosting就是把若干个分类效果并不好的分类器综合起来考虑，会得到一个效果比较好的分类器。</p>
+<p>下图，左右两个决策树，单个看是效果不怎么好的，但是把同样的数据投入进去，把两个结果加起来考虑，就会增加可信度。<br><img src="https://p1.pstatp.com/large/435100020a32bbefadfd" alt="image"><br>图9-1 算法原理展示</p>
+<p>Adaboost 的例子，手写识别中，在画板上可以抓取到很多features（特征），例如始点的方向，始点和终点的距离等等。<br><img src="https://p3.pstatp.com/large/434d00022e7cc9792c98" alt="image"><br>图9-2</p>
+<p>training的时候，会得到每个feature的weight（权重），例如2和3的开头部分很像，这个feature对分类起到的作用很小，它的权重也就会较小。<br><img src="https://p1.pstatp.com/large/435000021041994467f7" alt="image"><br>图9-3</p>
+<p>而这个alpha角就具有很强的识别性，这个feature的权重就会较大，最后的预测结果是综合考虑这些feature的结果。</p>
+<p><img src="https://p1.pstatp.com/large/434e000231a8b19cc6a0" alt="image"><br>图9-4</p>
+<h2 id="神经网络"><a href="#神经网络" class="headerlink" title="神经网络"></a>神经网络</h2><p>Neural Networks适合一个input可能落入至少两个类别里：NN由若干层神经元，和它们之间的联系组成。 第一层是input层，最后一层是output层。在hidden层和output层都有自己的classifier。<br><img src="https://p3.pstatp.com/large/435100020b63904aa0f0" alt="image"><br>图10-1 神经网络结构</p>
+<p>input输入到网络中，被激活，计算的分数被传递到下一层，激活后面的神经层，最后output层的节点上的分数代表属于各类的分数，下图例子得到分类结果为class 1；同样的input被传输到不同的节点上，之所以会得到不同的结果是因为各自节点有不同的weights 和bias，这也就是forward propagation。<br><img src="https://p3.pstatp.com/large/434d00022fbafcfbfa77" alt="image"><br>图10-2 算法结果展示</p>
+<h2 id="马尔科夫"><a href="#马尔科夫" class="headerlink" title="马尔科夫"></a>马尔科夫</h2><p>Markov Chains由state（状态）和transitions（转移）组成。例子，根据这一句话 ‘the quick brown fox jumps over the lazy dog’，要得到markov chains。</p>
+<p>步骤，先给每一个单词设定成一个状态，然后计算状态间转换的概率。<br><img src="https://p3.pstatp.com/large/435200009180de2aa4a9" alt="image"><br>图11-1 马尔科夫原理图</p>
+<p>这是一句话计算出来的概率，当你用大量文本去做统计的时候，会得到更大的状态转移矩阵，例如the后面可以连接的单词，及相应的概率。<br><img src="https://p3.pstatp.com/large/435300000b3f99003259" alt="image"><br>图11-2 算法结果展示</p>
+<p>上述十大类机器学习算法是人工智能发展的践行者，即使在当下，依然在数据挖掘以及小样本的人工智能问题中被广泛使用。</p>
+]]></content>
       <categories>
-        <category>工作相关</category>
+        <category>机器学习笔记</category>
       </categories>
       <tags>
-        <tag>python</tag>
+        <tag>machine learning</tag>
       </tags>
   </entry>
   <entry>
@@ -1801,93 +1970,6 @@ https:<span class="hljs-regexp">//</span>docs.docker.com<span class="hljs-regexp
       <tags>
         <tag>图数据库</tag>
         <tag>nebula-graph</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>图解十大经典的机器学习算法（转自网络）</title>
-    <url>/2018/11/29/%E5%9B%BE%E8%A7%A3%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><ul>
-<li>决策树</li>
-<li>随机森林</li>
-<li>逻辑回归</li>
-<li>SVM</li>
-<li>bayes</li>
-<li>Knn</li>
-<li>k-means</li>
-<li>Adaboost</li>
-<li>神经网络</li>
-<li>HMM</li>
-</ul>
-<a id="more"></a>
-
-<p>下图是一部典型的智能手机上安装的一些常见应用程序，可能很多人都猜不到，人工智能技术已经是手机上很多应用程序的核心驱动力。</p>
-<p><img src="https://p3.pstatp.com/large/43500001eb4471788557" alt="image"><br>    图1 智能手机上的相关应用</p>
-<p>传统的机器学习算法包括决策树、聚类、贝叶斯分类、支持向量机、EM、Adaboost等等。这篇文章将对常用算法做常识性的介绍，没有代码，也没有复杂的理论推导，就是图解一下，知道这些算法是什么，它们是怎么应用的。</p>
-<h2 id="决策树"><a href="#决策树" class="headerlink" title="决策树"></a>决策树</h2><p>根据一些 feature（特征） 进行分类，每个节点提一个问题，通过判断，将数据分为两类，再继续提问。这些问题是根据已有数据学习出来的，再投入新数据的时候，就可以根据这棵树上的问题，将数据划分到合适的叶子上。</p>
-<p><img src="https://p3.pstatp.com/large/435200006b668ea633bd" alt="image"><br>图2 决策树原理示意图</p>
-<h2 id="随机森林"><a href="#随机森林" class="headerlink" title="随机森林"></a>随机森林</h2><p>在源数据中随机选取数据，组成几个子集：<br><img src="https://p1.pstatp.com/large/434f0001f5ed801daccf" alt="image"></p>
-<p>图3-1 随机森林原理示意图</p>
-<p>S矩阵是源数据，有1-N条数据，A、B、C 是feature，最后一列C是类别：</p>
-<p><img src="https://p1.pstatp.com/large/435200006bcfcb4c5948" alt="image"></p>
-<p>由S随机生成M个子矩阵：</p>
-<p><img src="https://p1.pstatp.com/large/434f0001f6466bf0d67d" alt="image"></p>
-<p>这M个子集得到 M 个决策树：将新数据投入到这M个树中，得到M个分类结果，计数看预测成哪一类的数目最多，就将此类别作为最后的预测结果。</p>
-<p> <img src="https://p3.pstatp.com/large/434e00020cea24ad72ac" alt="image"></p>
-<p>图3-2 随机森林效果展示图</p>
-<h2 id="逻辑回归"><a href="#逻辑回归" class="headerlink" title="逻辑回归"></a>逻辑回归</h2><p>当预测目标是概率这样的，值域需要满足大于等于0，小于等于1的，这个时候单纯的线性模型是做不到的，因为在定义域不在某个范围之内时，值域也超出了规定区间。</p>
-<p><img src="https://p1.pstatp.com/large/4352000088a0cca901dc" alt="image"></p>
-<p>图4-1 线性模型图</p>
-<p>所以此时需要这样的形状的模型会比较好：</p>
-<p><img src="https://p9.pstatp.com/large/43500002088dadd37cd2" alt="image"></p>
-<p>图4-2</p>
-<p>那么怎么得到这样的模型呢？</p>
-<p>这个模型需要满足两个条件 “大于等于0”，“小于等于1” 。大于等于0 的模型可以选择绝对值，平方值，这里用指数函数，一定大于0；小于等于1 用除法，分子是自己，分母是自身加上1，那一定是小于1的了。</p>
-<p><img src="https://p1.pstatp.com/large/43520000890f09d83fe9" alt="image"><br>图4-3</p>
-<p>再做一下变形，就得到了 logistic regressions 模型：</p>
-<p><img src="https://p9.pstatp.com/large/4351000204be99bba336" alt="image"><br>图4-4</p>
-<p>通过源数据计算可以得到相应的系数了：<br> <img src="https://p3.pstatp.com/large/4353000003f6ba0e0f8d" alt="image"><br>图4-5<br><img src="https://p1.pstatp.com/large/435100020586720b85a6" alt="image"><br>图4-6 LR模型曲线图</p>
-<h2 id="支持向量机"><a href="#支持向量机" class="headerlink" title="支持向量机"></a>支持向量机</h2><p>要将两类分开，想要得到一个超平面，最优的超平面是到两类的 margin 达到最大，margin就是超平面与离它最近一点的距离，如下图，Z2&gt;Z1，所以绿色的超平面比较好。</p>
-<p>图解十大经典的机器学习算法<br><img src="https://p3.pstatp.com/large/435000020b04838dcf31" alt="image"><br>图5 分类问题示意图</p>
-<p>将这个超平面表示成一个线性方程，在线上方的一类，都大于等于1，另一类小于等于－1：</p>
-<p><img src="https://p1.pstatp.com/large/435000020b4ac6b506a0" alt="image"></p>
-<p>点到面的距离根据图中的公式计算：</p>
-<p><img src="https://p3.pstatp.com/large/435200008bc2bf7f5517" alt="image"></p>
-<p>所以得到total margin的表达式如下，目标是最大化这个margin，就需要最小化分母，于是变成了一个优化问题：</p>
-<p><img src="https://p3.pstatp.com/large/43530000059e39d73a18" alt="image"></p>
-<p>举个例子，三个点，找到最优的超平面，定义了 weight vector＝（2，3）－（1，1）：</p>
-<p><img src="https://p1.pstatp.com/large/4353000005c7816fdd59" alt="image"></p>
-<p>得到weight vector为（a，2a），将两个点代入方程，代入（2，3）另其值＝1，代入（1，1）另其值＝-1，求解出 a 和 截矩 w0 的值，进而得到超平面的表达式。</p>
-<p><img src="https://p9.pstatp.com/large/43510002070c383b6105" alt="image"></p>
-<p>a求出来后，代入（a，2a）得到的就是support vector，a和w0代入超平面的方程就是support vector machine。</p>
-<h2 id="朴素贝叶斯"><a href="#朴素贝叶斯" class="headerlink" title="朴素贝叶斯"></a>朴素贝叶斯</h2><p>举个在 NLP 的应用：给一段文字，返回情感分类，这段文字的态度是positive，还是negative：<br><img src="https://p3.pstatp.com/large/43530000063edd668c55" alt="image"><br>图6-1 问题案例</p>
-<p>为了解决这个问题，可以只看其中的一些单词：<br><img src="https://p9.pstatp.com/large/435200008cd4629a6bc4" alt="image"><br>这段文字，将仅由一些单词和它们的计数代表：<br><img src="https://p1.pstatp.com/large/434e00022df729f719f3" alt="image"></p>
-<p>原始问题是：给你一句话，它属于哪一类 ？通过bayes rules变成一个比较简单容易求得的问题：<br><img src="https://p3.pstatp.com/large/434d00022ba607261510" alt="image"></p>
-<p>问题变成，这一类中这句话出现的概率是多少，当然，别忘了公式里的另外两个概率。例子：单词“love”在positive的情况下出现的概率是 0.1，在negative的情况下出现的概率是0.001。</p>
-<p><img src="https://p3.pstatp.com/large/43510002080ef9b94c91" alt="image"><br>图6-2 NB算法结果展示图</p>
-<h2 id="K近邻算法"><a href="#K近邻算法" class="headerlink" title="K近邻算法"></a>K近邻算法</h2><p>给一个新的数据时，离它最近的 k 个点中，哪个类别多，这个数据就属于哪一类。</p>
-<p>例子：要区分“猫”和“狗”，通过“claws”和“sound”两个feature来判断的话，圆形和三角形是已知分类的了，那么这个“star”代表的是哪一类呢？<br><img src="https://p3.pstatp.com/large/434e00022edc52fa300b" alt="image"><br>图7-1 问题案例</p>
-<p>k＝3时，这三条线链接的点就是最近的三个点，那么圆形多一些，所以这个star就是属于猫。<br><img src="https://p3.pstatp.com/large/4351000208a4639fb593" alt="image"><br>图7-2 算法步骤展示图</p>
-<h2 id="K均值算法"><a href="#K均值算法" class="headerlink" title="K均值算法"></a>K均值算法</h2><p>先要将一组数据，分为三类，粉色数值大，黄色数值小 。最开始先初始化，这里面选了最简单的 3，2，1 作为各类的初始值 。剩下的数据里，每个都与三个初始值计算距离，然后归类到离它最近的初始值所在类别。<br><img src="https://p3.pstatp.com/large/43530000080920d7643e" alt="image"><br>图8-1 问题案例</p>
-<p>分好类后，计算每一类的平均值，作为新一轮的中心点：<br><img src="https://p3.pstatp.com/large/435200008ec651b49844" alt="image"><br>图8-2</p>
-<p>几轮之后，分组不再变化了，就可以停止了：<br><img src="https://p3.pstatp.com/large/434e0002300572baeba6" alt="image"><br><img src="https://p1.pstatp.com/large/434e00023018f6a2f245" alt="image"><br>图8-3 算法结果展示</p>
-<h2 id="Adaboost"><a href="#Adaboost" class="headerlink" title="Adaboost"></a>Adaboost</h2><p>Adaboost 是 Boosting 的方法之一。Boosting就是把若干个分类效果并不好的分类器综合起来考虑，会得到一个效果比较好的分类器。</p>
-<p>下图，左右两个决策树，单个看是效果不怎么好的，但是把同样的数据投入进去，把两个结果加起来考虑，就会增加可信度。<br><img src="https://p1.pstatp.com/large/435100020a32bbefadfd" alt="image"><br>图9-1 算法原理展示</p>
-<p>Adaboost 的例子，手写识别中，在画板上可以抓取到很多features（特征），例如始点的方向，始点和终点的距离等等。<br><img src="https://p3.pstatp.com/large/434d00022e7cc9792c98" alt="image"><br>图9-2</p>
-<p>training的时候，会得到每个feature的weight（权重），例如2和3的开头部分很像，这个feature对分类起到的作用很小，它的权重也就会较小。<br><img src="https://p1.pstatp.com/large/435000021041994467f7" alt="image"><br>图9-3</p>
-<p>而这个alpha角就具有很强的识别性，这个feature的权重就会较大，最后的预测结果是综合考虑这些feature的结果。</p>
-<p><img src="https://p1.pstatp.com/large/434e000231a8b19cc6a0" alt="image"><br>图9-4</p>
-<h2 id="神经网络"><a href="#神经网络" class="headerlink" title="神经网络"></a>神经网络</h2><p>Neural Networks适合一个input可能落入至少两个类别里：NN由若干层神经元，和它们之间的联系组成。 第一层是input层，最后一层是output层。在hidden层和output层都有自己的classifier。<br><img src="https://p3.pstatp.com/large/435100020b63904aa0f0" alt="image"><br>图10-1 神经网络结构</p>
-<p>input输入到网络中，被激活，计算的分数被传递到下一层，激活后面的神经层，最后output层的节点上的分数代表属于各类的分数，下图例子得到分类结果为class 1；同样的input被传输到不同的节点上，之所以会得到不同的结果是因为各自节点有不同的weights 和bias，这也就是forward propagation。<br><img src="https://p3.pstatp.com/large/434d00022fbafcfbfa77" alt="image"><br>图10-2 算法结果展示</p>
-<h2 id="马尔科夫"><a href="#马尔科夫" class="headerlink" title="马尔科夫"></a>马尔科夫</h2><p>Markov Chains由state（状态）和transitions（转移）组成。例子，根据这一句话 ‘the quick brown fox jumps over the lazy dog’，要得到markov chains。</p>
-<p>步骤，先给每一个单词设定成一个状态，然后计算状态间转换的概率。<br><img src="https://p3.pstatp.com/large/435200009180de2aa4a9" alt="image"><br>图11-1 马尔科夫原理图</p>
-<p>这是一句话计算出来的概率，当你用大量文本去做统计的时候，会得到更大的状态转移矩阵，例如the后面可以连接的单词，及相应的概率。<br><img src="https://p3.pstatp.com/large/435300000b3f99003259" alt="image"><br>图11-2 算法结果展示</p>
-<p>上述十大类机器学习算法是人工智能发展的践行者，即使在当下，依然在数据挖掘以及小样本的人工智能问题中被广泛使用。</p>
-]]></content>
-      <categories>
-        <category>机器学习笔记</category>
-      </categories>
-      <tags>
-        <tag>machine learning</tag>
       </tags>
   </entry>
   <entry>
@@ -2043,6 +2125,39 @@ https:<span class="hljs-regexp">//</span>docs.docker.com<span class="hljs-regexp
       </categories>
       <tags>
         <tag>opencv</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>熵权法计算权重</title>
+    <url>/2020/10/15/%E7%86%B5%E6%9D%83%E6%B3%95%E8%AE%A1%E7%AE%97%E6%9D%83%E9%87%8D/</url>
+    <content><![CDATA[<h1 id="1-熵权法说明"><a href="#1-熵权法说明" class="headerlink" title="1.熵权法说明"></a>1.熵权法说明</h1><p>通过信息熵的大小判断某项数据在整体数据评测中所占的比重大小。</p>
+<blockquote>
+<p>一般来说，若某个指标的<strong>信息熵Ej越小</strong>，表明指标值得变异程度<strong>越大</strong>，提供的信息量越多，在综合评价中所能起到的作用也越大，其权重也就越大。相反，某个指标的<strong>信息熵越大</strong>，表明指标值得变异程度<strong>越小</strong>，提供的信息量也越少，在综合评价中所起到的作用也越小，其权重也就越小</p>
+</blockquote>
+<p>#2.计算步骤</p>
+<h2 id="2-1-数据标准化"><a href="#2-1-数据标准化" class="headerlink" title="2.1 数据标准化"></a>2.1 数据标准化</h2><p>假设给定了<em>k</em>个指标（类别）$X_1$,$X_2$，……，$X_i$={$x_1$,$x_2$,……},</p>
+<p>假设对各指标数据标准化后的值为 : $Y_1$,$Y_2$….$Y_k$</p>
+<p>则$X_{ij}$表示第$i$个指标下的第$j$个值</p>
+<p>那么标准化的$Y_{ij}$ =$\frac{X_{ij}-min(X_{ij})}{max(X_i) - min(X_i)}$</p>
+<h2 id="2-2-计算各指标的信息熵"><a href="#2-2-计算各指标的信息熵" class="headerlink" title="2.2 计算各指标的信息熵"></a>2.2 计算各指标的信息熵</h2><p>信息熵   $E_j = -\frac{1}{lnn}∑^n_{i=1}p_{ij}lnp_{ij}$</p>
+<p>其中   $p_{ij} = \frac{Y_{ij}}{\stackrel{n}{\stackrel{∑{Y_{ij}}}{i=1}}}$</p>
+<p>如果： $p_{ij}=0$</p>
+<p>则：$\stackrel{lim}{p_{ij-0}} p_{ij}lnp_{ij}=0$</p>
+<h2 id="2-3-确定各指标权重"><a href="#2-3-确定各指标权重" class="headerlink" title="2.3 确定各指标权重"></a>2.3 确定各指标权重</h2><p>根据信息熵$E_j$的计算公式计算信息熵分别为$E_1,E_2,……E_k$</p>
+<p>然后计算权重:</p>
+<p>$W_i = \frac{1-E_i}{k-∑E_i}(i = 1,2,3….k)$</p>
+<blockquote>
+<p>这里的分母$k-∑E_i$通过上面计算出所有的信息熵E之后为一个固定的常数。</p>
+</blockquote>
+<h2 id="2-4-根据权重打分"><a href="#2-4-根据权重打分" class="headerlink" title="2.4 根据权重打分"></a>2.4 根据权重打分</h2><p>根据计算后：$X_1$,$X_2$，……，$X_i$={$x_1$,$x_2$,……}每一项指标分别对应的权重为$W_1,W_2,….W_i$</p>
+<p>得到每个个体的得分计算为  </p>
+<p>$R_1 = X_{11}W_1+X_{21}W_2+….+X_{i1}W_i$ </p>
+]]></content>
+      <categories>
+        <category>工作相关</category>
+      </categories>
+      <tags>
+        <tag>数据分析</tag>
       </tags>
   </entry>
   <entry>
@@ -2252,39 +2367,6 @@ app.run(host=<span class="hljs-string">&quot;0.0.0.0&quot;</span>,port=<span cla
         <tag>python</tag>
         <tag>scala</tag>
         <tag>flask</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>熵权法计算权重</title>
-    <url>/2020/10/15/%E7%86%B5%E6%9D%83%E6%B3%95%E8%AE%A1%E7%AE%97%E6%9D%83%E9%87%8D/</url>
-    <content><![CDATA[<h1 id="1-熵权法说明"><a href="#1-熵权法说明" class="headerlink" title="1.熵权法说明"></a>1.熵权法说明</h1><p>通过信息熵的大小判断某项数据在整体数据评测中所占的比重大小。</p>
-<blockquote>
-<p>一般来说，若某个指标的<strong>信息熵Ej越小</strong>，表明指标值得变异程度<strong>越大</strong>，提供的信息量越多，在综合评价中所能起到的作用也越大，其权重也就越大。相反，某个指标的<strong>信息熵越大</strong>，表明指标值得变异程度<strong>越小</strong>，提供的信息量也越少，在综合评价中所起到的作用也越小，其权重也就越小</p>
-</blockquote>
-<p>#2.计算步骤</p>
-<h2 id="2-1-数据标准化"><a href="#2-1-数据标准化" class="headerlink" title="2.1 数据标准化"></a>2.1 数据标准化</h2><p>假设给定了<em>k</em>个指标（类别）$X_1$,$X_2$，……，$X_i$={$x_1$,$x_2$,……},</p>
-<p>假设对各指标数据标准化后的值为 : $Y_1$,$Y_2$….$Y_k$</p>
-<p>则$X_{ij}$表示第$i$个指标下的第$j$个值</p>
-<p>那么标准化的$Y_{ij}$ =$\frac{X_{ij}-min(X_{ij})}{max(X_i) - min(X_i)}$</p>
-<h2 id="2-2-计算各指标的信息熵"><a href="#2-2-计算各指标的信息熵" class="headerlink" title="2.2 计算各指标的信息熵"></a>2.2 计算各指标的信息熵</h2><p>信息熵   $E_j = -\frac{1}{lnn}∑^n_{i=1}p_{ij}lnp_{ij}$</p>
-<p>其中   $p_{ij} = \frac{Y_{ij}}{\stackrel{n}{\stackrel{∑{Y_{ij}}}{i=1}}}$</p>
-<p>如果： $p_{ij}=0$</p>
-<p>则：$\stackrel{lim}{p_{ij-0}} p_{ij}lnp_{ij}=0$</p>
-<h2 id="2-3-确定各指标权重"><a href="#2-3-确定各指标权重" class="headerlink" title="2.3 确定各指标权重"></a>2.3 确定各指标权重</h2><p>根据信息熵$E_j$的计算公式计算信息熵分别为$E_1,E_2,……E_k$</p>
-<p>然后计算权重:</p>
-<p>$W_i = \frac{1-E_i}{k-∑E_i}(i = 1,2,3….k)$</p>
-<blockquote>
-<p>这里的分母$k-∑E_i$通过上面计算出所有的信息熵E之后为一个固定的常数。</p>
-</blockquote>
-<h2 id="2-4-根据权重打分"><a href="#2-4-根据权重打分" class="headerlink" title="2.4 根据权重打分"></a>2.4 根据权重打分</h2><p>根据计算后：$X_1$,$X_2$，……，$X_i$={$x_1$,$x_2$,……}每一项指标分别对应的权重为$W_1,W_2,….W_i$</p>
-<p>得到每个个体的得分计算为  </p>
-<p>$R_1 = X_{11}W_1+X_{21}W_2+….+X_{i1}W_i$ </p>
-]]></content>
-      <categories>
-        <category>工作相关</category>
-      </categories>
-      <tags>
-        <tag>数据分析</tag>
       </tags>
   </entry>
   <entry>

@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="zhousan">
   <meta name="keywords" content="">
-  <title>熵权法计算权重 - 周三</title>
+  <title>Flask之缓慢的http拒绝服务攻击漏洞解决 - 周三</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -177,8 +177,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2020-10-15 14:30" pubdate>
-        2020年10月15日 下午
+      <time datetime="2020-11-06 11:02" pubdate>
+        2020年11月6日 上午
       </time>
     </span>
   
@@ -189,7 +189,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      419 字
+      786 字
     </span>
   
 
@@ -199,7 +199,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      5
+      10
        分钟
     </span>
   
@@ -237,31 +237,79 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto" id="post">
             <!-- SEO header -->
-            <h1 style="display: none">熵权法计算权重</h1>
+            <h1 style="display: none">Flask之缓慢的http拒绝服务攻击漏洞解决</h1>
             
             <div class="markdown-body" id="post-body">
-              <h1 id="1-熵权法说明"><a href="#1-熵权法说明" class="headerlink" title="1.熵权法说明"></a>1.熵权法说明</h1><p>通过信息熵的大小判断某项数据在整体数据评测中所占的比重大小。</p>
-<blockquote>
-<p>一般来说，若某个指标的<strong>信息熵Ej越小</strong>，表明指标值得变异程度<strong>越大</strong>，提供的信息量越多，在综合评价中所能起到的作用也越大，其权重也就越大。相反，某个指标的<strong>信息熵越大</strong>，表明指标值得变异程度<strong>越小</strong>，提供的信息量也越少，在综合评价中所起到的作用也越小，其权重也就越小</p>
+              <h1 id="1-什么是缓慢的http拒绝服务攻击漏洞"><a href="#1-什么是缓慢的http拒绝服务攻击漏洞" class="headerlink" title="1.什么是缓慢的http拒绝服务攻击漏洞"></a>1.什么是缓慢的http拒绝服务攻击漏洞</h1><p>缓慢的http拒绝服务攻击是一种专门针对于Web的应用层拒绝服务攻击，攻击者操纵网络上的肉鸡，对目标Web服务器进行海量http request攻击，直到服务器带宽被打满，造成了拒绝服务。</p>
+<p>慢速HTTP拒绝服务攻击经过不断的演变和发展，主要有三种攻击类型，分别是Slow headers、Slow body、Slow read。</p>
+<ul>
+<li><p><code>slowloris</code>：完整的http请求是以 <code>\r\n\r\n</code> 结尾，攻击时仅发送 <code>\r\n</code>，少发送一个 <code>\r\n</code>，服务器认为请求还未发完，就会一直等待直至超时</p>
+</li>
+<li><p><code>slow post</code>：通过声明一个较大的content-length后，body缓慢发送，导致服务器一直等待</p>
+</li>
+<li><p><code>slow read</code>：向服务器发送一个正常合法的read请求，请求一个很大的文件，但把TCP滑动窗口设置得很小，服务器就会以滑动窗口的大小切割文件，然后发送，这时文件会长期存放在内存中，消耗资源</p>
+</li>
+</ul>
+<h1 id="2-Flask应对措施"><a href="#2-Flask应对措施" class="headerlink" title="2. Flask应对措施"></a>2. Flask应对措施</h1><ul>
+<li>限制每次请求数据的大小</li>
+<li>限制单个HTTP请求头的最大许可时间</li>
+<li>限制单个ip请求数量</li>
+<li>。。。。。。</li>
+</ul>
+<p>#3. 使用slowhttptest测试漏洞</p>
+<h2 id="3-1-slowhttptest的安装"><a href="#3-1-slowhttptest的安装" class="headerlink" title="3.1 slowhttptest的安装"></a>3.1 slowhttptest的安装</h2><blockquote>
+<p> 安装说明:<a target="_blank" rel="noopener" href="https://github.com/shekyan/slowhttptest/wiki/InstallationAndUsage1">https://github.com/shekyan/slowhttptest/wiki/InstallationAndUsage1</a></p>
 </blockquote>
-<p>#2.计算步骤</p>
-<h2 id="2-1-数据标准化"><a href="#2-1-数据标准化" class="headerlink" title="2.1 数据标准化"></a>2.1 数据标准化</h2><p>假设给定了<em>k</em>个指标（类别）$X_1$,$X_2$，……，$X_i$={$x_1$,$x_2$,……},</p>
-<p>假设对各指标数据标准化后的值为 : $Y_1$,$Y_2$….$Y_k$</p>
-<p>则$X_{ij}$表示第$i$个指标下的第$j$个值</p>
-<p>那么标准化的$Y_{ij}$ =$\frac{X_{ij}-min(X_{ij})}{max(X_i) - min(X_i)}$</p>
-<h2 id="2-2-计算各指标的信息熵"><a href="#2-2-计算各指标的信息熵" class="headerlink" title="2.2 计算各指标的信息熵"></a>2.2 计算各指标的信息熵</h2><p>信息熵   $E_j = -\frac{1}{lnn}∑^n_{i=1}p_{ij}lnp_{ij}$</p>
-<p>其中   $p_{ij} = \frac{Y_{ij}}{\stackrel{n}{\stackrel{∑{Y_{ij}}}{i=1}}}$</p>
-<p>如果： $p_{ij}=0$</p>
-<p>则：$\stackrel{lim}{p_{ij-0}} p_{ij}lnp_{ij}=0$</p>
-<h2 id="2-3-确定各指标权重"><a href="#2-3-确定各指标权重" class="headerlink" title="2.3 确定各指标权重"></a>2.3 确定各指标权重</h2><p>根据信息熵$E_j$的计算公式计算信息熵分别为$E_1,E_2,……E_k$</p>
-<p>然后计算权重:</p>
-<p>$W_i = \frac{1-E_i}{k-∑E_i}(i = 1,2,3….k)$</p>
-<blockquote>
-<p>这里的分母$k-∑E_i$通过上面计算出所有的信息熵E之后为一个固定的常数。</p>
-</blockquote>
-<h2 id="2-4-根据权重打分"><a href="#2-4-根据权重打分" class="headerlink" title="2.4 根据权重打分"></a>2.4 根据权重打分</h2><p>根据计算后：$X_1$,$X_2$，……，$X_i$={$x_1$,$x_2$,……}每一项指标分别对应的权重为$W_1,W_2,….W_i$</p>
-<p>得到每个个体的得分计算为  </p>
-<p>$R_1 = X_{11}W_1+X_{21}W_2+….+X_{i1}W_i$ </p>
+<ol>
+<li><p>下载压缩包：<a target="_blank" rel="noopener" href="https://github.com/shekyan/slowhttptest/releases">https://github.com/shekyan/slowhttptest/releases</a></p>
+</li>
+<li><p>安装libssl-dev<br><code>$ yum install openssl openssl-devel</code></p>
+</li>
+<li><p>安装C++编译器<br><code>$ yum install gcc-c++</code></p>
+</li>
+<li><p>解压</p>
+<p><code>$ tar -xzvf slowhttptest-x.x.tar.gz</code> </p>
+</li>
+<li><p>编译安装</p>
+<pre><code class="hljs powershell"><span class="hljs-variable">$</span> <span class="hljs-built_in">cd</span> slowhttp<span class="hljs-built_in">test-x</span>.x
+<span class="hljs-variable">$</span> ./configure -<span class="hljs-literal">-prefix</span>=PREFIX
+<span class="hljs-variable">$</span> make
+<span class="hljs-variable">$</span> sudo make install</code></pre>
+
+</li>
+</ol>
+<h2 id="3-2-参数说明及使用测试"><a href="#3-2-参数说明及使用测试" class="headerlink" title="3.2 参数说明及使用测试"></a>3.2 参数说明及使用测试</h2><pre><code class="hljs diff"><span class="hljs-deletion">-g      在测试完成后，以时间戳为名生成一个CVS和HTML文件的统计数据</span>
+<span class="hljs-deletion">-H      SlowLoris模式</span>
+<span class="hljs-deletion">-B      Slow POST模式</span>
+<span class="hljs-deletion">-R      Range Header模式</span>
+<span class="hljs-deletion">-X      Slow Read模式</span>
+<span class="hljs-deletion">-c      number of connections 测试时建立的连接数</span>
+<span class="hljs-deletion">-d      HTTP proxy host:port  为所有连接指定代理</span>
+<span class="hljs-deletion">-e      HTTP proxy host:port  为探测连接指定代理</span>
+<span class="hljs-deletion">-i      seconds 在slowrois和Slow POST模式中，指定发送数据间的间隔。</span>
+<span class="hljs-deletion">-l      seconds 测试维持时间</span>
+<span class="hljs-deletion">-n      seconds 在Slow Read模式下，指定每次操作的时间间隔。</span>
+<span class="hljs-deletion">-o      file name 使用-g参数时，可以使用此参数指定输出文件名</span>
+<span class="hljs-deletion">-p      seconds 指定等待时间来确认DoS攻击已经成功</span>
+<span class="hljs-deletion">-r      connections per second 每秒连接个数</span>
+<span class="hljs-deletion">-s      bytes 声明Content-Length header的值</span>
+<span class="hljs-deletion">-t      HTTP verb 在请求时使用什么操作，默认GET</span>
+<span class="hljs-deletion">-u      URL  指定目标url</span>
+<span class="hljs-deletion">-v      level 日志等级（详细度）</span>
+<span class="hljs-deletion">-w      bytes slow read模式中指定tcp窗口范围下限</span>
+<span class="hljs-deletion">-x      bytes 在slowloris and Slow POST tests模式中，指定发送的最大数据长度</span>
+<span class="hljs-deletion">-y      bytes slow read模式中指定tcp窗口范围上限</span>
+<span class="hljs-deletion">-z      bytes 在每次的read()中，从buffer中读取数据量</span></code></pre>
+
+<h2 id="3-2-1实例："><a href="#3-2-1实例：" class="headerlink" title="3.2.1实例："></a>3.2.1实例：</h2><p>slowloris模式：</p>
+<pre><code class="hljs apache"><span class="hljs-attribute">slowhttptest</span> -c <span class="hljs-number">1000</span> -H -g -o my_header_stats -i <span class="hljs-number">10</span> -r <span class="hljs-number">200</span> -t GET -u https://xxxxxx.xxxxx.xx -x <span class="hljs-number">24</span> -p <span class="hljs-number">3</span></code></pre>
+
+<p>slow post模式：</p>
+<pre><code class="hljs yaml"><span class="hljs-string">$</span> <span class="hljs-string">slowhttptest</span> <span class="hljs-string">-c</span> <span class="hljs-number">3000</span> <span class="hljs-string">-B</span> <span class="hljs-string">-g</span> <span class="hljs-string">-o</span> <span class="hljs-string">my_body_stats</span> <span class="hljs-string">-i</span> <span class="hljs-number">110</span> <span class="hljs-string">-r</span> <span class="hljs-number">200</span> <span class="hljs-string">-s</span> <span class="hljs-number">8192</span> <span class="hljs-string">-t</span> <span class="hljs-string">FAKEVERB</span> <span class="hljs-string">-u</span> <span class="hljs-string">http://xxx.xxx.xxx</span> <span class="hljs-string">-x</span> <span class="hljs-number">10</span> <span class="hljs-string">-p</span> <span class="hljs-number">3</span></code></pre>
+
+<p>slow read模式：</p>
+<pre><code class="hljs angelscript">$ slowhttptest -c <span class="hljs-number">8000</span> -X -r <span class="hljs-number">200</span> -w <span class="hljs-number">512</span> -y <span class="hljs-number">1024</span> -n <span class="hljs-number">5</span> -z <span class="hljs-number">32</span> -k <span class="hljs-number">3</span> -u https:<span class="hljs-comment">//xxx.xxx.xxx -p 3</span></code></pre>
+
 
             </div>
             <hr>
@@ -279,7 +327,9 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/">数据分析</a>
+                      <a class="hover-with-bg" href="/tags/python/">python</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Flask/">Flask</a>
                     
                   </div>
                 
@@ -292,18 +342,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/11/06/Flask%E4%B9%8B%E7%BC%93%E6%85%A2%E7%9A%84http%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB%E6%BC%8F%E6%B4%9E%E8%A7%A3%E5%86%B3/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Flask之缓慢的http拒绝服务攻击漏洞解决</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/09/23/faceswap%E5%AE%89%E8%A3%85%E4%B8%8E%E8%B8%A9%E5%9D%91/">
-                        <span class="hidden-mobile">本地安装faceswap与一键使用google的colab搭建faceswap两种方式</span>
+                      <a href="/2020/10/15/%E7%86%B5%E6%9D%83%E6%B3%95%E8%AE%A1%E7%AE%97%E6%9D%83%E9%87%8D/">
+                        <span class="hidden-mobile">熵权法计算权重</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -504,7 +548,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "熵权法计算权重&nbsp;",
+        "Flask之缓慢的http拒绝服务攻击漏洞解决&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,
