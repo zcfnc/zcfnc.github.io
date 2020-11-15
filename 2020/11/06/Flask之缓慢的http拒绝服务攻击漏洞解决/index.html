@@ -189,7 +189,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      786 字
+      961 字
     </span>
   
 
@@ -199,7 +199,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      10
+      12
        分钟
     </span>
   
@@ -246,8 +246,9 @@
 <li><p><code>slowloris</code>：完整的http请求是以 <code>\r\n\r\n</code> 结尾，攻击时仅发送 <code>\r\n</code>，少发送一个 <code>\r\n</code>，服务器认为请求还未发完，就会一直等待直至超时</p>
 </li>
 <li><p><code>slow post</code>：通过声明一个较大的content-length后，body缓慢发送，导致服务器一直等待</p>
-</li>
-<li><p><code>slow read</code>：向服务器发送一个正常合法的read请求，请求一个很大的文件，但把TCP滑动窗口设置得很小，服务器就会以滑动窗口的大小切割文件，然后发送，这时文件会长期存放在内存中，消耗资源</p>
+<ul>
+<li><code>slow read</code>：向服务器发送一个正常合法的read请求，请求一个很大的文件，但把TCP滑动窗口设置得很小，服务器就会以滑动窗口的大小切割文件，然后发送，这时文件会长期存放在内存中，消耗资源</li>
+</ul>
 </li>
 </ul>
 <h1 id="2-Flask应对措施"><a href="#2-Flask应对措施" class="headerlink" title="2. Flask应对措施"></a>2. Flask应对措施</h1><ul>
@@ -301,7 +302,7 @@
 <span class="hljs-deletion">-y      bytes slow read模式中指定tcp窗口范围上限</span>
 <span class="hljs-deletion">-z      bytes 在每次的read()中，从buffer中读取数据量</span></code></pre>
 
-<h2 id="3-2-1实例："><a href="#3-2-1实例：" class="headerlink" title="3.2.1实例："></a>3.2.1实例：</h2><p>slowloris模式：</p>
+<h2 id="3-2-1参考实例："><a href="#3-2-1参考实例：" class="headerlink" title="3.2.1参考实例："></a>3.2.1参考实例：</h2><p>slowloris模式：</p>
 <pre><code class="hljs apache"><span class="hljs-attribute">slowhttptest</span> -c <span class="hljs-number">1000</span> -H -g -o my_header_stats -i <span class="hljs-number">10</span> -r <span class="hljs-number">200</span> -t GET -u https://xxxxxx.xxxxx.xx -x <span class="hljs-number">24</span> -p <span class="hljs-number">3</span></code></pre>
 
 <p>slow post模式：</p>
@@ -310,7 +311,17 @@
 <p>slow read模式：</p>
 <pre><code class="hljs angelscript">$ slowhttptest -c <span class="hljs-number">8000</span> -X -r <span class="hljs-number">200</span> -w <span class="hljs-number">512</span> -y <span class="hljs-number">1024</span> -n <span class="hljs-number">5</span> -z <span class="hljs-number">32</span> -k <span class="hljs-number">3</span> -u https:<span class="hljs-comment">//xxx.xxx.xxx -p 3</span></code></pre>
 
+<h1 id="4-使用说明"><a href="#4-使用说明" class="headerlink" title="4.使用说明"></a>4.使用说明</h1><p>以下是分别使用四种方式对自己的服务进行测试的结果，先开始不太懂每个曲线图的意义。这里说明一下，上面的参数可以设置连接数量以及持续请求时间等参数。然后下面展现的是曲线图，主要看在测试程序运行时间内Connected的数量是否被释放，是否通过服务的设置不符合条件的请求被服务端关闭，Service是否正常运行（服务是否存在被漏洞攻击程序给冲宕机了）。</p>
+<p>##4.1 RANGE HEADERS</p>
+<img src="D:/学习/myBlog/themes/fluid/source/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115151719480.png" srcset="/img/loading.gif" alt="rangeHeader" style="zoom:67%;" />
 
+<p>##4.2 SLOW HEADERS(SlowLoris)</p>
+<img src="D:/学习/myBlog/themes/fluid/source/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115151939829.png" srcset="/img/loading.gif" alt="image-20201115151939829" style="zoom: 67%;" />
+
+<p>##4.3 SLOW BODY(SLOW POST)</p>
+<img src="D:/学习/myBlog/themes/fluid/source/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115154404536.png" srcset="/img/loading.gif" alt="image-20201115154404536" style="zoom:67%;" />
+
+<h2 id="4-4-SLOW-READ"><a href="#4-4-SLOW-READ" class="headerlink" title="4.4  SLOW READ"></a>4.4  SLOW READ</h2><img src="D:/学习/myBlog/themes/fluid/source/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115152038635.png" srcset="/img/loading.gif" alt="image-20201115152038635" style="zoom:67%;" />
             </div>
             <hr>
             <div>

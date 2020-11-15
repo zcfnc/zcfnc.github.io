@@ -1,88 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Flask之缓慢的http拒绝服务攻击漏洞解决</title>
-    <url>/2020/11/06/Flask%E4%B9%8B%E7%BC%93%E6%85%A2%E7%9A%84http%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB%E6%BC%8F%E6%B4%9E%E8%A7%A3%E5%86%B3/</url>
-    <content><![CDATA[<h1 id="1-什么是缓慢的http拒绝服务攻击漏洞"><a href="#1-什么是缓慢的http拒绝服务攻击漏洞" class="headerlink" title="1.什么是缓慢的http拒绝服务攻击漏洞"></a>1.什么是缓慢的http拒绝服务攻击漏洞</h1><p>缓慢的http拒绝服务攻击是一种专门针对于Web的应用层拒绝服务攻击，攻击者操纵网络上的肉鸡，对目标Web服务器进行海量http request攻击，直到服务器带宽被打满，造成了拒绝服务。</p>
-<p>慢速HTTP拒绝服务攻击经过不断的演变和发展，主要有三种攻击类型，分别是Slow headers、Slow body、Slow read。</p>
-<ul>
-<li><p><code>slowloris</code>：完整的http请求是以 <code>\r\n\r\n</code> 结尾，攻击时仅发送 <code>\r\n</code>，少发送一个 <code>\r\n</code>，服务器认为请求还未发完，就会一直等待直至超时</p>
-</li>
-<li><p><code>slow post</code>：通过声明一个较大的content-length后，body缓慢发送，导致服务器一直等待</p>
-</li>
-<li><p><code>slow read</code>：向服务器发送一个正常合法的read请求，请求一个很大的文件，但把TCP滑动窗口设置得很小，服务器就会以滑动窗口的大小切割文件，然后发送，这时文件会长期存放在内存中，消耗资源</p>
-</li>
-</ul>
-<h1 id="2-Flask应对措施"><a href="#2-Flask应对措施" class="headerlink" title="2. Flask应对措施"></a>2. Flask应对措施</h1><ul>
-<li>限制每次请求数据的大小</li>
-<li>限制单个HTTP请求头的最大许可时间</li>
-<li>限制单个ip请求数量</li>
-<li>。。。。。。</li>
-</ul>
-<p>#3. 使用slowhttptest测试漏洞</p>
-<h2 id="3-1-slowhttptest的安装"><a href="#3-1-slowhttptest的安装" class="headerlink" title="3.1 slowhttptest的安装"></a>3.1 slowhttptest的安装</h2><blockquote>
-<p> 安装说明:<a href="https://github.com/shekyan/slowhttptest/wiki/InstallationAndUsage1">https://github.com/shekyan/slowhttptest/wiki/InstallationAndUsage1</a></p>
-</blockquote>
-<ol>
-<li><p>下载压缩包：<a href="https://github.com/shekyan/slowhttptest/releases">https://github.com/shekyan/slowhttptest/releases</a></p>
-</li>
-<li><p>安装libssl-dev<br><code>$ yum install openssl openssl-devel</code></p>
-</li>
-<li><p>安装C++编译器<br><code>$ yum install gcc-c++</code></p>
-</li>
-<li><p>解压</p>
-<p><code>$ tar -xzvf slowhttptest-x.x.tar.gz</code> </p>
-</li>
-<li><p>编译安装</p>
-<pre><code class="hljs powershell"><span class="hljs-variable">$</span> <span class="hljs-built_in">cd</span> slowhttp<span class="hljs-built_in">test-x</span>.x
-<span class="hljs-variable">$</span> ./configure -<span class="hljs-literal">-prefix</span>=PREFIX
-<span class="hljs-variable">$</span> make
-<span class="hljs-variable">$</span> sudo make install</code></pre>
-
-</li>
-</ol>
-<h2 id="3-2-参数说明及使用测试"><a href="#3-2-参数说明及使用测试" class="headerlink" title="3.2 参数说明及使用测试"></a>3.2 参数说明及使用测试</h2><pre><code class="hljs diff"><span class="hljs-deletion">-g      在测试完成后，以时间戳为名生成一个CVS和HTML文件的统计数据</span>
-<span class="hljs-deletion">-H      SlowLoris模式</span>
-<span class="hljs-deletion">-B      Slow POST模式</span>
-<span class="hljs-deletion">-R      Range Header模式</span>
-<span class="hljs-deletion">-X      Slow Read模式</span>
-<span class="hljs-deletion">-c      number of connections 测试时建立的连接数</span>
-<span class="hljs-deletion">-d      HTTP proxy host:port  为所有连接指定代理</span>
-<span class="hljs-deletion">-e      HTTP proxy host:port  为探测连接指定代理</span>
-<span class="hljs-deletion">-i      seconds 在slowrois和Slow POST模式中，指定发送数据间的间隔。</span>
-<span class="hljs-deletion">-l      seconds 测试维持时间</span>
-<span class="hljs-deletion">-n      seconds 在Slow Read模式下，指定每次操作的时间间隔。</span>
-<span class="hljs-deletion">-o      file name 使用-g参数时，可以使用此参数指定输出文件名</span>
-<span class="hljs-deletion">-p      seconds 指定等待时间来确认DoS攻击已经成功</span>
-<span class="hljs-deletion">-r      connections per second 每秒连接个数</span>
-<span class="hljs-deletion">-s      bytes 声明Content-Length header的值</span>
-<span class="hljs-deletion">-t      HTTP verb 在请求时使用什么操作，默认GET</span>
-<span class="hljs-deletion">-u      URL  指定目标url</span>
-<span class="hljs-deletion">-v      level 日志等级（详细度）</span>
-<span class="hljs-deletion">-w      bytes slow read模式中指定tcp窗口范围下限</span>
-<span class="hljs-deletion">-x      bytes 在slowloris and Slow POST tests模式中，指定发送的最大数据长度</span>
-<span class="hljs-deletion">-y      bytes slow read模式中指定tcp窗口范围上限</span>
-<span class="hljs-deletion">-z      bytes 在每次的read()中，从buffer中读取数据量</span></code></pre>
-
-<h2 id="3-2-1实例："><a href="#3-2-1实例：" class="headerlink" title="3.2.1实例："></a>3.2.1实例：</h2><p>slowloris模式：</p>
-<pre><code class="hljs apache"><span class="hljs-attribute">slowhttptest</span> -c <span class="hljs-number">1000</span> -H -g -o my_header_stats -i <span class="hljs-number">10</span> -r <span class="hljs-number">200</span> -t GET -u https://xxxxxx.xxxxx.xx -x <span class="hljs-number">24</span> -p <span class="hljs-number">3</span></code></pre>
-
-<p>slow post模式：</p>
-<pre><code class="hljs yaml"><span class="hljs-string">$</span> <span class="hljs-string">slowhttptest</span> <span class="hljs-string">-c</span> <span class="hljs-number">3000</span> <span class="hljs-string">-B</span> <span class="hljs-string">-g</span> <span class="hljs-string">-o</span> <span class="hljs-string">my_body_stats</span> <span class="hljs-string">-i</span> <span class="hljs-number">110</span> <span class="hljs-string">-r</span> <span class="hljs-number">200</span> <span class="hljs-string">-s</span> <span class="hljs-number">8192</span> <span class="hljs-string">-t</span> <span class="hljs-string">FAKEVERB</span> <span class="hljs-string">-u</span> <span class="hljs-string">http://xxx.xxx.xxx</span> <span class="hljs-string">-x</span> <span class="hljs-number">10</span> <span class="hljs-string">-p</span> <span class="hljs-number">3</span></code></pre>
-
-<p>slow read模式：</p>
-<pre><code class="hljs angelscript">$ slowhttptest -c <span class="hljs-number">8000</span> -X -r <span class="hljs-number">200</span> -w <span class="hljs-number">512</span> -y <span class="hljs-number">1024</span> -n <span class="hljs-number">5</span> -z <span class="hljs-number">32</span> -k <span class="hljs-number">3</span> -u https:<span class="hljs-comment">//xxx.xxx.xxx -p 3</span></code></pre>
-
-]]></content>
-      <categories>
-        <category>工作相关</category>
-      </categories>
-      <tags>
-        <tag>python</tag>
-        <tag>Flask</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>HBase基础</title>
     <url>/2020/05/11/HBase%E5%9F%BA%E7%A1%80/</url>
     <content><![CDATA[<h1 id="1-HBase的存储形式"><a href="#1-HBase的存储形式" class="headerlink" title="1. HBase的存储形式"></a>1. HBase的存储形式</h1><p>hbase的内部使用KeyValue的形式存储，其key是rowKey：family：column：logTime，value是其存储的内容。</p>
@@ -199,6 +117,99 @@
       </categories>
       <tags>
         <tag>Hbase</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Flask之缓慢的http拒绝服务攻击漏洞解决</title>
+    <url>/2020/11/06/Flask%E4%B9%8B%E7%BC%93%E6%85%A2%E7%9A%84http%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB%E6%BC%8F%E6%B4%9E%E8%A7%A3%E5%86%B3/</url>
+    <content><![CDATA[<h1 id="1-什么是缓慢的http拒绝服务攻击漏洞"><a href="#1-什么是缓慢的http拒绝服务攻击漏洞" class="headerlink" title="1.什么是缓慢的http拒绝服务攻击漏洞"></a>1.什么是缓慢的http拒绝服务攻击漏洞</h1><p>缓慢的http拒绝服务攻击是一种专门针对于Web的应用层拒绝服务攻击，攻击者操纵网络上的肉鸡，对目标Web服务器进行海量http request攻击，直到服务器带宽被打满，造成了拒绝服务。</p>
+<p>慢速HTTP拒绝服务攻击经过不断的演变和发展，主要有三种攻击类型，分别是Slow headers、Slow body、Slow read。</p>
+<ul>
+<li><p><code>slowloris</code>：完整的http请求是以 <code>\r\n\r\n</code> 结尾，攻击时仅发送 <code>\r\n</code>，少发送一个 <code>\r\n</code>，服务器认为请求还未发完，就会一直等待直至超时</p>
+</li>
+<li><p><code>slow post</code>：通过声明一个较大的content-length后，body缓慢发送，导致服务器一直等待</p>
+<ul>
+<li><code>slow read</code>：向服务器发送一个正常合法的read请求，请求一个很大的文件，但把TCP滑动窗口设置得很小，服务器就会以滑动窗口的大小切割文件，然后发送，这时文件会长期存放在内存中，消耗资源</li>
+</ul>
+</li>
+</ul>
+<h1 id="2-Flask应对措施"><a href="#2-Flask应对措施" class="headerlink" title="2. Flask应对措施"></a>2. Flask应对措施</h1><ul>
+<li>限制每次请求数据的大小</li>
+<li>限制单个HTTP请求头的最大许可时间</li>
+<li>限制单个ip请求数量</li>
+<li>。。。。。。</li>
+</ul>
+<p>#3. 使用slowhttptest测试漏洞</p>
+<h2 id="3-1-slowhttptest的安装"><a href="#3-1-slowhttptest的安装" class="headerlink" title="3.1 slowhttptest的安装"></a>3.1 slowhttptest的安装</h2><blockquote>
+<p> 安装说明:<a href="https://github.com/shekyan/slowhttptest/wiki/InstallationAndUsage1">https://github.com/shekyan/slowhttptest/wiki/InstallationAndUsage1</a></p>
+</blockquote>
+<ol>
+<li><p>下载压缩包：<a href="https://github.com/shekyan/slowhttptest/releases">https://github.com/shekyan/slowhttptest/releases</a></p>
+</li>
+<li><p>安装libssl-dev<br><code>$ yum install openssl openssl-devel</code></p>
+</li>
+<li><p>安装C++编译器<br><code>$ yum install gcc-c++</code></p>
+</li>
+<li><p>解压</p>
+<p><code>$ tar -xzvf slowhttptest-x.x.tar.gz</code> </p>
+</li>
+<li><p>编译安装</p>
+<pre><code class="hljs powershell"><span class="hljs-variable">$</span> <span class="hljs-built_in">cd</span> slowhttp<span class="hljs-built_in">test-x</span>.x
+<span class="hljs-variable">$</span> ./configure -<span class="hljs-literal">-prefix</span>=PREFIX
+<span class="hljs-variable">$</span> make
+<span class="hljs-variable">$</span> sudo make install</code></pre>
+
+</li>
+</ol>
+<h2 id="3-2-参数说明及使用测试"><a href="#3-2-参数说明及使用测试" class="headerlink" title="3.2 参数说明及使用测试"></a>3.2 参数说明及使用测试</h2><pre><code class="hljs diff"><span class="hljs-deletion">-g      在测试完成后，以时间戳为名生成一个CVS和HTML文件的统计数据</span>
+<span class="hljs-deletion">-H      SlowLoris模式</span>
+<span class="hljs-deletion">-B      Slow POST模式</span>
+<span class="hljs-deletion">-R      Range Header模式</span>
+<span class="hljs-deletion">-X      Slow Read模式</span>
+<span class="hljs-deletion">-c      number of connections 测试时建立的连接数</span>
+<span class="hljs-deletion">-d      HTTP proxy host:port  为所有连接指定代理</span>
+<span class="hljs-deletion">-e      HTTP proxy host:port  为探测连接指定代理</span>
+<span class="hljs-deletion">-i      seconds 在slowrois和Slow POST模式中，指定发送数据间的间隔。</span>
+<span class="hljs-deletion">-l      seconds 测试维持时间</span>
+<span class="hljs-deletion">-n      seconds 在Slow Read模式下，指定每次操作的时间间隔。</span>
+<span class="hljs-deletion">-o      file name 使用-g参数时，可以使用此参数指定输出文件名</span>
+<span class="hljs-deletion">-p      seconds 指定等待时间来确认DoS攻击已经成功</span>
+<span class="hljs-deletion">-r      connections per second 每秒连接个数</span>
+<span class="hljs-deletion">-s      bytes 声明Content-Length header的值</span>
+<span class="hljs-deletion">-t      HTTP verb 在请求时使用什么操作，默认GET</span>
+<span class="hljs-deletion">-u      URL  指定目标url</span>
+<span class="hljs-deletion">-v      level 日志等级（详细度）</span>
+<span class="hljs-deletion">-w      bytes slow read模式中指定tcp窗口范围下限</span>
+<span class="hljs-deletion">-x      bytes 在slowloris and Slow POST tests模式中，指定发送的最大数据长度</span>
+<span class="hljs-deletion">-y      bytes slow read模式中指定tcp窗口范围上限</span>
+<span class="hljs-deletion">-z      bytes 在每次的read()中，从buffer中读取数据量</span></code></pre>
+
+<h2 id="3-2-1参考实例："><a href="#3-2-1参考实例：" class="headerlink" title="3.2.1参考实例："></a>3.2.1参考实例：</h2><p>slowloris模式：</p>
+<pre><code class="hljs apache"><span class="hljs-attribute">slowhttptest</span> -c <span class="hljs-number">1000</span> -H -g -o my_header_stats -i <span class="hljs-number">10</span> -r <span class="hljs-number">200</span> -t GET -u https://xxxxxx.xxxxx.xx -x <span class="hljs-number">24</span> -p <span class="hljs-number">3</span></code></pre>
+
+<p>slow post模式：</p>
+<pre><code class="hljs yaml"><span class="hljs-string">$</span> <span class="hljs-string">slowhttptest</span> <span class="hljs-string">-c</span> <span class="hljs-number">3000</span> <span class="hljs-string">-B</span> <span class="hljs-string">-g</span> <span class="hljs-string">-o</span> <span class="hljs-string">my_body_stats</span> <span class="hljs-string">-i</span> <span class="hljs-number">110</span> <span class="hljs-string">-r</span> <span class="hljs-number">200</span> <span class="hljs-string">-s</span> <span class="hljs-number">8192</span> <span class="hljs-string">-t</span> <span class="hljs-string">FAKEVERB</span> <span class="hljs-string">-u</span> <span class="hljs-string">http://xxx.xxx.xxx</span> <span class="hljs-string">-x</span> <span class="hljs-number">10</span> <span class="hljs-string">-p</span> <span class="hljs-number">3</span></code></pre>
+
+<p>slow read模式：</p>
+<pre><code class="hljs angelscript">$ slowhttptest -c <span class="hljs-number">8000</span> -X -r <span class="hljs-number">200</span> -w <span class="hljs-number">512</span> -y <span class="hljs-number">1024</span> -n <span class="hljs-number">5</span> -z <span class="hljs-number">32</span> -k <span class="hljs-number">3</span> -u https:<span class="hljs-comment">//xxx.xxx.xxx -p 3</span></code></pre>
+
+<h1 id="4-使用说明"><a href="#4-使用说明" class="headerlink" title="4.使用说明"></a>4.使用说明</h1><p>以下是分别使用四种方式对自己的服务进行测试的结果，先开始不太懂每个曲线图的意义。这里说明一下，上面的参数可以设置连接数量以及持续请求时间等参数。然后下面展现的是曲线图，主要看在测试程序运行时间内Connected的数量是否被释放，是否通过服务的设置不符合条件的请求被服务端关闭，Service是否正常运行（服务是否存在被漏洞攻击程序给冲宕机了）。</p>
+<p>##4.1 RANGE HEADERS</p>
+<img src="D:/学习/myBlog/themes/fluid/source/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115151719480.png" alt="rangeHeader" style="zoom:67%;" />
+
+<p>##4.2 SLOW HEADERS(SlowLoris)</p>
+<img src="D:/学习/myBlog/themes/fluid/source/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115151939829.png" alt="image-20201115151939829" style="zoom: 67%;" />
+
+<p>##4.3 SLOW BODY(SLOW POST)</p>
+<img src="D:/学习/myBlog/themes/fluid/source/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115154404536.png" alt="image-20201115154404536" style="zoom:67%;" />
+
+<h2 id="4-4-SLOW-READ"><a href="#4-4-SLOW-READ" class="headerlink" title="4.4  SLOW READ"></a>4.4  SLOW READ</h2><img src="D:/学习/myBlog/themes/fluid/source/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115152038635.png" alt="image-20201115152038635" style="zoom:67%;" />]]></content>
+      <categories>
+        <category>工作相关</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+        <tag>Flask</tag>
       </tags>
   </entry>
   <entry>
@@ -1011,6 +1022,35 @@ ps ux grep | <span class="hljs-string">&#x27;python3&#x27;</span>   <span class=
       </tags>
   </entry>
   <entry>
+    <title>pyqt5使用及出现问题</title>
+    <url>/2020/09/17/pyqt5%E4%BD%BF%E7%94%A8%E5%8F%8A%E5%87%BA%E7%8E%B0%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<h1 id="1-pyqt5及qtdesigner的安装"><a href="#1-pyqt5及qtdesigner的安装" class="headerlink" title="1. pyqt5及qtdesigner的安装"></a>1. pyqt5及qtdesigner的安装</h1><h2 id="1-1-安装包"><a href="#1-1-安装包" class="headerlink" title="1.1 安装包"></a>1.1 安装包</h2><pre><code class="hljs cmake">pip <span class="hljs-keyword">install</span>  PyQt5-tools
+pip <span class="hljs-keyword">install</span> pyqt5
+pip <span class="hljs-keyword">install</span> sip</code></pre>
+
+<h2 id="1-2-配置pycharm"><a href="#1-2-配置pycharm" class="headerlink" title="1.2 配置pycharm"></a>1.2 配置pycharm</h2><ul>
+<li>报错:</li>
+</ul>
+<p><img src="/img/pyqt5%E4%BD%BF%E7%94%A8%E5%8F%8A%E5%87%BA%E7%8E%B0%E9%97%AE%E9%A2%98/1.png" alt="在这里插入图片描述"></p>
+<ul>
+<li><p>解决方法</p>
+<blockquote>
+<p>添加系统环境变量</p>
+<p>QT_QPA_PLATFORM_PLUGIN_PATH</p>
+<p>C:\ProgramData\Anaconda3\Lib\site-packages\PyQt5\Qt\plugins</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="2-使用"><a href="#2-使用" class="headerlink" title="2. 使用"></a>2. 使用</h1>]]></content>
+      <categories>
+        <category>编程语言特性相关</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+        <tag>pyqt5</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>neo4j集群安装步骤</title>
     <url>/2020/08/13/neo4j%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/</url>
     <content><![CDATA[<h1 id="1-neo4j集群安装"><a href="#1-neo4j集群安装" class="headerlink" title="1. neo4j集群安装"></a>1. neo4j集群安装</h1><ol start="0">
@@ -1312,35 +1352,6 @@ exe = EXE(pyz,
       </categories>
       <tags>
         <tag>python</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>pyqt5使用及出现问题</title>
-    <url>/2020/09/17/pyqt5%E4%BD%BF%E7%94%A8%E5%8F%8A%E5%87%BA%E7%8E%B0%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<h1 id="1-pyqt5及qtdesigner的安装"><a href="#1-pyqt5及qtdesigner的安装" class="headerlink" title="1. pyqt5及qtdesigner的安装"></a>1. pyqt5及qtdesigner的安装</h1><h2 id="1-1-安装包"><a href="#1-1-安装包" class="headerlink" title="1.1 安装包"></a>1.1 安装包</h2><pre><code class="hljs cmake">pip <span class="hljs-keyword">install</span>  PyQt5-tools
-pip <span class="hljs-keyword">install</span> pyqt5
-pip <span class="hljs-keyword">install</span> sip</code></pre>
-
-<h2 id="1-2-配置pycharm"><a href="#1-2-配置pycharm" class="headerlink" title="1.2 配置pycharm"></a>1.2 配置pycharm</h2><ul>
-<li>报错:</li>
-</ul>
-<p><img src="/img/pyqt5%E4%BD%BF%E7%94%A8%E5%8F%8A%E5%87%BA%E7%8E%B0%E9%97%AE%E9%A2%98/1.png" alt="在这里插入图片描述"></p>
-<ul>
-<li><p>解决方法</p>
-<blockquote>
-<p>添加系统环境变量</p>
-<p>QT_QPA_PLATFORM_PLUGIN_PATH</p>
-<p>C:\ProgramData\Anaconda3\Lib\site-packages\PyQt5\Qt\plugins</p>
-</blockquote>
-</li>
-</ul>
-<h1 id="2-使用"><a href="#2-使用" class="headerlink" title="2. 使用"></a>2. 使用</h1>]]></content>
-      <categories>
-        <category>编程语言特性相关</category>
-      </categories>
-      <tags>
-        <tag>python</tag>
-        <tag>pyqt5</tag>
       </tags>
   </entry>
   <entry>
@@ -1742,93 +1753,6 @@ m.group()
       </tags>
   </entry>
   <entry>
-    <title>图解十大经典的机器学习算法（转自网络）</title>
-    <url>/2018/11/29/%E5%9B%BE%E8%A7%A3%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><ul>
-<li>决策树</li>
-<li>随机森林</li>
-<li>逻辑回归</li>
-<li>SVM</li>
-<li>bayes</li>
-<li>Knn</li>
-<li>k-means</li>
-<li>Adaboost</li>
-<li>神经网络</li>
-<li>HMM</li>
-</ul>
-<a id="more"></a>
-
-<p>下图是一部典型的智能手机上安装的一些常见应用程序，可能很多人都猜不到，人工智能技术已经是手机上很多应用程序的核心驱动力。</p>
-<p><img src="https://p3.pstatp.com/large/43500001eb4471788557" alt="image"><br>    图1 智能手机上的相关应用</p>
-<p>传统的机器学习算法包括决策树、聚类、贝叶斯分类、支持向量机、EM、Adaboost等等。这篇文章将对常用算法做常识性的介绍，没有代码，也没有复杂的理论推导，就是图解一下，知道这些算法是什么，它们是怎么应用的。</p>
-<h2 id="决策树"><a href="#决策树" class="headerlink" title="决策树"></a>决策树</h2><p>根据一些 feature（特征） 进行分类，每个节点提一个问题，通过判断，将数据分为两类，再继续提问。这些问题是根据已有数据学习出来的，再投入新数据的时候，就可以根据这棵树上的问题，将数据划分到合适的叶子上。</p>
-<p><img src="https://p3.pstatp.com/large/435200006b668ea633bd" alt="image"><br>图2 决策树原理示意图</p>
-<h2 id="随机森林"><a href="#随机森林" class="headerlink" title="随机森林"></a>随机森林</h2><p>在源数据中随机选取数据，组成几个子集：<br><img src="https://p1.pstatp.com/large/434f0001f5ed801daccf" alt="image"></p>
-<p>图3-1 随机森林原理示意图</p>
-<p>S矩阵是源数据，有1-N条数据，A、B、C 是feature，最后一列C是类别：</p>
-<p><img src="https://p1.pstatp.com/large/435200006bcfcb4c5948" alt="image"></p>
-<p>由S随机生成M个子矩阵：</p>
-<p><img src="https://p1.pstatp.com/large/434f0001f6466bf0d67d" alt="image"></p>
-<p>这M个子集得到 M 个决策树：将新数据投入到这M个树中，得到M个分类结果，计数看预测成哪一类的数目最多，就将此类别作为最后的预测结果。</p>
-<p> <img src="https://p3.pstatp.com/large/434e00020cea24ad72ac" alt="image"></p>
-<p>图3-2 随机森林效果展示图</p>
-<h2 id="逻辑回归"><a href="#逻辑回归" class="headerlink" title="逻辑回归"></a>逻辑回归</h2><p>当预测目标是概率这样的，值域需要满足大于等于0，小于等于1的，这个时候单纯的线性模型是做不到的，因为在定义域不在某个范围之内时，值域也超出了规定区间。</p>
-<p><img src="https://p1.pstatp.com/large/4352000088a0cca901dc" alt="image"></p>
-<p>图4-1 线性模型图</p>
-<p>所以此时需要这样的形状的模型会比较好：</p>
-<p><img src="https://p9.pstatp.com/large/43500002088dadd37cd2" alt="image"></p>
-<p>图4-2</p>
-<p>那么怎么得到这样的模型呢？</p>
-<p>这个模型需要满足两个条件 “大于等于0”，“小于等于1” 。大于等于0 的模型可以选择绝对值，平方值，这里用指数函数，一定大于0；小于等于1 用除法，分子是自己，分母是自身加上1，那一定是小于1的了。</p>
-<p><img src="https://p1.pstatp.com/large/43520000890f09d83fe9" alt="image"><br>图4-3</p>
-<p>再做一下变形，就得到了 logistic regressions 模型：</p>
-<p><img src="https://p9.pstatp.com/large/4351000204be99bba336" alt="image"><br>图4-4</p>
-<p>通过源数据计算可以得到相应的系数了：<br> <img src="https://p3.pstatp.com/large/4353000003f6ba0e0f8d" alt="image"><br>图4-5<br><img src="https://p1.pstatp.com/large/435100020586720b85a6" alt="image"><br>图4-6 LR模型曲线图</p>
-<h2 id="支持向量机"><a href="#支持向量机" class="headerlink" title="支持向量机"></a>支持向量机</h2><p>要将两类分开，想要得到一个超平面，最优的超平面是到两类的 margin 达到最大，margin就是超平面与离它最近一点的距离，如下图，Z2&gt;Z1，所以绿色的超平面比较好。</p>
-<p>图解十大经典的机器学习算法<br><img src="https://p3.pstatp.com/large/435000020b04838dcf31" alt="image"><br>图5 分类问题示意图</p>
-<p>将这个超平面表示成一个线性方程，在线上方的一类，都大于等于1，另一类小于等于－1：</p>
-<p><img src="https://p1.pstatp.com/large/435000020b4ac6b506a0" alt="image"></p>
-<p>点到面的距离根据图中的公式计算：</p>
-<p><img src="https://p3.pstatp.com/large/435200008bc2bf7f5517" alt="image"></p>
-<p>所以得到total margin的表达式如下，目标是最大化这个margin，就需要最小化分母，于是变成了一个优化问题：</p>
-<p><img src="https://p3.pstatp.com/large/43530000059e39d73a18" alt="image"></p>
-<p>举个例子，三个点，找到最优的超平面，定义了 weight vector＝（2，3）－（1，1）：</p>
-<p><img src="https://p1.pstatp.com/large/4353000005c7816fdd59" alt="image"></p>
-<p>得到weight vector为（a，2a），将两个点代入方程，代入（2，3）另其值＝1，代入（1，1）另其值＝-1，求解出 a 和 截矩 w0 的值，进而得到超平面的表达式。</p>
-<p><img src="https://p9.pstatp.com/large/43510002070c383b6105" alt="image"></p>
-<p>a求出来后，代入（a，2a）得到的就是support vector，a和w0代入超平面的方程就是support vector machine。</p>
-<h2 id="朴素贝叶斯"><a href="#朴素贝叶斯" class="headerlink" title="朴素贝叶斯"></a>朴素贝叶斯</h2><p>举个在 NLP 的应用：给一段文字，返回情感分类，这段文字的态度是positive，还是negative：<br><img src="https://p3.pstatp.com/large/43530000063edd668c55" alt="image"><br>图6-1 问题案例</p>
-<p>为了解决这个问题，可以只看其中的一些单词：<br><img src="https://p9.pstatp.com/large/435200008cd4629a6bc4" alt="image"><br>这段文字，将仅由一些单词和它们的计数代表：<br><img src="https://p1.pstatp.com/large/434e00022df729f719f3" alt="image"></p>
-<p>原始问题是：给你一句话，它属于哪一类 ？通过bayes rules变成一个比较简单容易求得的问题：<br><img src="https://p3.pstatp.com/large/434d00022ba607261510" alt="image"></p>
-<p>问题变成，这一类中这句话出现的概率是多少，当然，别忘了公式里的另外两个概率。例子：单词“love”在positive的情况下出现的概率是 0.1，在negative的情况下出现的概率是0.001。</p>
-<p><img src="https://p3.pstatp.com/large/43510002080ef9b94c91" alt="image"><br>图6-2 NB算法结果展示图</p>
-<h2 id="K近邻算法"><a href="#K近邻算法" class="headerlink" title="K近邻算法"></a>K近邻算法</h2><p>给一个新的数据时，离它最近的 k 个点中，哪个类别多，这个数据就属于哪一类。</p>
-<p>例子：要区分“猫”和“狗”，通过“claws”和“sound”两个feature来判断的话，圆形和三角形是已知分类的了，那么这个“star”代表的是哪一类呢？<br><img src="https://p3.pstatp.com/large/434e00022edc52fa300b" alt="image"><br>图7-1 问题案例</p>
-<p>k＝3时，这三条线链接的点就是最近的三个点，那么圆形多一些，所以这个star就是属于猫。<br><img src="https://p3.pstatp.com/large/4351000208a4639fb593" alt="image"><br>图7-2 算法步骤展示图</p>
-<h2 id="K均值算法"><a href="#K均值算法" class="headerlink" title="K均值算法"></a>K均值算法</h2><p>先要将一组数据，分为三类，粉色数值大，黄色数值小 。最开始先初始化，这里面选了最简单的 3，2，1 作为各类的初始值 。剩下的数据里，每个都与三个初始值计算距离，然后归类到离它最近的初始值所在类别。<br><img src="https://p3.pstatp.com/large/43530000080920d7643e" alt="image"><br>图8-1 问题案例</p>
-<p>分好类后，计算每一类的平均值，作为新一轮的中心点：<br><img src="https://p3.pstatp.com/large/435200008ec651b49844" alt="image"><br>图8-2</p>
-<p>几轮之后，分组不再变化了，就可以停止了：<br><img src="https://p3.pstatp.com/large/434e0002300572baeba6" alt="image"><br><img src="https://p1.pstatp.com/large/434e00023018f6a2f245" alt="image"><br>图8-3 算法结果展示</p>
-<h2 id="Adaboost"><a href="#Adaboost" class="headerlink" title="Adaboost"></a>Adaboost</h2><p>Adaboost 是 Boosting 的方法之一。Boosting就是把若干个分类效果并不好的分类器综合起来考虑，会得到一个效果比较好的分类器。</p>
-<p>下图，左右两个决策树，单个看是效果不怎么好的，但是把同样的数据投入进去，把两个结果加起来考虑，就会增加可信度。<br><img src="https://p1.pstatp.com/large/435100020a32bbefadfd" alt="image"><br>图9-1 算法原理展示</p>
-<p>Adaboost 的例子，手写识别中，在画板上可以抓取到很多features（特征），例如始点的方向，始点和终点的距离等等。<br><img src="https://p3.pstatp.com/large/434d00022e7cc9792c98" alt="image"><br>图9-2</p>
-<p>training的时候，会得到每个feature的weight（权重），例如2和3的开头部分很像，这个feature对分类起到的作用很小，它的权重也就会较小。<br><img src="https://p1.pstatp.com/large/435000021041994467f7" alt="image"><br>图9-3</p>
-<p>而这个alpha角就具有很强的识别性，这个feature的权重就会较大，最后的预测结果是综合考虑这些feature的结果。</p>
-<p><img src="https://p1.pstatp.com/large/434e000231a8b19cc6a0" alt="image"><br>图9-4</p>
-<h2 id="神经网络"><a href="#神经网络" class="headerlink" title="神经网络"></a>神经网络</h2><p>Neural Networks适合一个input可能落入至少两个类别里：NN由若干层神经元，和它们之间的联系组成。 第一层是input层，最后一层是output层。在hidden层和output层都有自己的classifier。<br><img src="https://p3.pstatp.com/large/435100020b63904aa0f0" alt="image"><br>图10-1 神经网络结构</p>
-<p>input输入到网络中，被激活，计算的分数被传递到下一层，激活后面的神经层，最后output层的节点上的分数代表属于各类的分数，下图例子得到分类结果为class 1；同样的input被传输到不同的节点上，之所以会得到不同的结果是因为各自节点有不同的weights 和bias，这也就是forward propagation。<br><img src="https://p3.pstatp.com/large/434d00022fbafcfbfa77" alt="image"><br>图10-2 算法结果展示</p>
-<h2 id="马尔科夫"><a href="#马尔科夫" class="headerlink" title="马尔科夫"></a>马尔科夫</h2><p>Markov Chains由state（状态）和transitions（转移）组成。例子，根据这一句话 ‘the quick brown fox jumps over the lazy dog’，要得到markov chains。</p>
-<p>步骤，先给每一个单词设定成一个状态，然后计算状态间转换的概率。<br><img src="https://p3.pstatp.com/large/435200009180de2aa4a9" alt="image"><br>图11-1 马尔科夫原理图</p>
-<p>这是一句话计算出来的概率，当你用大量文本去做统计的时候，会得到更大的状态转移矩阵，例如the后面可以连接的单词，及相应的概率。<br><img src="https://p3.pstatp.com/large/435300000b3f99003259" alt="image"><br>图11-2 算法结果展示</p>
-<p>上述十大类机器学习算法是人工智能发展的践行者，即使在当下，依然在数据挖掘以及小样本的人工智能问题中被广泛使用。</p>
-]]></content>
-      <categories>
-        <category>机器学习笔记</category>
-      </categories>
-      <tags>
-        <tag>machine learning</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>图数据库nebula-graph的安装与集群部署</title>
     <url>/2020/04/16/%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93nebula-graph%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/</url>
     <content><![CDATA[<h1 id="1-nebula的安装"><a href="#1-nebula的安装" class="headerlink" title="1. nebula的安装"></a>1. nebula的安装</h1><h2 id="1-1-下载nebula的rpm包"><a href="#1-1-下载nebula的rpm包" class="headerlink" title="1.1 下载nebula的rpm包"></a>1.1 下载nebula的rpm包</h2><pre><code class="hljs apache"><span class="hljs-attribute">bash</span> $ wget https://nebula-graph.oss-cn-hangzhou.aliyuncs.com/package/<span class="hljs-number">1</span>.<span class="hljs-number">0</span>.<span class="hljs-number">0</span>-rc<span class="hljs-number">2</span>/nebula-<span class="hljs-number">1</span>.<span class="hljs-number">0</span>.<span class="hljs-number">0</span>-rc<span class="hljs-number">2</span>.el<span class="hljs-number">7</span>-<span class="hljs-number">5</span>.x<span class="hljs-number">86</span>_<span class="hljs-number">64</span>.rpm
@@ -1973,6 +1897,165 @@ https:<span class="hljs-regexp">//</span>docs.docker.com<span class="hljs-regexp
       </tags>
   </entry>
   <entry>
+    <title>图解十大经典的机器学习算法（转自网络）</title>
+    <url>/2018/11/29/%E5%9B%BE%E8%A7%A3%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><ul>
+<li>决策树</li>
+<li>随机森林</li>
+<li>逻辑回归</li>
+<li>SVM</li>
+<li>bayes</li>
+<li>Knn</li>
+<li>k-means</li>
+<li>Adaboost</li>
+<li>神经网络</li>
+<li>HMM</li>
+</ul>
+<a id="more"></a>
+
+<p>下图是一部典型的智能手机上安装的一些常见应用程序，可能很多人都猜不到，人工智能技术已经是手机上很多应用程序的核心驱动力。</p>
+<p><img src="https://p3.pstatp.com/large/43500001eb4471788557" alt="image"><br>    图1 智能手机上的相关应用</p>
+<p>传统的机器学习算法包括决策树、聚类、贝叶斯分类、支持向量机、EM、Adaboost等等。这篇文章将对常用算法做常识性的介绍，没有代码，也没有复杂的理论推导，就是图解一下，知道这些算法是什么，它们是怎么应用的。</p>
+<h2 id="决策树"><a href="#决策树" class="headerlink" title="决策树"></a>决策树</h2><p>根据一些 feature（特征） 进行分类，每个节点提一个问题，通过判断，将数据分为两类，再继续提问。这些问题是根据已有数据学习出来的，再投入新数据的时候，就可以根据这棵树上的问题，将数据划分到合适的叶子上。</p>
+<p><img src="https://p3.pstatp.com/large/435200006b668ea633bd" alt="image"><br>图2 决策树原理示意图</p>
+<h2 id="随机森林"><a href="#随机森林" class="headerlink" title="随机森林"></a>随机森林</h2><p>在源数据中随机选取数据，组成几个子集：<br><img src="https://p1.pstatp.com/large/434f0001f5ed801daccf" alt="image"></p>
+<p>图3-1 随机森林原理示意图</p>
+<p>S矩阵是源数据，有1-N条数据，A、B、C 是feature，最后一列C是类别：</p>
+<p><img src="https://p1.pstatp.com/large/435200006bcfcb4c5948" alt="image"></p>
+<p>由S随机生成M个子矩阵：</p>
+<p><img src="https://p1.pstatp.com/large/434f0001f6466bf0d67d" alt="image"></p>
+<p>这M个子集得到 M 个决策树：将新数据投入到这M个树中，得到M个分类结果，计数看预测成哪一类的数目最多，就将此类别作为最后的预测结果。</p>
+<p> <img src="https://p3.pstatp.com/large/434e00020cea24ad72ac" alt="image"></p>
+<p>图3-2 随机森林效果展示图</p>
+<h2 id="逻辑回归"><a href="#逻辑回归" class="headerlink" title="逻辑回归"></a>逻辑回归</h2><p>当预测目标是概率这样的，值域需要满足大于等于0，小于等于1的，这个时候单纯的线性模型是做不到的，因为在定义域不在某个范围之内时，值域也超出了规定区间。</p>
+<p><img src="https://p1.pstatp.com/large/4352000088a0cca901dc" alt="image"></p>
+<p>图4-1 线性模型图</p>
+<p>所以此时需要这样的形状的模型会比较好：</p>
+<p><img src="https://p9.pstatp.com/large/43500002088dadd37cd2" alt="image"></p>
+<p>图4-2</p>
+<p>那么怎么得到这样的模型呢？</p>
+<p>这个模型需要满足两个条件 “大于等于0”，“小于等于1” 。大于等于0 的模型可以选择绝对值，平方值，这里用指数函数，一定大于0；小于等于1 用除法，分子是自己，分母是自身加上1，那一定是小于1的了。</p>
+<p><img src="https://p1.pstatp.com/large/43520000890f09d83fe9" alt="image"><br>图4-3</p>
+<p>再做一下变形，就得到了 logistic regressions 模型：</p>
+<p><img src="https://p9.pstatp.com/large/4351000204be99bba336" alt="image"><br>图4-4</p>
+<p>通过源数据计算可以得到相应的系数了：<br> <img src="https://p3.pstatp.com/large/4353000003f6ba0e0f8d" alt="image"><br>图4-5<br><img src="https://p1.pstatp.com/large/435100020586720b85a6" alt="image"><br>图4-6 LR模型曲线图</p>
+<h2 id="支持向量机"><a href="#支持向量机" class="headerlink" title="支持向量机"></a>支持向量机</h2><p>要将两类分开，想要得到一个超平面，最优的超平面是到两类的 margin 达到最大，margin就是超平面与离它最近一点的距离，如下图，Z2&gt;Z1，所以绿色的超平面比较好。</p>
+<p>图解十大经典的机器学习算法<br><img src="https://p3.pstatp.com/large/435000020b04838dcf31" alt="image"><br>图5 分类问题示意图</p>
+<p>将这个超平面表示成一个线性方程，在线上方的一类，都大于等于1，另一类小于等于－1：</p>
+<p><img src="https://p1.pstatp.com/large/435000020b4ac6b506a0" alt="image"></p>
+<p>点到面的距离根据图中的公式计算：</p>
+<p><img src="https://p3.pstatp.com/large/435200008bc2bf7f5517" alt="image"></p>
+<p>所以得到total margin的表达式如下，目标是最大化这个margin，就需要最小化分母，于是变成了一个优化问题：</p>
+<p><img src="https://p3.pstatp.com/large/43530000059e39d73a18" alt="image"></p>
+<p>举个例子，三个点，找到最优的超平面，定义了 weight vector＝（2，3）－（1，1）：</p>
+<p><img src="https://p1.pstatp.com/large/4353000005c7816fdd59" alt="image"></p>
+<p>得到weight vector为（a，2a），将两个点代入方程，代入（2，3）另其值＝1，代入（1，1）另其值＝-1，求解出 a 和 截矩 w0 的值，进而得到超平面的表达式。</p>
+<p><img src="https://p9.pstatp.com/large/43510002070c383b6105" alt="image"></p>
+<p>a求出来后，代入（a，2a）得到的就是support vector，a和w0代入超平面的方程就是support vector machine。</p>
+<h2 id="朴素贝叶斯"><a href="#朴素贝叶斯" class="headerlink" title="朴素贝叶斯"></a>朴素贝叶斯</h2><p>举个在 NLP 的应用：给一段文字，返回情感分类，这段文字的态度是positive，还是negative：<br><img src="https://p3.pstatp.com/large/43530000063edd668c55" alt="image"><br>图6-1 问题案例</p>
+<p>为了解决这个问题，可以只看其中的一些单词：<br><img src="https://p9.pstatp.com/large/435200008cd4629a6bc4" alt="image"><br>这段文字，将仅由一些单词和它们的计数代表：<br><img src="https://p1.pstatp.com/large/434e00022df729f719f3" alt="image"></p>
+<p>原始问题是：给你一句话，它属于哪一类 ？通过bayes rules变成一个比较简单容易求得的问题：<br><img src="https://p3.pstatp.com/large/434d00022ba607261510" alt="image"></p>
+<p>问题变成，这一类中这句话出现的概率是多少，当然，别忘了公式里的另外两个概率。例子：单词“love”在positive的情况下出现的概率是 0.1，在negative的情况下出现的概率是0.001。</p>
+<p><img src="https://p3.pstatp.com/large/43510002080ef9b94c91" alt="image"><br>图6-2 NB算法结果展示图</p>
+<h2 id="K近邻算法"><a href="#K近邻算法" class="headerlink" title="K近邻算法"></a>K近邻算法</h2><p>给一个新的数据时，离它最近的 k 个点中，哪个类别多，这个数据就属于哪一类。</p>
+<p>例子：要区分“猫”和“狗”，通过“claws”和“sound”两个feature来判断的话，圆形和三角形是已知分类的了，那么这个“star”代表的是哪一类呢？<br><img src="https://p3.pstatp.com/large/434e00022edc52fa300b" alt="image"><br>图7-1 问题案例</p>
+<p>k＝3时，这三条线链接的点就是最近的三个点，那么圆形多一些，所以这个star就是属于猫。<br><img src="https://p3.pstatp.com/large/4351000208a4639fb593" alt="image"><br>图7-2 算法步骤展示图</p>
+<h2 id="K均值算法"><a href="#K均值算法" class="headerlink" title="K均值算法"></a>K均值算法</h2><p>先要将一组数据，分为三类，粉色数值大，黄色数值小 。最开始先初始化，这里面选了最简单的 3，2，1 作为各类的初始值 。剩下的数据里，每个都与三个初始值计算距离，然后归类到离它最近的初始值所在类别。<br><img src="https://p3.pstatp.com/large/43530000080920d7643e" alt="image"><br>图8-1 问题案例</p>
+<p>分好类后，计算每一类的平均值，作为新一轮的中心点：<br><img src="https://p3.pstatp.com/large/435200008ec651b49844" alt="image"><br>图8-2</p>
+<p>几轮之后，分组不再变化了，就可以停止了：<br><img src="https://p3.pstatp.com/large/434e0002300572baeba6" alt="image"><br><img src="https://p1.pstatp.com/large/434e00023018f6a2f245" alt="image"><br>图8-3 算法结果展示</p>
+<h2 id="Adaboost"><a href="#Adaboost" class="headerlink" title="Adaboost"></a>Adaboost</h2><p>Adaboost 是 Boosting 的方法之一。Boosting就是把若干个分类效果并不好的分类器综合起来考虑，会得到一个效果比较好的分类器。</p>
+<p>下图，左右两个决策树，单个看是效果不怎么好的，但是把同样的数据投入进去，把两个结果加起来考虑，就会增加可信度。<br><img src="https://p1.pstatp.com/large/435100020a32bbefadfd" alt="image"><br>图9-1 算法原理展示</p>
+<p>Adaboost 的例子，手写识别中，在画板上可以抓取到很多features（特征），例如始点的方向，始点和终点的距离等等。<br><img src="https://p3.pstatp.com/large/434d00022e7cc9792c98" alt="image"><br>图9-2</p>
+<p>training的时候，会得到每个feature的weight（权重），例如2和3的开头部分很像，这个feature对分类起到的作用很小，它的权重也就会较小。<br><img src="https://p1.pstatp.com/large/435000021041994467f7" alt="image"><br>图9-3</p>
+<p>而这个alpha角就具有很强的识别性，这个feature的权重就会较大，最后的预测结果是综合考虑这些feature的结果。</p>
+<p><img src="https://p1.pstatp.com/large/434e000231a8b19cc6a0" alt="image"><br>图9-4</p>
+<h2 id="神经网络"><a href="#神经网络" class="headerlink" title="神经网络"></a>神经网络</h2><p>Neural Networks适合一个input可能落入至少两个类别里：NN由若干层神经元，和它们之间的联系组成。 第一层是input层，最后一层是output层。在hidden层和output层都有自己的classifier。<br><img src="https://p3.pstatp.com/large/435100020b63904aa0f0" alt="image"><br>图10-1 神经网络结构</p>
+<p>input输入到网络中，被激活，计算的分数被传递到下一层，激活后面的神经层，最后output层的节点上的分数代表属于各类的分数，下图例子得到分类结果为class 1；同样的input被传输到不同的节点上，之所以会得到不同的结果是因为各自节点有不同的weights 和bias，这也就是forward propagation。<br><img src="https://p3.pstatp.com/large/434d00022fbafcfbfa77" alt="image"><br>图10-2 算法结果展示</p>
+<h2 id="马尔科夫"><a href="#马尔科夫" class="headerlink" title="马尔科夫"></a>马尔科夫</h2><p>Markov Chains由state（状态）和transitions（转移）组成。例子，根据这一句话 ‘the quick brown fox jumps over the lazy dog’，要得到markov chains。</p>
+<p>步骤，先给每一个单词设定成一个状态，然后计算状态间转换的概率。<br><img src="https://p3.pstatp.com/large/435200009180de2aa4a9" alt="image"><br>图11-1 马尔科夫原理图</p>
+<p>这是一句话计算出来的概率，当你用大量文本去做统计的时候，会得到更大的状态转移矩阵，例如the后面可以连接的单词，及相应的概率。<br><img src="https://p3.pstatp.com/large/435300000b3f99003259" alt="image"><br>图11-2 算法结果展示</p>
+<p>上述十大类机器学习算法是人工智能发展的践行者，即使在当下，依然在数据挖掘以及小样本的人工智能问题中被广泛使用。</p>
+]]></content>
+      <categories>
+        <category>机器学习笔记</category>
+      </categories>
+      <tags>
+        <tag>machine learning</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>手写识别图片预处理</title>
+    <url>/2018/11/21/%E6%89%8B%E5%86%99%E8%AF%86%E5%88%AB%E5%9B%BE%E7%89%87%E9%A2%84%E5%A4%84%E7%90%86/</url>
+    <content><![CDATA[<h2 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h2><p>大二的时候几个人一起搞的一个东西，上周运气好被一个同学投到了成都的一个比赛还进了决赛，然后思考了一下既然要比赛还是把这个系统的各个方面完善一下好了。我做的是图片预处理部分，把一张图片中的数字算式部分提取出来。</p>
+<pre><code>之前的图片预处理分割字符是通过照片的像素点来分割的，
+现在看来是十分的愚蠢。。。主要是那个时候自己也菜，
+所以现在想了办法预处理部分重新做一下。</code></pre>
+<h2 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h2><ul>
+<li>图片预处理部分要实现的功能很简单，就是把一整张图片中的数字和运算符号切割成单独的一个一个小图像就好了。<br>大概步骤就是这样：</li>
+</ul>
+<pre><code class="hljs ada">graph LR
+整张图片<span class="hljs-comment">--&gt;图片旋转闭操作等处理</span>
+图片旋转闭操作等处理<span class="hljs-comment">--&gt;切割单个等式</span>
+切割单个等式<span class="hljs-comment">--&gt;获取每一个数字与运算符</span></code></pre>
+<ul>
+<li><p>理想效果：<br>  原图⬇<br>  <img src="EF7E208AE0EE4C20923C8FCE1596E233" alt="0--test0"></p>
+<p>  结果⬇<br>  <img src="E0D1665B6D024C95BAA35ED62B95FFD3" alt="1"></p>
+</li>
+<li><p>其中图片的拍摄过程中需要解决的问题及解决方法：</p>
+<ol>
+<li>图片倾斜 –&gt; 霍夫变换</li>
+<li>不平整 –&gt; 闭操作透视变换</li>
+<li>噪点与阴影 –&gt; 二值化处理</li>
+<li>提取内容 –&gt; 算式框的边界检测</li>
+</ol>
+</li>
+</ul>
+<h2 id="模块具体实施步骤和结果"><a href="#模块具体实施步骤和结果" class="headerlink" title="模块具体实施步骤和结果"></a>模块具体实施步骤和结果</h2><ul>
+<li><p>步骤零：获取图片<br>  <img src="BC4FFD9E762F41B884F1561145188A38" alt="image"></p>
+</li>
+<li><p>步骤一：霍夫变换</p>
+<p>  这个地方因为拍摄的照片就比较正，所以霍夫变换的效果不是十分明显，仔细看是能看到这个图边缘黑边的地方就是进行旋转后的痕迹。结果如下：<br><img src="2CB054EC34C74753AC8B607F09C43EAB" alt="image"></p>
+</li>
+</ul>
+<ul>
+<li><p>步骤二：获取边界图片</p>
+<p>  opencv的边界检测方法<br>  <img src="26767B1C17EF41419DBFAB8DFB1A3F97" alt="image"></p>
+</li>
+<li><p>步骤三：灰度化闭操作及透视变换</p>
+<p>  闭操作：<br>  ‘’ 图片形态学操作中的一种，闭操作可使轮廓线更光滑，但与开操作相反的是，闭操作通常消弥狭窄的间断和长细的鸿沟，消除小的空洞，并填补轮廓线中的断裂。’’</p>
+<p>  简单点说：图片细节增强</p>
+<p>  透视变换：将原图投影到另一个平面上并通过点运算使图像更加平整。</p>
+<p>  二值化处理方法：根据Otsu’s方法取最佳阈值对图片进行二值化处理</p>
+<p>  结果如下：这里透明变换的效果并不是很好，目前还没有找到一个合适的参数使用，并且从分割的情况来看效果也还行，所以暂时就这样勉强用了。。。<br>  <img src="E3617599EB824E8299DABE0F092E2E2A" alt="image"></p>
+</li>
+<li><p>步骤四：分割单元格</p>
+<p>  opencv对图片轮廓进行识别：<br>  <img src="BAD59EB81C624531B685A71658D40A6B" alt="image"></p>
+<p>  使用opencv把边界画出来，效果简明易懂：</p>
+<p>  <img src="334DE774AEC74DFF92342E47D4D5DE59" alt="image"></p>
+<p>  单个单元格的提取：<br>  <img src="FBF03940D0494CCA8DA20F1EB9189084" alt="image"></p>
+</li>
+<li><p>步骤五：从单个单元格中提取数字及符号</p>
+<p>  因为用了垂直投影方法切割字符，在使用之前去噪点的步骤没有检测效果如何，导致这里用垂直投影会出现将噪点也切割出来的情况。返回重新调整一下二值化的阈值就可以了。</p>
+<p>  效果：<br>  <img src="8F285B11124A45CAB531F5BC452BA749" alt="1"></p>
+</li>
+</ul>
+<h2 id="其他："><a href="#其他：" class="headerlink" title="其他："></a>其他：</h2><ol>
+<li>使用png格式图片的原因<br>png它是无损压缩格式，jpg是有损</li>
+<li>写一个完整的系统代码一定要分方法分模块，否则到后面代码量增加起来之后对后续的维护很麻烦。</li>
+<li>对opencv模块的强大有了更加的了解。。。</li>
+<li>这里实名感谢”@ATP合成酶”大佬提供的相关处理思路，万分感谢</li>
+<li>项目为了赶时间基本只写了两周还有很多不完整的细节处理地方，如果继续做下去的话也还是蛮有意思的</li>
+<li>第一次感受到当程序员没日没夜的加班生活，想到以后还有很多次真的是很后悔如这一行了</li>
+</ol>
+]]></content>
+      <categories>
+        <category>学校</category>
+      </categories>
+      <tags>
+        <tag>opencv</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>实习记录</title>
     <url>/2019/07/14/%E5%AE%9E%E4%B9%A0%E8%AE%B0%E5%BD%95/</url>
     <content><![CDATA[<h2 id="0-环境"><a href="#0-环境" class="headerlink" title="0.环境"></a>0.环境</h2><ul>
@@ -2056,78 +2139,6 @@ https:<span class="hljs-regexp">//</span>docs.docker.com<span class="hljs-regexp
       </tags>
   </entry>
   <entry>
-    <title>手写识别图片预处理</title>
-    <url>/2018/11/21/%E6%89%8B%E5%86%99%E8%AF%86%E5%88%AB%E5%9B%BE%E7%89%87%E9%A2%84%E5%A4%84%E7%90%86/</url>
-    <content><![CDATA[<h2 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h2><p>大二的时候几个人一起搞的一个东西，上周运气好被一个同学投到了成都的一个比赛还进了决赛，然后思考了一下既然要比赛还是把这个系统的各个方面完善一下好了。我做的是图片预处理部分，把一张图片中的数字算式部分提取出来。</p>
-<pre><code>之前的图片预处理分割字符是通过照片的像素点来分割的，
-现在看来是十分的愚蠢。。。主要是那个时候自己也菜，
-所以现在想了办法预处理部分重新做一下。</code></pre>
-<h2 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h2><ul>
-<li>图片预处理部分要实现的功能很简单，就是把一整张图片中的数字和运算符号切割成单独的一个一个小图像就好了。<br>大概步骤就是这样：</li>
-</ul>
-<pre><code class="hljs ada">graph LR
-整张图片<span class="hljs-comment">--&gt;图片旋转闭操作等处理</span>
-图片旋转闭操作等处理<span class="hljs-comment">--&gt;切割单个等式</span>
-切割单个等式<span class="hljs-comment">--&gt;获取每一个数字与运算符</span></code></pre>
-<ul>
-<li><p>理想效果：<br>  原图⬇<br>  <img src="EF7E208AE0EE4C20923C8FCE1596E233" alt="0--test0"></p>
-<p>  结果⬇<br>  <img src="E0D1665B6D024C95BAA35ED62B95FFD3" alt="1"></p>
-</li>
-<li><p>其中图片的拍摄过程中需要解决的问题及解决方法：</p>
-<ol>
-<li>图片倾斜 –&gt; 霍夫变换</li>
-<li>不平整 –&gt; 闭操作透视变换</li>
-<li>噪点与阴影 –&gt; 二值化处理</li>
-<li>提取内容 –&gt; 算式框的边界检测</li>
-</ol>
-</li>
-</ul>
-<h2 id="模块具体实施步骤和结果"><a href="#模块具体实施步骤和结果" class="headerlink" title="模块具体实施步骤和结果"></a>模块具体实施步骤和结果</h2><ul>
-<li><p>步骤零：获取图片<br>  <img src="BC4FFD9E762F41B884F1561145188A38" alt="image"></p>
-</li>
-<li><p>步骤一：霍夫变换</p>
-<p>  这个地方因为拍摄的照片就比较正，所以霍夫变换的效果不是十分明显，仔细看是能看到这个图边缘黑边的地方就是进行旋转后的痕迹。结果如下：<br><img src="2CB054EC34C74753AC8B607F09C43EAB" alt="image"></p>
-</li>
-</ul>
-<ul>
-<li><p>步骤二：获取边界图片</p>
-<p>  opencv的边界检测方法<br>  <img src="26767B1C17EF41419DBFAB8DFB1A3F97" alt="image"></p>
-</li>
-<li><p>步骤三：灰度化闭操作及透视变换</p>
-<p>  闭操作：<br>  ‘’ 图片形态学操作中的一种，闭操作可使轮廓线更光滑，但与开操作相反的是，闭操作通常消弥狭窄的间断和长细的鸿沟，消除小的空洞，并填补轮廓线中的断裂。’’</p>
-<p>  简单点说：图片细节增强</p>
-<p>  透视变换：将原图投影到另一个平面上并通过点运算使图像更加平整。</p>
-<p>  二值化处理方法：根据Otsu’s方法取最佳阈值对图片进行二值化处理</p>
-<p>  结果如下：这里透明变换的效果并不是很好，目前还没有找到一个合适的参数使用，并且从分割的情况来看效果也还行，所以暂时就这样勉强用了。。。<br>  <img src="E3617599EB824E8299DABE0F092E2E2A" alt="image"></p>
-</li>
-<li><p>步骤四：分割单元格</p>
-<p>  opencv对图片轮廓进行识别：<br>  <img src="BAD59EB81C624531B685A71658D40A6B" alt="image"></p>
-<p>  使用opencv把边界画出来，效果简明易懂：</p>
-<p>  <img src="334DE774AEC74DFF92342E47D4D5DE59" alt="image"></p>
-<p>  单个单元格的提取：<br>  <img src="FBF03940D0494CCA8DA20F1EB9189084" alt="image"></p>
-</li>
-<li><p>步骤五：从单个单元格中提取数字及符号</p>
-<p>  因为用了垂直投影方法切割字符，在使用之前去噪点的步骤没有检测效果如何，导致这里用垂直投影会出现将噪点也切割出来的情况。返回重新调整一下二值化的阈值就可以了。</p>
-<p>  效果：<br>  <img src="8F285B11124A45CAB531F5BC452BA749" alt="1"></p>
-</li>
-</ul>
-<h2 id="其他："><a href="#其他：" class="headerlink" title="其他："></a>其他：</h2><ol>
-<li>使用png格式图片的原因<br>png它是无损压缩格式，jpg是有损</li>
-<li>写一个完整的系统代码一定要分方法分模块，否则到后面代码量增加起来之后对后续的维护很麻烦。</li>
-<li>对opencv模块的强大有了更加的了解。。。</li>
-<li>这里实名感谢”@ATP合成酶”大佬提供的相关处理思路，万分感谢</li>
-<li>项目为了赶时间基本只写了两周还有很多不完整的细节处理地方，如果继续做下去的话也还是蛮有意思的</li>
-<li>第一次感受到当程序员没日没夜的加班生活，想到以后还有很多次真的是很后悔如这一行了</li>
-</ol>
-]]></content>
-      <categories>
-        <category>学校</category>
-      </categories>
-      <tags>
-        <tag>opencv</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>熵权法计算权重</title>
     <url>/2020/10/15/%E7%86%B5%E6%9D%83%E6%B3%95%E8%AE%A1%E7%AE%97%E6%9D%83%E9%87%8D/</url>
     <content><![CDATA[<h1 id="1-熵权法说明"><a href="#1-熵权法说明" class="headerlink" title="1.熵权法说明"></a>1.熵权法说明</h1><p>通过信息熵的大小判断某项数据在整体数据评测中所占的比重大小。</p>
@@ -2158,6 +2169,62 @@ https:<span class="hljs-regexp">//</span>docs.docker.com<span class="hljs-regexp
       </categories>
       <tags>
         <tag>数据分析</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>随机森林和梯度决策树（GBDT）</title>
+    <url>/2020/03/27/%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97%E5%92%8C%E6%A2%AF%E5%BA%A6%E5%86%B3%E7%AD%96%E6%A0%91%EF%BC%88GBDT%EF%BC%89/</url>
+    <content><![CDATA[<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>随机森林和GBDT部分对比</p>
+<h2 id="一：随机森林-bagging思想"><a href="#一：随机森林-bagging思想" class="headerlink" title="一：随机森林(bagging思想)"></a>一：随机森林(bagging思想)</h2><ul>
+<li>通过构建决策树然后进行分类，最后选择种类比较多的类别</li>
+<li>随机：随机选取固定的样本和固定的特征</li>
+<li>集成学习：投票选举（民主集中制）</li>
+</ul>
+<h2 id="二：GBDT-boosting思想"><a href="#二：GBDT-boosting思想" class="headerlink" title="二：GBDT(boosting思想)"></a>二：GBDT(boosting思想)</h2><ul>
+<li>GBDT是回归树不是分类树</li>
+<li>核心在于累加所有树的结果最为最终结果</li>
+<li>利用损失函数的负梯度去模拟残差，使用残差构建决策树</li>
+<li><strong>为什么使用梯度决策树而不是回归算法</strong><pre><code class="hljs markdown"><span class="hljs-quote">&gt; 回归算法寻找参数和目标值之间存在的某种曲线关系，但是当某些特征与目标值之间无线性关系可使用梯度决策树。</span>
+<span class="hljs-quote">&gt; 梯度决策树是讲特征拟化成数值分类回归最佳结果。</span></code></pre>
+
+</li>
+</ul>
+<a id="more"></a>
+
+<h3 id="2-1-参数说明"><a href="#2-1-参数说明" class="headerlink" title="2.1 参数说明"></a>2.1 参数说明</h3><p><code>class sklearn.ensemble.GradientBoostingRegressor(loss=&#39;ls&#39;, learning_rate=0.1, n_estimators=100, subsample=1.0, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_depth=3, init=None, random_state=None, max_features=None, alpha=0.9, verbose=0, max_leaf_nodes=None, warm_start=False, presort=&#39;auto&#39;)</code></p>
+<ul>
+<li><p><strong>n_estimators</strong>：指GBR使用的学习算法的数量。通常，如果你的设备性能更好，可以把n_estimators设置的更大，效果也会更好。</p>
+</li>
+<li><p><strong>max_depth</strong>：应该在优化其他参数之前先调整max_depth参数。因为每个学习算法都是一颗决策树，max_depth决定了树生成的节点数。选择合适的节点数量可以更好的拟合数据，而更多的节点数可能造成拟合过度。</p>
+</li>
+<li><p><strong>loss</strong>:loss参数决定损失函数，也直接影响误差。默认值为ls，表示最小二乘法（least squares）。还有最小绝对值差值，Huber损失和分位数损失（quantiles）等等。</p>
+</li>
+<li><p><strong>learning_rate</strong>:学习率</p>
+</li>
+</ul>
+<h4 id="2-1-1-参数调整"><a href="#2-1-1-参数调整" class="headerlink" title="2.1.1 参数调整"></a>2.1.1 参数调整</h4><p><strong>Grid Search</strong>来选择性能表现最好的超参数</p>
+<p><a href="https://zhuanlan.zhihu.com/p/55524425">https://zhuanlan.zhihu.com/p/55524425</a></p>
+<p>在Gradient Boosting Regressor 模型中，有一些独立的参数最好是手动调整。</p>
+<p>超参数主要使用了：</p>
+<ul>
+<li>n_estimators=2000,</li>
+<li>learning_rate=0.01,</li>
+<li>max_depth=15,</li>
+<li>max_features=’sqrt’,</li>
+<li>min_samples_leaf=10,</li>
+<li>min_samples_split=10,</li>
+<li>loss=’ls’,</li>
+<li>random_state =42)<h3 id="2-2-负荷预测程序说明记录"><a href="#2-2-负荷预测程序说明记录" class="headerlink" title="2.2 负荷预测程序说明记录"></a>2.2 负荷预测程序说明记录</h3><h4 id="1-误差偏大的处理方法"><a href="#1-误差偏大的处理方法" class="headerlink" title="1. 误差偏大的处理方法"></a>1. 误差偏大的处理方法</h4><h5 id="误差偏大的原因：缺失值处理不当-0或空值设置为均值"><a href="#误差偏大的原因：缺失值处理不当-0或空值设置为均值" class="headerlink" title="误差偏大的原因：缺失值处理不当(0或空值设置为均值)"></a>误差偏大的原因：缺失值处理不当(0或空值设置为均值)</h5><blockquote>
+<p>因为数据波动较大，设置为历史均值是否存在较大的参考价值。其次数据量教少直接删除也不太可取。尝试设置为近一年的均值进行测试。</p>
+</blockquote>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>机器学习笔记</category>
+      </categories>
+      <tags>
+        <tag>machine learning</tag>
       </tags>
   </entry>
   <entry>
@@ -2367,62 +2434,6 @@ app.run(host=<span class="hljs-string">&quot;0.0.0.0&quot;</span>,port=<span cla
         <tag>python</tag>
         <tag>scala</tag>
         <tag>flask</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>随机森林和梯度决策树（GBDT）</title>
-    <url>/2020/03/27/%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97%E5%92%8C%E6%A2%AF%E5%BA%A6%E5%86%B3%E7%AD%96%E6%A0%91%EF%BC%88GBDT%EF%BC%89/</url>
-    <content><![CDATA[<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>随机森林和GBDT部分对比</p>
-<h2 id="一：随机森林-bagging思想"><a href="#一：随机森林-bagging思想" class="headerlink" title="一：随机森林(bagging思想)"></a>一：随机森林(bagging思想)</h2><ul>
-<li>通过构建决策树然后进行分类，最后选择种类比较多的类别</li>
-<li>随机：随机选取固定的样本和固定的特征</li>
-<li>集成学习：投票选举（民主集中制）</li>
-</ul>
-<h2 id="二：GBDT-boosting思想"><a href="#二：GBDT-boosting思想" class="headerlink" title="二：GBDT(boosting思想)"></a>二：GBDT(boosting思想)</h2><ul>
-<li>GBDT是回归树不是分类树</li>
-<li>核心在于累加所有树的结果最为最终结果</li>
-<li>利用损失函数的负梯度去模拟残差，使用残差构建决策树</li>
-<li><strong>为什么使用梯度决策树而不是回归算法</strong><pre><code class="hljs markdown"><span class="hljs-quote">&gt; 回归算法寻找参数和目标值之间存在的某种曲线关系，但是当某些特征与目标值之间无线性关系可使用梯度决策树。</span>
-<span class="hljs-quote">&gt; 梯度决策树是讲特征拟化成数值分类回归最佳结果。</span></code></pre>
-
-</li>
-</ul>
-<a id="more"></a>
-
-<h3 id="2-1-参数说明"><a href="#2-1-参数说明" class="headerlink" title="2.1 参数说明"></a>2.1 参数说明</h3><p><code>class sklearn.ensemble.GradientBoostingRegressor(loss=&#39;ls&#39;, learning_rate=0.1, n_estimators=100, subsample=1.0, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_depth=3, init=None, random_state=None, max_features=None, alpha=0.9, verbose=0, max_leaf_nodes=None, warm_start=False, presort=&#39;auto&#39;)</code></p>
-<ul>
-<li><p><strong>n_estimators</strong>：指GBR使用的学习算法的数量。通常，如果你的设备性能更好，可以把n_estimators设置的更大，效果也会更好。</p>
-</li>
-<li><p><strong>max_depth</strong>：应该在优化其他参数之前先调整max_depth参数。因为每个学习算法都是一颗决策树，max_depth决定了树生成的节点数。选择合适的节点数量可以更好的拟合数据，而更多的节点数可能造成拟合过度。</p>
-</li>
-<li><p><strong>loss</strong>:loss参数决定损失函数，也直接影响误差。默认值为ls，表示最小二乘法（least squares）。还有最小绝对值差值，Huber损失和分位数损失（quantiles）等等。</p>
-</li>
-<li><p><strong>learning_rate</strong>:学习率</p>
-</li>
-</ul>
-<h4 id="2-1-1-参数调整"><a href="#2-1-1-参数调整" class="headerlink" title="2.1.1 参数调整"></a>2.1.1 参数调整</h4><p><strong>Grid Search</strong>来选择性能表现最好的超参数</p>
-<p><a href="https://zhuanlan.zhihu.com/p/55524425">https://zhuanlan.zhihu.com/p/55524425</a></p>
-<p>在Gradient Boosting Regressor 模型中，有一些独立的参数最好是手动调整。</p>
-<p>超参数主要使用了：</p>
-<ul>
-<li>n_estimators=2000,</li>
-<li>learning_rate=0.01,</li>
-<li>max_depth=15,</li>
-<li>max_features=’sqrt’,</li>
-<li>min_samples_leaf=10,</li>
-<li>min_samples_split=10,</li>
-<li>loss=’ls’,</li>
-<li>random_state =42)<h3 id="2-2-负荷预测程序说明记录"><a href="#2-2-负荷预测程序说明记录" class="headerlink" title="2.2 负荷预测程序说明记录"></a>2.2 负荷预测程序说明记录</h3><h4 id="1-误差偏大的处理方法"><a href="#1-误差偏大的处理方法" class="headerlink" title="1. 误差偏大的处理方法"></a>1. 误差偏大的处理方法</h4><h5 id="误差偏大的原因：缺失值处理不当-0或空值设置为均值"><a href="#误差偏大的原因：缺失值处理不当-0或空值设置为均值" class="headerlink" title="误差偏大的原因：缺失值处理不当(0或空值设置为均值)"></a>误差偏大的原因：缺失值处理不当(0或空值设置为均值)</h5><blockquote>
-<p>因为数据波动较大，设置为历史均值是否存在较大的参考价值。其次数据量教少直接删除也不太可取。尝试设置为近一年的均值进行测试。</p>
-</blockquote>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>机器学习笔记</category>
-      </categories>
-      <tags>
-        <tag>machine learning</tag>
       </tags>
   </entry>
   <entry>
