@@ -1,125 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>HBase基础</title>
-    <url>/2020/05/11/HBase%E5%9F%BA%E7%A1%80/</url>
-    <content><![CDATA[<h1 id="1-HBase的存储形式"><a href="#1-HBase的存储形式" class="headerlink" title="1. HBase的存储形式"></a>1. HBase的存储形式</h1><p>hbase的内部使用KeyValue的形式存储，其key是rowKey：family：column：logTime，value是其存储的内容。</p>
-<p>其在region内大多以升序的形式排列，唯一的时logTime是以降序的形式进行排列。</p>
-<p>所以，rowKey里越靠近左边的信息越容易被检索到。其设计时，要考虑把重要的信息放左边，不重要的信息放到右边。这样可以提高查询数据的速度。最重要的提高索引速度的就是设计合适的rowKey。</p>
-<p>在做RowKey设计时，请先考虑业务是读比写多，还是读比写少，HBase本身是为写优化的，即便是这样，也可能会出现热点问题，而如果我们读比较多的话，除了考虑以上RowKey设计原则外，还可以考虑HBase的Coprocessor甚至elasticSearch结合的方法，无论哪种方式，都建议做实际业务场景下数据的压力测试以得到最优结果。</p>
-<h2 id="1-1-Hbase的存储结构"><a href="#1-1-Hbase的存储结构" class="headerlink" title="1.1 Hbase的存储结构"></a>1.1 Hbase的存储结构</h2><h3 id="1-1-1-逻辑存储结构"><a href="#1-1-1-逻辑存储结构" class="headerlink" title="1.1.1 逻辑存储结构"></a>1.1.1 逻辑存储结构</h3><table>
-<thead>
-<tr>
-<th>-</th>
-<th>-</th>
-<th>列族：info</th>
-<th>列族：area</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>行键</td>
-<td>时间戳</td>
-<td>name /  age</td>
-<td>country / city</td>
-</tr>
-<tr>
-<td>Row1</td>
-<td>t1</td>
-<td>张三 / 11</td>
-<td>中国 / 上海</td>
-</tr>
-<tr>
-<td>Row2</td>
-<td>t2</td>
-<td>王二 / 20</td>
-<td></td>
-</tr>
-</tbody></table>
-<p>在本图中，列簇（Column Family）对应的值就是 info 和 area ，列（ Column 或者称为 Qualifier ）对应的就是 name 、 age 、 country 和 city ，Row key 对应的就是 Row 1 和 Row 2，Cell 对应的就是具体的值。</p>
-<ul>
-<li>Row key ：表的主键，按照字典序排序。</li>
-<li>列簇：在 HBase 中，列簇将表进行横向切割。</li>
-<li>列：属于某一个列簇，在 HBase 中可以进行动态的添加。</li>
-<li>Cell : 是指具体的 Value 。</li>
-<li>Version ：在这张图里面没有显示出来，这个是指版本号，用时间戳（TimeStamp ）来表示。</li>
-</ul>
-<p>在 HBase 中的 KEY 组成是这样的：</p>
-<table>
-<thead>
-<tr>
-<th>Row key</th>
-<th>CF（列簇）</th>
-<th>cloumn</th>
-<th>TimeStamp</th>
-<th>value</th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td>row 1</td>
-<td>info</td>
-<td>name</td>
-<td>t1</td>
-<td>张三</td>
-<td></td>
-</tr>
-</tbody></table>
-<p>KEY 的组成是以 Row key 、CF(Column Family) 、Column 和 TimeStamp 组成的。</p>
-<p>TimeStamp 在 HBase 中充当的作用就是版本号，因为在 HBase 中有着数据多版本的特性，所以同一个 KEY 可以有多个版本的 Value 值（可以通过配置来设置多少个版本）。查询的话是默认取回最新版本的那条数据，但是也可以进行查询多个版本号的数据</p>
-<h3 id="1-1-2-Region-Server-和-Region-的关系"><a href="#1-1-2-Region-Server-和-Region-的关系" class="headerlink" title="1.1.2 Region Server 和 Region 的关系"></a>1.1.2 Region Server 和 Region 的关系</h3><table>
-<thead>
-<tr>
-<th>Region Server</th>
-<th>Region Server</th>
-<th>Region Server</th>
-<th>Region Server</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>RegionA</strong></td>
-<td><strong>RegionA</strong></td>
-<td><strong>RegionB</strong></td>
-<td><strong>RegionB</strong></td>
-</tr>
-<tr>
-<td>CFA</td>
-<td>CFB</td>
-<td>CFC</td>
-<td>CFD</td>
-</tr>
-</tbody></table>
-<ul>
-<li>一个 Region Server 就是一个机器节点(服务器)</li>
-<li>一个 Region Server 包含着多个 Region</li>
-<li>一个 Region 包含着多个列簇 (CF)</li>
-<li>一个 Region Server 中可以有多张 Table，一张 Table 可以有多个 Region<h3 id="1-1-3-Hbase读取数据的过程"><a href="#1-1-3-Hbase读取数据的过程" class="headerlink" title="1.1.3 Hbase读取数据的过程"></a>1.1.3 Hbase读取数据的过程</h3></li>
-</ul>
-<p>Client 请求读取数据时，先转发到 ZK 集群，在 ZK 集群中寻找到相对应的 Region Server，再找到对应的 Region，先是查 MemStore，如果在 MemStore 中获取到数据，那么就会直接返回，否则就是再由 Region 找到对应的 Store File，从而查到具体的数据。</p>
-<p>在整个架构中，HMaster 和 HRegion Server 可以是同一个节点上，可以有多个 HMaster 存在，但是只有一个 HMaster 在活跃。</p>
-<p>在 Client 端会进行 rowkey-&gt; HRegion 映射关系的缓存，降低下次寻址的压力。</p>
-<h2 id="1-2-HBase的存储机制"><a href="#1-2-HBase的存储机制" class="headerlink" title="1.2 HBase的存储机制"></a>1.2 HBase的存储机制</h2><p>HBase是一个面向列的数据库，在表中它由行排序。表模式定义只能列族，也就是键值对。一个表有多个列族以及每一个列族可以有任意数量的列。后续列的值连续存储在磁盘上。表中的每个单元格值都具有时间戳。总之，在一个HBase：</p>
-<ul>
-<li>表是行的集合。</li>
-<li>行是列族的集合。</li>
-<li>列族是列的集合。</li>
-<li>列是键值对的集合。</li>
-</ul>
-<p>这里的列式存储或者说面向列，其实说的是列族存储，HBase是根据列族来存储数据的。列族下面可以有非常多的列，列族在创建表的时候就必须指定。</p>
-<h1 id="2-HBase中建立分区（表）"><a href="#2-HBase中建立分区（表）" class="headerlink" title="2.HBase中建立分区（表）"></a>2.HBase中建立分区（表）</h1><h2 id="2-1-为什么要建立分区表-分区表存在的意义是什么"><a href="#2-1-为什么要建立分区表-分区表存在的意义是什么" class="headerlink" title="2.1 为什么要建立分区表/分区表存在的意义是什么:"></a>2.1 为什么要建立分区表/分区表存在的意义是什么:</h2><ul>
-<li>将大数据表的增加由无序变为有序<h2 id="2-2-原理"><a href="#2-2-原理" class="headerlink" title="2.2 原理"></a>2.2 原理</h2><blockquote>
-<p>在HBase中，每个表默认时都由一个Region存储原数据，但是若当数据慢慢增加时，就会将一个Region分裂成其他若干个不同的region。但是这种无序的分裂，会让后期的表扫描，表过滤操作很不方便（特别耗时）。正是着眼于未来表的改变，才有了为表创建分区的操作。<br>提前创建分区表为有序</p>
-</blockquote>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>大数据</category>
-      </categories>
-      <tags>
-        <tag>Hbase</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Flask之缓慢的http拒绝服务攻击漏洞解决</title>
     <url>/2020/11/06/Flask%E4%B9%8B%E7%BC%93%E6%85%A2%E7%9A%84http%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB%E6%BC%8F%E6%B4%9E%E8%A7%A3%E5%86%B3/</url>
     <content><![CDATA[<h1 id="1-什么是缓慢的http拒绝服务攻击漏洞"><a href="#1-什么是缓慢的http拒绝服务攻击漏洞" class="headerlink" title="1.什么是缓慢的http拒绝服务攻击漏洞"></a>1.什么是缓慢的http拒绝服务攻击漏洞</h1><p>缓慢的http拒绝服务攻击是一种专门针对于Web的应用层拒绝服务攻击，攻击者操纵网络上的肉鸡，对目标Web服务器进行海量http request攻击，直到服务器带宽被打满，造成了拒绝服务。</p>
@@ -134,10 +15,14 @@
 </li>
 </ul>
 <h1 id="2-Flask应对措施"><a href="#2-Flask应对措施" class="headerlink" title="2. Flask应对措施"></a>2. Flask应对措施</h1><ul>
-<li>限制每次请求数据的大小</li>
-<li>限制单个HTTP请求头的最大许可时间</li>
-<li>限制单个ip请求数量</li>
-<li>。。。。。。</li>
+<li><p>限制每次请求数据的大小</p>
+</li>
+<li><p>限制单个HTTP请求头的最大许可时间</p>
+</li>
+<li><p>限制单个ip请求数量</p>
+</li>
+<li><p>。。。。。。</p>
+</li>
 </ul>
 <p>#3. 使用slowhttptest测试漏洞</p>
 <h2 id="3-1-slowhttptest的安装"><a href="#3-1-slowhttptest的安装" class="headerlink" title="3.1 slowhttptest的安装"></a>3.1 slowhttptest的安装</h2><blockquote>
@@ -195,15 +80,23 @@
 
 <h1 id="4-使用说明"><a href="#4-使用说明" class="headerlink" title="4.使用说明"></a>4.使用说明</h1><p>以下是分别使用四种方式对自己的服务进行测试的结果，先开始不太懂每个曲线图的意义。这里说明一下，上面的参数可以设置连接数量以及持续请求时间等参数。然后下面展现的是曲线图，主要看在测试程序运行时间内Connected的数量是否被释放，是否通过服务的设置不符合条件的请求被服务端关闭，Service是否正常运行（服务是否存在被漏洞攻击程序给冲宕机了）。</p>
 <p>##4.1 RANGE HEADERS</p>
-<img src="D:/学习/myBlog/themes/fluid/source/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115151719480.png" alt="rangeHeader" style="zoom:67%;" />
+<img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115151719480.png" alt="rangeHeader" style="zoom:67%;" />
+
+
 
 <p>##4.2 SLOW HEADERS(SlowLoris)</p>
-<img src="D:/学习/myBlog/themes/fluid/source/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115151939829.png" alt="image-20201115151939829" style="zoom: 67%;" />
+<img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115151939829.png" alt="image-20201115151939829" style="zoom: 67%;" />
+
+
 
 <p>##4.3 SLOW BODY(SLOW POST)</p>
-<img src="D:/学习/myBlog/themes/fluid/source/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115154404536.png" alt="image-20201115154404536" style="zoom:67%;" />
+<img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115154404536.png" alt="image-20201115154404536" style="zoom:67%;" />
 
-<h2 id="4-4-SLOW-READ"><a href="#4-4-SLOW-READ" class="headerlink" title="4.4  SLOW READ"></a>4.4  SLOW READ</h2><img src="D:/学习/myBlog/themes/fluid/source/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115152038635.png" alt="image-20201115152038635" style="zoom:67%;" />]]></content>
+
+
+<h2 id="4-4-SLOW-READ"><a href="#4-4-SLOW-READ" class="headerlink" title="4.4  SLOW READ"></a>4.4  SLOW READ</h2><img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115152038635.png" style="zoom:67%;" />
+
+]]></content>
       <categories>
         <category>工作相关</category>
       </categories>
@@ -412,6 +305,356 @@ Using TensorFlow backend.
       <tags>
         <tag>python</tag>
         <tag>娱乐</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>HBase基础</title>
+    <url>/2020/05/11/HBase%E5%9F%BA%E7%A1%80/</url>
+    <content><![CDATA[<h1 id="1-HBase的存储形式"><a href="#1-HBase的存储形式" class="headerlink" title="1. HBase的存储形式"></a>1. HBase的存储形式</h1><p>hbase的内部使用KeyValue的形式存储，其key是rowKey：family：column：logTime，value是其存储的内容。</p>
+<p>其在region内大多以升序的形式排列，唯一的时logTime是以降序的形式进行排列。</p>
+<p>所以，rowKey里越靠近左边的信息越容易被检索到。其设计时，要考虑把重要的信息放左边，不重要的信息放到右边。这样可以提高查询数据的速度。最重要的提高索引速度的就是设计合适的rowKey。</p>
+<p>在做RowKey设计时，请先考虑业务是读比写多，还是读比写少，HBase本身是为写优化的，即便是这样，也可能会出现热点问题，而如果我们读比较多的话，除了考虑以上RowKey设计原则外，还可以考虑HBase的Coprocessor甚至elasticSearch结合的方法，无论哪种方式，都建议做实际业务场景下数据的压力测试以得到最优结果。</p>
+<h2 id="1-1-Hbase的存储结构"><a href="#1-1-Hbase的存储结构" class="headerlink" title="1.1 Hbase的存储结构"></a>1.1 Hbase的存储结构</h2><h3 id="1-1-1-逻辑存储结构"><a href="#1-1-1-逻辑存储结构" class="headerlink" title="1.1.1 逻辑存储结构"></a>1.1.1 逻辑存储结构</h3><table>
+<thead>
+<tr>
+<th>-</th>
+<th>-</th>
+<th>列族：info</th>
+<th>列族：area</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>行键</td>
+<td>时间戳</td>
+<td>name /  age</td>
+<td>country / city</td>
+</tr>
+<tr>
+<td>Row1</td>
+<td>t1</td>
+<td>张三 / 11</td>
+<td>中国 / 上海</td>
+</tr>
+<tr>
+<td>Row2</td>
+<td>t2</td>
+<td>王二 / 20</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>在本图中，列簇（Column Family）对应的值就是 info 和 area ，列（ Column 或者称为 Qualifier ）对应的就是 name 、 age 、 country 和 city ，Row key 对应的就是 Row 1 和 Row 2，Cell 对应的就是具体的值。</p>
+<ul>
+<li>Row key ：表的主键，按照字典序排序。</li>
+<li>列簇：在 HBase 中，列簇将表进行横向切割。</li>
+<li>列：属于某一个列簇，在 HBase 中可以进行动态的添加。</li>
+<li>Cell : 是指具体的 Value 。</li>
+<li>Version ：在这张图里面没有显示出来，这个是指版本号，用时间戳（TimeStamp ）来表示。</li>
+</ul>
+<p>在 HBase 中的 KEY 组成是这样的：</p>
+<table>
+<thead>
+<tr>
+<th>Row key</th>
+<th>CF（列簇）</th>
+<th>cloumn</th>
+<th>TimeStamp</th>
+<th>value</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>row 1</td>
+<td>info</td>
+<td>name</td>
+<td>t1</td>
+<td>张三</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>KEY 的组成是以 Row key 、CF(Column Family) 、Column 和 TimeStamp 组成的。</p>
+<p>TimeStamp 在 HBase 中充当的作用就是版本号，因为在 HBase 中有着数据多版本的特性，所以同一个 KEY 可以有多个版本的 Value 值（可以通过配置来设置多少个版本）。查询的话是默认取回最新版本的那条数据，但是也可以进行查询多个版本号的数据</p>
+<h3 id="1-1-2-Region-Server-和-Region-的关系"><a href="#1-1-2-Region-Server-和-Region-的关系" class="headerlink" title="1.1.2 Region Server 和 Region 的关系"></a>1.1.2 Region Server 和 Region 的关系</h3><table>
+<thead>
+<tr>
+<th>Region Server</th>
+<th>Region Server</th>
+<th>Region Server</th>
+<th>Region Server</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>RegionA</strong></td>
+<td><strong>RegionA</strong></td>
+<td><strong>RegionB</strong></td>
+<td><strong>RegionB</strong></td>
+</tr>
+<tr>
+<td>CFA</td>
+<td>CFB</td>
+<td>CFC</td>
+<td>CFD</td>
+</tr>
+</tbody></table>
+<ul>
+<li>一个 Region Server 就是一个机器节点(服务器)</li>
+<li>一个 Region Server 包含着多个 Region</li>
+<li>一个 Region 包含着多个列簇 (CF)</li>
+<li>一个 Region Server 中可以有多张 Table，一张 Table 可以有多个 Region<h3 id="1-1-3-Hbase读取数据的过程"><a href="#1-1-3-Hbase读取数据的过程" class="headerlink" title="1.1.3 Hbase读取数据的过程"></a>1.1.3 Hbase读取数据的过程</h3></li>
+</ul>
+<p>Client 请求读取数据时，先转发到 ZK 集群，在 ZK 集群中寻找到相对应的 Region Server，再找到对应的 Region，先是查 MemStore，如果在 MemStore 中获取到数据，那么就会直接返回，否则就是再由 Region 找到对应的 Store File，从而查到具体的数据。</p>
+<p>在整个架构中，HMaster 和 HRegion Server 可以是同一个节点上，可以有多个 HMaster 存在，但是只有一个 HMaster 在活跃。</p>
+<p>在 Client 端会进行 rowkey-&gt; HRegion 映射关系的缓存，降低下次寻址的压力。</p>
+<h2 id="1-2-HBase的存储机制"><a href="#1-2-HBase的存储机制" class="headerlink" title="1.2 HBase的存储机制"></a>1.2 HBase的存储机制</h2><p>HBase是一个面向列的数据库，在表中它由行排序。表模式定义只能列族，也就是键值对。一个表有多个列族以及每一个列族可以有任意数量的列。后续列的值连续存储在磁盘上。表中的每个单元格值都具有时间戳。总之，在一个HBase：</p>
+<ul>
+<li>表是行的集合。</li>
+<li>行是列族的集合。</li>
+<li>列族是列的集合。</li>
+<li>列是键值对的集合。</li>
+</ul>
+<p>这里的列式存储或者说面向列，其实说的是列族存储，HBase是根据列族来存储数据的。列族下面可以有非常多的列，列族在创建表的时候就必须指定。</p>
+<h1 id="2-HBase中建立分区（表）"><a href="#2-HBase中建立分区（表）" class="headerlink" title="2.HBase中建立分区（表）"></a>2.HBase中建立分区（表）</h1><h2 id="2-1-为什么要建立分区表-分区表存在的意义是什么"><a href="#2-1-为什么要建立分区表-分区表存在的意义是什么" class="headerlink" title="2.1 为什么要建立分区表/分区表存在的意义是什么:"></a>2.1 为什么要建立分区表/分区表存在的意义是什么:</h2><ul>
+<li>将大数据表的增加由无序变为有序<h2 id="2-2-原理"><a href="#2-2-原理" class="headerlink" title="2.2 原理"></a>2.2 原理</h2><blockquote>
+<p>在HBase中，每个表默认时都由一个Region存储原数据，但是若当数据慢慢增加时，就会将一个Region分裂成其他若干个不同的region。但是这种无序的分裂，会让后期的表扫描，表过滤操作很不方便（特别耗时）。正是着眼于未来表的改变，才有了为表创建分区的操作。<br>提前创建分区表为有序</p>
+</blockquote>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>大数据</category>
+      </categories>
+      <tags>
+        <tag>Hbase</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>neo4j集群安装步骤</title>
+    <url>/2020/08/13/neo4j%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/</url>
+    <content><![CDATA[<h1 id="1-neo4j集群安装"><a href="#1-neo4j集群安装" class="headerlink" title="1. neo4j集群安装"></a>1. neo4j集群安装</h1><ol start="0">
+<li>文件说明：</li>
+</ol>
+<ul>
+<li>neo4j-enterprise-3.4.18-unix.tar.gz为软件压缩包</li>
+<li>如下其余的都是第三方包，后面只需要移动到后面指定的文件夹中即可<pre><code class="hljs apache"><span class="hljs-attribute">apoc</span>-<span class="hljs-number">3.4.0.4</span>-<span class="hljs-literal">all</span>.jar                hive-service-<span class="hljs-number">1</span>.<span class="hljs-number">1</span>.<span class="hljs-number">0</span>-cdh<span class="hljs-number">5</span>.<span class="hljs-number">15</span>.<span class="hljs-number">2</span>.jar
+<span class="hljs-attribute">graph</span>-algorithms-algo-<span class="hljs-number">3.4.12.7</span>.jar  httpclient-<span class="hljs-number">4</span>.<span class="hljs-number">2</span>.<span class="hljs-number">5</span>.jar
+<span class="hljs-attribute">hive</span>-exec-<span class="hljs-number">1</span>.<span class="hljs-number">1</span>.<span class="hljs-number">0</span>-cdh<span class="hljs-number">5</span>.<span class="hljs-number">15</span>.<span class="hljs-number">2</span>.jar       httpcore-<span class="hljs-number">4</span>.<span class="hljs-number">2</span>.<span class="hljs-number">5</span>.jar
+<span class="hljs-attribute">hive</span>-jdbc-<span class="hljs-number">1</span>.<span class="hljs-number">1</span>.<span class="hljs-number">0</span>-cdh<span class="hljs-number">5</span>.<span class="hljs-number">15</span>.<span class="hljs-number">2</span>.jar       libfb<span class="hljs-number">303</span>-<span class="hljs-number">0</span>.<span class="hljs-number">9</span>.<span class="hljs-number">3</span>.jar
+<span class="hljs-attribute">hive</span>-metastore-<span class="hljs-number">1</span>.<span class="hljs-number">1</span>.<span class="hljs-number">0</span>-cdh<span class="hljs-number">5</span>.<span class="hljs-number">15</span>.<span class="hljs-number">2</span>.jar  libthrift-<span class="hljs-number">0</span>.<span class="hljs-number">9</span>.<span class="hljs-number">3</span>.jar</code></pre></li>
+</ul>
+<ol>
+<li>说明<blockquote>
+<p>安装目录这里假设为根目录下面的opt文件夹<code>/opt</code>,具体视现场情况而定。配置集群方式可以通过先修改一份配置文件，然后将整个文件包发送到另外两个节点上。最后再修改neo4j的id即可。以下为此种安装方式的步骤</p>
+</blockquote>
+</li>
+</ol>
+<blockquote>
+<p>测试主机配置ip分别为：</p>
+</blockquote>
+<blockquote>
+<p>172.16.221.100/172.16.221.102/172.16.221.9，</p>
+</blockquote>
+<blockquote>
+<p>对应的hostname分别为master/slave01/slave02，</p>
+</blockquote>
+<blockquote>
+<p>对应的neo4j集群id分别为1/2/3<br>（具体视现场情况而定,neo4j集群id只是一个标识）</p>
+</blockquote>
+<ol start="2">
+<li>获取软件包之后然后在安装目录下直接解压缩，命令如下<pre><code class="hljs apache"><span class="hljs-attribute">tar</span> -vxf neo<span class="hljs-number">4</span>j-enterprise-<span class="hljs-number">3</span>.<span class="hljs-number">4</span>.<span class="hljs-number">18</span>-unix.tar.gz</code></pre></li>
+<li>开启http页面服务外部访问</li>
+</ol>
+<ul>
+<li>修改neo4j-enterprise-3.4.18/conf/neo4j.conf文件</li>
+</ul>
+<p>删除</p>
+<pre><code class="hljs angelscript"># dbms.connectors.default_listen_address=<span class="hljs-number">0.0</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span></code></pre>
+<p>行前面的井号</p>
+<pre><code class="hljs vala"><span class="hljs-meta"># vim中打开文件然后输入“/+字符串”然后回车可以进行字符串搜索，使用n键调整上下匹配</span></code></pre>
+<ol start="4">
+<li>配置ip地址及页面缓存大小</li>
+</ol>
+<ul>
+<li>修改neo4j-enterprise-3.4.18/conf/neo4j.conf文件<pre><code class="hljs ini"><span class="hljs-comment"># 修改文件中的不带井号行的数据为如下值</span>
+
+<span class="hljs-comment"># Unique server id for this Neo4j instance</span>
+<span class="hljs-comment"># can not be negative id and must be unique</span>
+<span class="hljs-attr">ha.server_id</span>=<span class="hljs-number">1</span> 
+<span class="hljs-comment"># List of other known instances in this cluster</span>
+<span class="hljs-comment"># Alternatively, use IP addresses:</span>
+<span class="hljs-attr">ha.initial_hosts</span>=<span class="hljs-number">172.16</span>.<span class="hljs-number">221.100</span>:<span class="hljs-number">5001</span>,<span class="hljs-number">172.16</span>.<span class="hljs-number">221.102</span>:<span class="hljs-number">5001</span>,<span class="hljs-number">172.16</span>.<span class="hljs-number">221.9</span>:<span class="hljs-number">5001</span>(这里根据实际id进行修改，端口默认不变)
+<span class="hljs-comment"># HA - High Availability</span>
+<span class="hljs-comment"># SINGLE - Single mode, default.</span>
+<span class="hljs-attr">dbms.mode</span>=HA
+<span class="hljs-comment"># HTTP Connector</span>
+<span class="hljs-attr">dbms.connector.http.enabled</span>=<span class="hljs-literal">true</span>
+<span class="hljs-attr">dbms.connector.http.listen_address</span>=:<span class="hljs-number">7474</span>
+<span class="hljs-comment"># 设置堆内存和页面缓存大小</span>
+<span class="hljs-attr">dbms.memory.heap.initial_size</span>=<span class="hljs-number">10</span>g
+<span class="hljs-attr">dbms.memory.heap.max_size</span>=<span class="hljs-number">10</span>g
+<span class="hljs-attr">dbms.memory.pagecache.size</span>=<span class="hljs-number">10</span>g</code></pre>
+</li>
+</ul>
+<ol start="5">
+<li><p>将第0步里面所述的所有第三方包放到<code>/opt/neo4j-enterprise-3.4.18/plugins</code>目录下</p>
+</li>
+<li><p>将整个neo4j文件夹<code>opt/neo4j-enterprise-3.4.18</code>复制到要安装的从节点对应的目录下</p>
+<pre><code class="hljs angelscript">scp -r ./opt/neo4j-enterprise<span class="hljs-number">-3.4</span><span class="hljs-number">.18</span>/ <span class="hljs-symbol">root@</span><span class="hljs-number">172.16</span><span class="hljs-number">.221</span><span class="hljs-number">.102</span>:/opt/
+scp -r ./opt/neo4j-enterprise<span class="hljs-number">-3.4</span><span class="hljs-number">.18</span>/ <span class="hljs-symbol">root@</span><span class="hljs-number">172.16</span><span class="hljs-number">.221</span><span class="hljs-number">.9</span>:/opt/</code></pre></li>
+<li><p>修改从节点的neo4jID</p>
+</li>
+</ol>
+<ul>
+<li>修改从节点的neo4j-enterprise-3.4.18/conf/neo4j.conf文件</li>
+<li>找到neo4j.conf文件中的如下部分，将两个从节点中的ha.server_id分别修改为2和3<pre><code class="hljs ini"><span class="hljs-comment"># Unique server id for this Neo4j instance</span>
+<span class="hljs-comment"># can not be negative id and must be unique</span>
+<span class="hljs-attr">ha.server_id</span>=<span class="hljs-number">1</span></code></pre></li>
+</ul>
+<ol start="8">
+<li>然后分别<strong>启动三个集群</strong>，主从节点启动顺序不定，<strong>集群配置必须三个节点都启动服务才能启动成功。单独启动一个节点是无法启动成功的</strong>。</li>
+</ol>
+<p>在<code>/opt/neo4j-enterprise-3.4.18/bin</code>目录下分别输入</p>
+<pre><div class="caption"><span>start``` ，并等待数秒即可</span></div><code class="hljs ./neo4j">
+&gt; 重启和关闭的命令将上面的start改成restart或者stop即可
+
+
+9. web客户端查看是否启动成功
+
+客户端页面为“http:&#x2F;&#x2F;172.16.221.100:7474&#x2F;browser&#x2F;”,
+第一次登陆的时候会强制修改密码,
+默认账号密码为:neo4j&#x2F;neo4j。
+点击页面上的System information框内的monitor键如下显示表示成功启动。
+（id为1，2，3的节点状态都是alive）</code></pre>
+<p>Cluster<br>Id    Alive    Available    Is Master<br>1    true    true    yes<br>2    true    true    -<br>3    true    true</p>
+<pre><code class="hljs">
+
+# 2.启动可能遇到问题:
+
+## 2.1  ERROR Failed to start Neo4j
+&gt;  ERROR Failed to start Neo4j: Starting Neo4j failed: Component &#x27;org.neo4j.server.database.LifecycleManagingDatabase@1e141e42&#x27; was successfully initialized, but failed to start. Please see the attached cause exception &quot;Conversation-response mapping:
+&gt;  &#123;1/13#=ResponseFuture&#123;conversationId=&#x27;1/13#&#x27;, initiatedByMessageType=join, response=null&#125;&#125;&quot;. Starting Neo4j failed: Component 
+
+如上错误说明三台机器之间访问出现了问题，不能相互感知，不能加入集群，还需要增加下面配置</code></pre>
+<h1 id="在neo4j-node1-neo4j-conf中添加"><a href="#在neo4j-node1-neo4j-conf中添加" class="headerlink" title="在neo4j-node1 neo4j.conf中添加"></a>在neo4j-node1 neo4j.conf中添加</h1><p>dbms.connectors.default_listen_address=172.16.221.100<br>dbms.connector.bolt.enabled=true<br>dbms.connector.bolt.listen_address=:7687</p>
+<h1 id="在neo4j-node2-neo4j-conf中添加"><a href="#在neo4j-node2-neo4j-conf中添加" class="headerlink" title="在neo4j-node2 neo4j.conf中添加"></a>在neo4j-node2 neo4j.conf中添加</h1><p>dbms.connectors.default_listen_address=172.16.221.102<br>dbms.connector.bolt.enabled=true<br>dbms.connector.bolt.listen_address=:7687</p>
+<h1 id="在neo4j-node3-neo4j-conf中添加"><a href="#在neo4j-node3-neo4j-conf中添加" class="headerlink" title="在neo4j-node3 neo4j.conf中添加"></a>在neo4j-node3 neo4j.conf中添加</h1><p>dbms.connectors.default_listen_address=172.16.221.9<br>dbms.connector.bolt.enabled=true<br>dbms.connector.bolt.listen_address=:7687</p>
+<pre><code class="hljs angelscript">然后三台集群分别启动即可，无启动顺序。等待启动完成查看neo4j状态或者看日志都可以看到启动已经成功。
+
+## <span class="hljs-number">2.2</span> Neo4j-shell 报错Connection <span class="hljs-built_in">ref</span>used</code></pre>
+<p>cd /etc/neo4j<br>vim neo4j.conf<br>去掉 #dbms.shell.enabled=true 前面的#</p>
+<pre><code class="hljs awk">更改后重启neo4j即可
+
+<span class="hljs-comment"># 3. 部分需要脚本</span>
+**下面脚本都需要在文件解压后在“<span class="hljs-regexp">/opt/</span>neo4j-enterprise-<span class="hljs-number">3.4</span>.<span class="hljs-number">18</span>/bin”（解压文件的bin目录下）目录下手动建立相关的文件**
+
+
+<span class="hljs-comment">## 3.1 清空库脚本</span>
+- 路径：
+&gt; <span class="hljs-regexp">/opt/</span>neo4j-enterprise-<span class="hljs-number">3.4</span>.<span class="hljs-number">18</span><span class="hljs-regexp">/bin/</span>dropDataBase.sh
+
+- 内容：</code></pre>
+<p>#!/bin/bash</p>
+<h1 id="Neo4j删除边和顶点的脚本"><a href="#Neo4j删除边和顶点的脚本" class="headerlink" title="Neo4j删除边和顶点的脚本"></a>Neo4j删除边和顶点的脚本</h1><h1 id="删除边"><a href="#删除边" class="headerlink" title="删除边"></a>删除边</h1><p>/opt/neo4j-enterprise-3.4.18/bin/cypher-shell  “call apoc.periodic.iterate(‘match ()-[r]-() return r’,’delete r’,{batchsize:’100000’,iterateList:true,paraller:true,concurrency:8})”</p>
+<h1 id="删除点"><a href="#删除点" class="headerlink" title="删除点"></a>删除点</h1><p>/opt/neo4j-enterprise-3.4.18/bin/cypher-shell  “call apoc.periodic.iterate(‘match (n) return n’,’delete n’,{batchsize:’100000’,iterateList:true,paraller:true,concurrency:8})”</p>
+<pre><code class="hljs markdown"><span class="hljs-bullet">-</span> 说明：
+<span class="hljs-quote">&gt; 该脚本为删库脚本，需要删库的时候<span class="hljs-strong">**先执行删除边**</span>脚本<span class="hljs-strong">**再执行删除点**</span>脚本</span>
+
+<span class="hljs-section">## 3.2 服务崩溃自动启动脚本</span>
+<span class="hljs-bullet">-</span> 路径：
+<span class="hljs-quote">&gt; /opt/neo4j-enterprise-3.4.18/bin/selfStartUp.sh</span>
+
+<span class="hljs-bullet">-</span> 内容：</code></pre>
+<p>check_point(){<br>    echo “端口检测”<br>    netstat -tlpn grep “\b$1\b”<br>}<br>while true<br>do<br>if check_point 7474<br>then<br>    echo “已存在”<br>else<br>    echo “不在”<br>    ./neo4j start<br>fi<br>  sleep 10m<br>done</p>
+<p>```</p>
+<ul>
+<li>说明：</li>
+</ul>
+<blockquote>
+<p>该脚本需要在<strong>集群的三台机器上</strong>常驻执行，neo4j安装后执行<code>nohup  selfStartUp.sh  &amp; </code>启动</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>图数据库</category>
+      </categories>
+      <tags>
+        <tag>neo4j</tag>
+        <tag>图数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>linux命令</title>
+    <url>/2019/12/19/linux%E5%91%BD%E4%BB%A4/</url>
+    <content><![CDATA[<h2 id="linux命令"><a href="#linux命令" class="headerlink" title="linux命令"></a>linux命令</h2><h3 id="1-1-基础命令"><a href="#1-1-基础命令" class="headerlink" title="1.1 基础命令"></a>1.1 基础命令</h3><ul>
+<li>程序挂到后台运行<pre><code class="hljs awk">nohup python3 scala.py &amp;    <span class="hljs-regexp">//</span>不指定日志输出文件，程序后台运行，并且日志默认输出到nohup.out中
+nohup python3 scala.py &gt; log.file <span class="hljs-number">2</span> &gt;&amp;<span class="hljs-number">1</span> &amp; <span class="hljs-regexp">//</span>指定日志输出文件，程序后台运行，并且日志重定向到log.file中
+nohup python3 scala.py &gt; <span class="hljs-regexp">/dev/</span>null <span class="hljs-number">2</span> &gt;&amp;<span class="hljs-number">1</span> &amp; 
+<span class="hljs-regexp">//</span>不生成日志文件（<span class="hljs-regexp">/dev/</span>null相当于黑洞），程序后台运行</code></pre></li>
+<li>进程查询<pre><code class="hljs awk">ps ux     <span class="hljs-regexp">//</span>查看所有进程 
+ps -a     <span class="hljs-regexp">//</span>任务管理器
+ps ux grep | <span class="hljs-string">&#x27;python3&#x27;</span>   <span class="hljs-regexp">//</span>进程筛选，返回包含python3字符的进程</code></pre></li>
+<li>在命令行中将一个命令的结果传给另一个命令当参数使用‘$(command)’方法<pre><code class="hljs gams"><span class="hljs-function"><span class="hljs-title">spark</span></span>-submit .......... arg[<span class="hljs-number">0</span>]  arg[<span class="hljs-number">1</span>] <span class="hljs-comment">//原命令语句</span>
+<span class="hljs-comment">//现在需要获取当前日期传给以上命令当参数</span>
+<span class="hljs-function"><span class="hljs-title">spark</span></span>-submit .......... <span class="hljs-symbol">$</span>(date +%F)  <span class="hljs-symbol">$</span>(date +%F)或者
+<span class="hljs-function"><span class="hljs-title">spark</span></span>-submit .......... `date +%F`  `date +%F`
+
+<span class="hljs-comment">//date +%F:获取当前时间命令，使用$(command)就可以把date方法的结果传入上述语句中</span></code></pre>
+<h3 id="1-2-进程管理（pgrep，systemd，nohup-amp-，screen的区别）"><a href="#1-2-进程管理（pgrep，systemd，nohup-amp-，screen的区别）" class="headerlink" title="1.2 进程管理（pgrep，systemd，nohup+&amp;，screen的区别）"></a>1.2 进程管理（pgrep，systemd，nohup+&amp;，screen的区别）</h3></li>
+</ul>
+<p><strong>1. pgrep</strong></p>
+<blockquote>
+<p>pgrep是首字母缩略词，代表“Process-ID Global Regular Expressions Print”。<br>pgrep查看当前正在运行的进程，并将与选择条件匹配的进程ID列出到stdout（屏幕）。当你想要某个进程的PID时，pgrep很方便。<br>例如，如果我只想知道我的nginx进程的进程ID，使用pgrep nginx将返回进程ID 值,如：</p>
+</blockquote>
+<pre><code class="hljs angelscript">[<span class="hljs-symbol">root@</span>vm1 ~]# pgrep nginx
+<span class="hljs-number">71982</span>
+<span class="hljs-number">71984</span>
+[<span class="hljs-symbol">root@</span>vm1 ~]#</code></pre>
+<ol start="2">
+<li>systemd<blockquote>
+<p>systemd即为system daemon,是linux下的一种init软件,由Lennart Poettering带头开发,并在LGPL2.1及其后续版本许可证下开源发布,开发目标是<strong>提供更优秀的框架以表示系统服务间的依赖关系，并依此实现系统初始化时服务的并行启动，同时达到降低Shell的系统开销的效果</strong>，最终代替常用的System V与BSD风格init程序。</p>
+</blockquote>
+</li>
+</ol>
+<blockquote>
+<p>与多数发行版使用的System V风格init相比，systemd采用了以下新技术： (1) 采用Socket激活式与总线激活式服务，以提高相互依赖的各服务的并行运行性能； (2) 用Cgroups代替PID来追踪进程，以此即使是两次fork之后生成的守护进程也不会脱离systemd的控制。</p>
+</blockquote>
+<ol start="3">
+<li>nohup+&amp;<blockquote>
+<p>&amp;是指在后台运行一般在执行命令后，都会显式的在前台执行，当Ctrl+C后进程回宕掉，但是 在命令后加&amp;,即使Ctrl+C，程序还在进行，但是，当关闭Xshell后，程序就会宕掉。</p>
+</blockquote>
+</li>
+</ol>
+<blockquote>
+<p>nohup是指忽略SiGHUP信号，当关掉Xshell后，程序会一直存在，但是当执行Ctrl+C后程序还是会宕掉。</p>
+</blockquote>
+<ol start="4">
+<li>screen<blockquote>
+<p>Screen是一款由GNU计划开发的用于命令行终端切换的自由软件。用户可以通过该软件同时连接多个本地或远程的命令行会话，并在其间自由切换。GNU Screen可以看作是窗口管理器的命令行界面版本。它提供了统一的管理多个会话的界面和相应的功能。</p>
+</blockquote>
+</li>
+</ol>
+<blockquote>
+<p>在Screen环境下，所有的会话都独立的运行，并拥有各自的编号、输入、输出和窗口缓存。用户可以通过快捷键在不同的窗口下切换，并可以自由的重定向各个窗口的输入和输出。</p>
+</blockquote>
+<blockquote>
+<p><strong>只要Screen本身没有终止，在其内部运行的会话都可以恢复</strong>。这一点对于远程登录的用户特别有用——即使网络连接中断，用户也不会失去对已经打开的命令 行会话的控制。只要再次登录到主机上执行screen  -r就可以恢复会话的运行</p>
+</blockquote>
+<ol start="5">
+<li>其他：grep<blockquote>
+<p>grep是“Global Regular Expressions Print”的首字母缩写词，意为全局正则表达式打印。</p>
+</blockquote>
+</li>
+</ol>
+<blockquote>
+<p>grep是一个逐行扫描指定文件或文件的程序，返回包含模式的行。模式是一种表达式，它通过将字符解释为元字符来指定一组字符串。例如，星号元字符（*）被解释为“前面元素的零个或多个”。这使用户能够在grep命令中键入一系列短字符和元字符，以使计算机向我们显示哪些文件匹配的行。<br>一些常见的标志如下：</p>
+</blockquote>
+<pre><code class="hljs diff"><span class="hljs-deletion">-c 用于计算成功匹配的数量而不打印实际匹配</span>
+<span class="hljs-deletion">-i 以使搜索大小写不敏感</span>
+<span class="hljs-deletion">-n 在每个匹配打印输出之前打印行号</span>
+<span class="hljs-deletion">-v 以获取正则表达式的补码（即返回行不匹配）</span>
+<span class="hljs-deletion">-l 打印带有与表达式匹配的行的文件的文件名</span></code></pre>]]></content>
+      <categories>
+        <category>编程语言特性相关</category>
+      </categories>
+      <tags>
+        <tag>linux命令</tag>
       </tags>
   </entry>
   <entry>
@@ -944,84 +1187,6 @@ git <span class="hljs-built_in">push</span> -u <span class="hljs-built_in">origi
       </tags>
   </entry>
   <entry>
-    <title>linux命令</title>
-    <url>/2019/12/19/linux%E5%91%BD%E4%BB%A4/</url>
-    <content><![CDATA[<h2 id="linux命令"><a href="#linux命令" class="headerlink" title="linux命令"></a>linux命令</h2><h3 id="1-1-基础命令"><a href="#1-1-基础命令" class="headerlink" title="1.1 基础命令"></a>1.1 基础命令</h3><ul>
-<li>程序挂到后台运行<pre><code class="hljs awk">nohup python3 scala.py &amp;    <span class="hljs-regexp">//</span>不指定日志输出文件，程序后台运行，并且日志默认输出到nohup.out中
-nohup python3 scala.py &gt; log.file <span class="hljs-number">2</span> &gt;&amp;<span class="hljs-number">1</span> &amp; <span class="hljs-regexp">//</span>指定日志输出文件，程序后台运行，并且日志重定向到log.file中
-nohup python3 scala.py &gt; <span class="hljs-regexp">/dev/</span>null <span class="hljs-number">2</span> &gt;&amp;<span class="hljs-number">1</span> &amp; 
-<span class="hljs-regexp">//</span>不生成日志文件（<span class="hljs-regexp">/dev/</span>null相当于黑洞），程序后台运行</code></pre></li>
-<li>进程查询<pre><code class="hljs awk">ps ux     <span class="hljs-regexp">//</span>查看所有进程 
-ps -a     <span class="hljs-regexp">//</span>任务管理器
-ps ux grep | <span class="hljs-string">&#x27;python3&#x27;</span>   <span class="hljs-regexp">//</span>进程筛选，返回包含python3字符的进程</code></pre></li>
-<li>在命令行中将一个命令的结果传给另一个命令当参数使用‘$(command)’方法<pre><code class="hljs gams"><span class="hljs-function"><span class="hljs-title">spark</span></span>-submit .......... arg[<span class="hljs-number">0</span>]  arg[<span class="hljs-number">1</span>] <span class="hljs-comment">//原命令语句</span>
-<span class="hljs-comment">//现在需要获取当前日期传给以上命令当参数</span>
-<span class="hljs-function"><span class="hljs-title">spark</span></span>-submit .......... <span class="hljs-symbol">$</span>(date +%F)  <span class="hljs-symbol">$</span>(date +%F)或者
-<span class="hljs-function"><span class="hljs-title">spark</span></span>-submit .......... `date +%F`  `date +%F`
-
-<span class="hljs-comment">//date +%F:获取当前时间命令，使用$(command)就可以把date方法的结果传入上述语句中</span></code></pre>
-<h3 id="1-2-进程管理（pgrep，systemd，nohup-amp-，screen的区别）"><a href="#1-2-进程管理（pgrep，systemd，nohup-amp-，screen的区别）" class="headerlink" title="1.2 进程管理（pgrep，systemd，nohup+&amp;，screen的区别）"></a>1.2 进程管理（pgrep，systemd，nohup+&amp;，screen的区别）</h3></li>
-</ul>
-<p><strong>1. pgrep</strong></p>
-<blockquote>
-<p>pgrep是首字母缩略词，代表“Process-ID Global Regular Expressions Print”。<br>pgrep查看当前正在运行的进程，并将与选择条件匹配的进程ID列出到stdout（屏幕）。当你想要某个进程的PID时，pgrep很方便。<br>例如，如果我只想知道我的nginx进程的进程ID，使用pgrep nginx将返回进程ID 值,如：</p>
-</blockquote>
-<pre><code class="hljs angelscript">[<span class="hljs-symbol">root@</span>vm1 ~]# pgrep nginx
-<span class="hljs-number">71982</span>
-<span class="hljs-number">71984</span>
-[<span class="hljs-symbol">root@</span>vm1 ~]#</code></pre>
-<ol start="2">
-<li>systemd<blockquote>
-<p>systemd即为system daemon,是linux下的一种init软件,由Lennart Poettering带头开发,并在LGPL2.1及其后续版本许可证下开源发布,开发目标是<strong>提供更优秀的框架以表示系统服务间的依赖关系，并依此实现系统初始化时服务的并行启动，同时达到降低Shell的系统开销的效果</strong>，最终代替常用的System V与BSD风格init程序。</p>
-</blockquote>
-</li>
-</ol>
-<blockquote>
-<p>与多数发行版使用的System V风格init相比，systemd采用了以下新技术： (1) 采用Socket激活式与总线激活式服务，以提高相互依赖的各服务的并行运行性能； (2) 用Cgroups代替PID来追踪进程，以此即使是两次fork之后生成的守护进程也不会脱离systemd的控制。</p>
-</blockquote>
-<ol start="3">
-<li>nohup+&amp;<blockquote>
-<p>&amp;是指在后台运行一般在执行命令后，都会显式的在前台执行，当Ctrl+C后进程回宕掉，但是 在命令后加&amp;,即使Ctrl+C，程序还在进行，但是，当关闭Xshell后，程序就会宕掉。</p>
-</blockquote>
-</li>
-</ol>
-<blockquote>
-<p>nohup是指忽略SiGHUP信号，当关掉Xshell后，程序会一直存在，但是当执行Ctrl+C后程序还是会宕掉。</p>
-</blockquote>
-<ol start="4">
-<li>screen<blockquote>
-<p>Screen是一款由GNU计划开发的用于命令行终端切换的自由软件。用户可以通过该软件同时连接多个本地或远程的命令行会话，并在其间自由切换。GNU Screen可以看作是窗口管理器的命令行界面版本。它提供了统一的管理多个会话的界面和相应的功能。</p>
-</blockquote>
-</li>
-</ol>
-<blockquote>
-<p>在Screen环境下，所有的会话都独立的运行，并拥有各自的编号、输入、输出和窗口缓存。用户可以通过快捷键在不同的窗口下切换，并可以自由的重定向各个窗口的输入和输出。</p>
-</blockquote>
-<blockquote>
-<p><strong>只要Screen本身没有终止，在其内部运行的会话都可以恢复</strong>。这一点对于远程登录的用户特别有用——即使网络连接中断，用户也不会失去对已经打开的命令 行会话的控制。只要再次登录到主机上执行screen  -r就可以恢复会话的运行</p>
-</blockquote>
-<ol start="5">
-<li>其他：grep<blockquote>
-<p>grep是“Global Regular Expressions Print”的首字母缩写词，意为全局正则表达式打印。</p>
-</blockquote>
-</li>
-</ol>
-<blockquote>
-<p>grep是一个逐行扫描指定文件或文件的程序，返回包含模式的行。模式是一种表达式，它通过将字符解释为元字符来指定一组字符串。例如，星号元字符（*）被解释为“前面元素的零个或多个”。这使用户能够在grep命令中键入一系列短字符和元字符，以使计算机向我们显示哪些文件匹配的行。<br>一些常见的标志如下：</p>
-</blockquote>
-<pre><code class="hljs diff"><span class="hljs-deletion">-c 用于计算成功匹配的数量而不打印实际匹配</span>
-<span class="hljs-deletion">-i 以使搜索大小写不敏感</span>
-<span class="hljs-deletion">-n 在每个匹配打印输出之前打印行号</span>
-<span class="hljs-deletion">-v 以获取正则表达式的补码（即返回行不匹配）</span>
-<span class="hljs-deletion">-l 打印带有与表达式匹配的行的文件的文件名</span></code></pre>]]></content>
-      <categories>
-        <category>编程语言特性相关</category>
-      </categories>
-      <tags>
-        <tag>linux命令</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>pyqt5使用及出现问题</title>
     <url>/2020/09/17/pyqt5%E4%BD%BF%E7%94%A8%E5%8F%8A%E5%87%BA%E7%8E%B0%E9%97%AE%E9%A2%98/</url>
     <content><![CDATA[<h1 id="1-pyqt5及qtdesigner的安装"><a href="#1-pyqt5及qtdesigner的安装" class="headerlink" title="1. pyqt5及qtdesigner的安装"></a>1. pyqt5及qtdesigner的安装</h1><h2 id="1-1-安装包"><a href="#1-1-安装包" class="headerlink" title="1.1 安装包"></a>1.1 安装包</h2><pre><code class="hljs cmake">pip <span class="hljs-keyword">install</span>  PyQt5-tools
@@ -1048,159 +1213,6 @@ pip <span class="hljs-keyword">install</span> sip</code></pre>
       <tags>
         <tag>python</tag>
         <tag>pyqt5</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>neo4j集群安装步骤</title>
-    <url>/2020/08/13/neo4j%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/</url>
-    <content><![CDATA[<h1 id="1-neo4j集群安装"><a href="#1-neo4j集群安装" class="headerlink" title="1. neo4j集群安装"></a>1. neo4j集群安装</h1><ol start="0">
-<li>文件说明：</li>
-</ol>
-<ul>
-<li>neo4j-enterprise-3.4.18-unix.tar.gz为软件压缩包</li>
-<li>如下其余的都是第三方包，后面只需要移动到后面指定的文件夹中即可<pre><code class="hljs apache"><span class="hljs-attribute">apoc</span>-<span class="hljs-number">3.4.0.4</span>-<span class="hljs-literal">all</span>.jar                hive-service-<span class="hljs-number">1</span>.<span class="hljs-number">1</span>.<span class="hljs-number">0</span>-cdh<span class="hljs-number">5</span>.<span class="hljs-number">15</span>.<span class="hljs-number">2</span>.jar
-<span class="hljs-attribute">graph</span>-algorithms-algo-<span class="hljs-number">3.4.12.7</span>.jar  httpclient-<span class="hljs-number">4</span>.<span class="hljs-number">2</span>.<span class="hljs-number">5</span>.jar
-<span class="hljs-attribute">hive</span>-exec-<span class="hljs-number">1</span>.<span class="hljs-number">1</span>.<span class="hljs-number">0</span>-cdh<span class="hljs-number">5</span>.<span class="hljs-number">15</span>.<span class="hljs-number">2</span>.jar       httpcore-<span class="hljs-number">4</span>.<span class="hljs-number">2</span>.<span class="hljs-number">5</span>.jar
-<span class="hljs-attribute">hive</span>-jdbc-<span class="hljs-number">1</span>.<span class="hljs-number">1</span>.<span class="hljs-number">0</span>-cdh<span class="hljs-number">5</span>.<span class="hljs-number">15</span>.<span class="hljs-number">2</span>.jar       libfb<span class="hljs-number">303</span>-<span class="hljs-number">0</span>.<span class="hljs-number">9</span>.<span class="hljs-number">3</span>.jar
-<span class="hljs-attribute">hive</span>-metastore-<span class="hljs-number">1</span>.<span class="hljs-number">1</span>.<span class="hljs-number">0</span>-cdh<span class="hljs-number">5</span>.<span class="hljs-number">15</span>.<span class="hljs-number">2</span>.jar  libthrift-<span class="hljs-number">0</span>.<span class="hljs-number">9</span>.<span class="hljs-number">3</span>.jar</code></pre></li>
-</ul>
-<ol>
-<li>说明<blockquote>
-<p>安装目录这里假设为根目录下面的opt文件夹<code>/opt</code>,具体视现场情况而定。配置集群方式可以通过先修改一份配置文件，然后将整个文件包发送到另外两个节点上。最后再修改neo4j的id即可。以下为此种安装方式的步骤</p>
-</blockquote>
-</li>
-</ol>
-<blockquote>
-<p>测试主机配置ip分别为：</p>
-</blockquote>
-<blockquote>
-<p>172.16.221.100/172.16.221.102/172.16.221.9，</p>
-</blockquote>
-<blockquote>
-<p>对应的hostname分别为master/slave01/slave02，</p>
-</blockquote>
-<blockquote>
-<p>对应的neo4j集群id分别为1/2/3<br>（具体视现场情况而定,neo4j集群id只是一个标识）</p>
-</blockquote>
-<ol start="2">
-<li>获取软件包之后然后在安装目录下直接解压缩，命令如下<pre><code class="hljs apache"><span class="hljs-attribute">tar</span> -vxf neo<span class="hljs-number">4</span>j-enterprise-<span class="hljs-number">3</span>.<span class="hljs-number">4</span>.<span class="hljs-number">18</span>-unix.tar.gz</code></pre></li>
-<li>开启http页面服务外部访问</li>
-</ol>
-<ul>
-<li>修改neo4j-enterprise-3.4.18/conf/neo4j.conf文件</li>
-</ul>
-<p>删除</p>
-<pre><code class="hljs angelscript"># dbms.connectors.default_listen_address=<span class="hljs-number">0.0</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span></code></pre>
-<p>行前面的井号</p>
-<pre><code class="hljs vala"><span class="hljs-meta"># vim中打开文件然后输入“/+字符串”然后回车可以进行字符串搜索，使用n键调整上下匹配</span></code></pre>
-<ol start="4">
-<li>配置ip地址及页面缓存大小</li>
-</ol>
-<ul>
-<li>修改neo4j-enterprise-3.4.18/conf/neo4j.conf文件<pre><code class="hljs ini"><span class="hljs-comment"># 修改文件中的不带井号行的数据为如下值</span>
-
-<span class="hljs-comment"># Unique server id for this Neo4j instance</span>
-<span class="hljs-comment"># can not be negative id and must be unique</span>
-<span class="hljs-attr">ha.server_id</span>=<span class="hljs-number">1</span> 
-<span class="hljs-comment"># List of other known instances in this cluster</span>
-<span class="hljs-comment"># Alternatively, use IP addresses:</span>
-<span class="hljs-attr">ha.initial_hosts</span>=<span class="hljs-number">172.16</span>.<span class="hljs-number">221.100</span>:<span class="hljs-number">5001</span>,<span class="hljs-number">172.16</span>.<span class="hljs-number">221.102</span>:<span class="hljs-number">5001</span>,<span class="hljs-number">172.16</span>.<span class="hljs-number">221.9</span>:<span class="hljs-number">5001</span>(这里根据实际id进行修改，端口默认不变)
-<span class="hljs-comment"># HA - High Availability</span>
-<span class="hljs-comment"># SINGLE - Single mode, default.</span>
-<span class="hljs-attr">dbms.mode</span>=HA
-<span class="hljs-comment"># HTTP Connector</span>
-<span class="hljs-attr">dbms.connector.http.enabled</span>=<span class="hljs-literal">true</span>
-<span class="hljs-attr">dbms.connector.http.listen_address</span>=:<span class="hljs-number">7474</span>
-<span class="hljs-comment"># 设置堆内存和页面缓存大小</span>
-<span class="hljs-attr">dbms.memory.heap.initial_size</span>=<span class="hljs-number">10</span>g
-<span class="hljs-attr">dbms.memory.heap.max_size</span>=<span class="hljs-number">10</span>g
-<span class="hljs-attr">dbms.memory.pagecache.size</span>=<span class="hljs-number">10</span>g</code></pre>
-</li>
-</ul>
-<ol start="5">
-<li><p>将第0步里面所述的所有第三方包放到<code>/opt/neo4j-enterprise-3.4.18/plugins</code>目录下</p>
-</li>
-<li><p>将整个neo4j文件夹<code>opt/neo4j-enterprise-3.4.18</code>复制到要安装的从节点对应的目录下</p>
-<pre><code class="hljs angelscript">scp -r ./opt/neo4j-enterprise<span class="hljs-number">-3.4</span><span class="hljs-number">.18</span>/ <span class="hljs-symbol">root@</span><span class="hljs-number">172.16</span><span class="hljs-number">.221</span><span class="hljs-number">.102</span>:/opt/
-scp -r ./opt/neo4j-enterprise<span class="hljs-number">-3.4</span><span class="hljs-number">.18</span>/ <span class="hljs-symbol">root@</span><span class="hljs-number">172.16</span><span class="hljs-number">.221</span><span class="hljs-number">.9</span>:/opt/</code></pre></li>
-<li><p>修改从节点的neo4jID</p>
-</li>
-</ol>
-<ul>
-<li>修改从节点的neo4j-enterprise-3.4.18/conf/neo4j.conf文件</li>
-<li>找到neo4j.conf文件中的如下部分，将两个从节点中的ha.server_id分别修改为2和3<pre><code class="hljs ini"><span class="hljs-comment"># Unique server id for this Neo4j instance</span>
-<span class="hljs-comment"># can not be negative id and must be unique</span>
-<span class="hljs-attr">ha.server_id</span>=<span class="hljs-number">1</span></code></pre></li>
-</ul>
-<ol start="8">
-<li>然后分别<strong>启动三个集群</strong>，主从节点启动顺序不定，<strong>集群配置必须三个节点都启动服务才能启动成功。单独启动一个节点是无法启动成功的</strong>。</li>
-</ol>
-<p>在<code>/opt/neo4j-enterprise-3.4.18/bin</code>目录下分别输入</p>
-<pre><div class="caption"><span>start``` ，并等待数秒即可</span></div><code class="hljs ./neo4j">
-&gt; 重启和关闭的命令将上面的start改成restart或者stop即可
-
-
-9. web客户端查看是否启动成功
-
-客户端页面为“http:&#x2F;&#x2F;172.16.221.100:7474&#x2F;browser&#x2F;”,
-第一次登陆的时候会强制修改密码,
-默认账号密码为:neo4j&#x2F;neo4j。
-点击页面上的System information框内的monitor键如下显示表示成功启动。
-（id为1，2，3的节点状态都是alive）</code></pre>
-<p>Cluster<br>Id    Alive    Available    Is Master<br>1    true    true    yes<br>2    true    true    -<br>3    true    true</p>
-<pre><code class="hljs">
-
-# 2.启动可能遇到问题:
-
-## 2.1  ERROR Failed to start Neo4j
-&gt;  ERROR Failed to start Neo4j: Starting Neo4j failed: Component &#x27;org.neo4j.server.database.LifecycleManagingDatabase@1e141e42&#x27; was successfully initialized, but failed to start. Please see the attached cause exception &quot;Conversation-response mapping:
-&gt;  &#123;1/13#=ResponseFuture&#123;conversationId=&#x27;1/13#&#x27;, initiatedByMessageType=join, response=null&#125;&#125;&quot;. Starting Neo4j failed: Component 
-
-如上错误说明三台机器之间访问出现了问题，不能相互感知，不能加入集群，还需要增加下面配置</code></pre>
-<h1 id="在neo4j-node1-neo4j-conf中添加"><a href="#在neo4j-node1-neo4j-conf中添加" class="headerlink" title="在neo4j-node1 neo4j.conf中添加"></a>在neo4j-node1 neo4j.conf中添加</h1><p>dbms.connectors.default_listen_address=172.16.221.100<br>dbms.connector.bolt.enabled=true<br>dbms.connector.bolt.listen_address=:7687</p>
-<h1 id="在neo4j-node2-neo4j-conf中添加"><a href="#在neo4j-node2-neo4j-conf中添加" class="headerlink" title="在neo4j-node2 neo4j.conf中添加"></a>在neo4j-node2 neo4j.conf中添加</h1><p>dbms.connectors.default_listen_address=172.16.221.102<br>dbms.connector.bolt.enabled=true<br>dbms.connector.bolt.listen_address=:7687</p>
-<h1 id="在neo4j-node3-neo4j-conf中添加"><a href="#在neo4j-node3-neo4j-conf中添加" class="headerlink" title="在neo4j-node3 neo4j.conf中添加"></a>在neo4j-node3 neo4j.conf中添加</h1><p>dbms.connectors.default_listen_address=172.16.221.9<br>dbms.connector.bolt.enabled=true<br>dbms.connector.bolt.listen_address=:7687</p>
-<pre><code class="hljs angelscript">然后三台集群分别启动即可，无启动顺序。等待启动完成查看neo4j状态或者看日志都可以看到启动已经成功。
-
-## <span class="hljs-number">2.2</span> Neo4j-shell 报错Connection <span class="hljs-built_in">ref</span>used</code></pre>
-<p>cd /etc/neo4j<br>vim neo4j.conf<br>去掉 #dbms.shell.enabled=true 前面的#</p>
-<pre><code class="hljs awk">更改后重启neo4j即可
-
-<span class="hljs-comment"># 3. 部分需要脚本</span>
-**下面脚本都需要在文件解压后在“<span class="hljs-regexp">/opt/</span>neo4j-enterprise-<span class="hljs-number">3.4</span>.<span class="hljs-number">18</span>/bin”（解压文件的bin目录下）目录下手动建立相关的文件**
-
-
-<span class="hljs-comment">## 3.1 清空库脚本</span>
-- 路径：
-&gt; <span class="hljs-regexp">/opt/</span>neo4j-enterprise-<span class="hljs-number">3.4</span>.<span class="hljs-number">18</span><span class="hljs-regexp">/bin/</span>dropDataBase.sh
-
-- 内容：</code></pre>
-<p>#!/bin/bash</p>
-<h1 id="Neo4j删除边和顶点的脚本"><a href="#Neo4j删除边和顶点的脚本" class="headerlink" title="Neo4j删除边和顶点的脚本"></a>Neo4j删除边和顶点的脚本</h1><h1 id="删除边"><a href="#删除边" class="headerlink" title="删除边"></a>删除边</h1><p>/opt/neo4j-enterprise-3.4.18/bin/cypher-shell  “call apoc.periodic.iterate(‘match ()-[r]-() return r’,’delete r’,{batchsize:’100000’,iterateList:true,paraller:true,concurrency:8})”</p>
-<h1 id="删除点"><a href="#删除点" class="headerlink" title="删除点"></a>删除点</h1><p>/opt/neo4j-enterprise-3.4.18/bin/cypher-shell  “call apoc.periodic.iterate(‘match (n) return n’,’delete n’,{batchsize:’100000’,iterateList:true,paraller:true,concurrency:8})”</p>
-<pre><code class="hljs markdown"><span class="hljs-bullet">-</span> 说明：
-<span class="hljs-quote">&gt; 该脚本为删库脚本，需要删库的时候<span class="hljs-strong">**先执行删除边**</span>脚本<span class="hljs-strong">**再执行删除点**</span>脚本</span>
-
-<span class="hljs-section">## 3.2 服务崩溃自动启动脚本</span>
-<span class="hljs-bullet">-</span> 路径：
-<span class="hljs-quote">&gt; /opt/neo4j-enterprise-3.4.18/bin/selfStartUp.sh</span>
-
-<span class="hljs-bullet">-</span> 内容：</code></pre>
-<p>check_point(){<br>    echo “端口检测”<br>    netstat -tlpn grep “\b$1\b”<br>}<br>while true<br>do<br>if check_point 7474<br>then<br>    echo “已存在”<br>else<br>    echo “不在”<br>    ./neo4j start<br>fi<br>  sleep 10m<br>done</p>
-<p>```</p>
-<ul>
-<li>说明：</li>
-</ul>
-<blockquote>
-<p>该脚本需要在<strong>集群的三台机器上</strong>常驻执行，neo4j安装后执行<code>nohup  selfStartUp.sh  &amp; </code>启动</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>图数据库</category>
-      </categories>
-      <tags>
-        <tag>neo4j</tag>
-        <tag>图数据库</tag>
       </tags>
   </entry>
   <entry>
@@ -1984,78 +1996,6 @@ https:<span class="hljs-regexp">//</span>docs.docker.com<span class="hljs-regexp
       </tags>
   </entry>
   <entry>
-    <title>手写识别图片预处理</title>
-    <url>/2018/11/21/%E6%89%8B%E5%86%99%E8%AF%86%E5%88%AB%E5%9B%BE%E7%89%87%E9%A2%84%E5%A4%84%E7%90%86/</url>
-    <content><![CDATA[<h2 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h2><p>大二的时候几个人一起搞的一个东西，上周运气好被一个同学投到了成都的一个比赛还进了决赛，然后思考了一下既然要比赛还是把这个系统的各个方面完善一下好了。我做的是图片预处理部分，把一张图片中的数字算式部分提取出来。</p>
-<pre><code>之前的图片预处理分割字符是通过照片的像素点来分割的，
-现在看来是十分的愚蠢。。。主要是那个时候自己也菜，
-所以现在想了办法预处理部分重新做一下。</code></pre>
-<h2 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h2><ul>
-<li>图片预处理部分要实现的功能很简单，就是把一整张图片中的数字和运算符号切割成单独的一个一个小图像就好了。<br>大概步骤就是这样：</li>
-</ul>
-<pre><code class="hljs ada">graph LR
-整张图片<span class="hljs-comment">--&gt;图片旋转闭操作等处理</span>
-图片旋转闭操作等处理<span class="hljs-comment">--&gt;切割单个等式</span>
-切割单个等式<span class="hljs-comment">--&gt;获取每一个数字与运算符</span></code></pre>
-<ul>
-<li><p>理想效果：<br>  原图⬇<br>  <img src="EF7E208AE0EE4C20923C8FCE1596E233" alt="0--test0"></p>
-<p>  结果⬇<br>  <img src="E0D1665B6D024C95BAA35ED62B95FFD3" alt="1"></p>
-</li>
-<li><p>其中图片的拍摄过程中需要解决的问题及解决方法：</p>
-<ol>
-<li>图片倾斜 –&gt; 霍夫变换</li>
-<li>不平整 –&gt; 闭操作透视变换</li>
-<li>噪点与阴影 –&gt; 二值化处理</li>
-<li>提取内容 –&gt; 算式框的边界检测</li>
-</ol>
-</li>
-</ul>
-<h2 id="模块具体实施步骤和结果"><a href="#模块具体实施步骤和结果" class="headerlink" title="模块具体实施步骤和结果"></a>模块具体实施步骤和结果</h2><ul>
-<li><p>步骤零：获取图片<br>  <img src="BC4FFD9E762F41B884F1561145188A38" alt="image"></p>
-</li>
-<li><p>步骤一：霍夫变换</p>
-<p>  这个地方因为拍摄的照片就比较正，所以霍夫变换的效果不是十分明显，仔细看是能看到这个图边缘黑边的地方就是进行旋转后的痕迹。结果如下：<br><img src="2CB054EC34C74753AC8B607F09C43EAB" alt="image"></p>
-</li>
-</ul>
-<ul>
-<li><p>步骤二：获取边界图片</p>
-<p>  opencv的边界检测方法<br>  <img src="26767B1C17EF41419DBFAB8DFB1A3F97" alt="image"></p>
-</li>
-<li><p>步骤三：灰度化闭操作及透视变换</p>
-<p>  闭操作：<br>  ‘’ 图片形态学操作中的一种，闭操作可使轮廓线更光滑，但与开操作相反的是，闭操作通常消弥狭窄的间断和长细的鸿沟，消除小的空洞，并填补轮廓线中的断裂。’’</p>
-<p>  简单点说：图片细节增强</p>
-<p>  透视变换：将原图投影到另一个平面上并通过点运算使图像更加平整。</p>
-<p>  二值化处理方法：根据Otsu’s方法取最佳阈值对图片进行二值化处理</p>
-<p>  结果如下：这里透明变换的效果并不是很好，目前还没有找到一个合适的参数使用，并且从分割的情况来看效果也还行，所以暂时就这样勉强用了。。。<br>  <img src="E3617599EB824E8299DABE0F092E2E2A" alt="image"></p>
-</li>
-<li><p>步骤四：分割单元格</p>
-<p>  opencv对图片轮廓进行识别：<br>  <img src="BAD59EB81C624531B685A71658D40A6B" alt="image"></p>
-<p>  使用opencv把边界画出来，效果简明易懂：</p>
-<p>  <img src="334DE774AEC74DFF92342E47D4D5DE59" alt="image"></p>
-<p>  单个单元格的提取：<br>  <img src="FBF03940D0494CCA8DA20F1EB9189084" alt="image"></p>
-</li>
-<li><p>步骤五：从单个单元格中提取数字及符号</p>
-<p>  因为用了垂直投影方法切割字符，在使用之前去噪点的步骤没有检测效果如何，导致这里用垂直投影会出现将噪点也切割出来的情况。返回重新调整一下二值化的阈值就可以了。</p>
-<p>  效果：<br>  <img src="8F285B11124A45CAB531F5BC452BA749" alt="1"></p>
-</li>
-</ul>
-<h2 id="其他："><a href="#其他：" class="headerlink" title="其他："></a>其他：</h2><ol>
-<li>使用png格式图片的原因<br>png它是无损压缩格式，jpg是有损</li>
-<li>写一个完整的系统代码一定要分方法分模块，否则到后面代码量增加起来之后对后续的维护很麻烦。</li>
-<li>对opencv模块的强大有了更加的了解。。。</li>
-<li>这里实名感谢”@ATP合成酶”大佬提供的相关处理思路，万分感谢</li>
-<li>项目为了赶时间基本只写了两周还有很多不完整的细节处理地方，如果继续做下去的话也还是蛮有意思的</li>
-<li>第一次感受到当程序员没日没夜的加班生活，想到以后还有很多次真的是很后悔如这一行了</li>
-</ol>
-]]></content>
-      <categories>
-        <category>学校</category>
-      </categories>
-      <tags>
-        <tag>opencv</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>实习记录</title>
     <url>/2019/07/14/%E5%AE%9E%E4%B9%A0%E8%AE%B0%E5%BD%95/</url>
     <content><![CDATA[<h2 id="0-环境"><a href="#0-环境" class="headerlink" title="0.环境"></a>0.环境</h2><ul>
@@ -2139,6 +2079,78 @@ https:<span class="hljs-regexp">//</span>docs.docker.com<span class="hljs-regexp
       </tags>
   </entry>
   <entry>
+    <title>手写识别图片预处理</title>
+    <url>/2018/11/21/%E6%89%8B%E5%86%99%E8%AF%86%E5%88%AB%E5%9B%BE%E7%89%87%E9%A2%84%E5%A4%84%E7%90%86/</url>
+    <content><![CDATA[<h2 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h2><p>大二的时候几个人一起搞的一个东西，上周运气好被一个同学投到了成都的一个比赛还进了决赛，然后思考了一下既然要比赛还是把这个系统的各个方面完善一下好了。我做的是图片预处理部分，把一张图片中的数字算式部分提取出来。</p>
+<pre><code>之前的图片预处理分割字符是通过照片的像素点来分割的，
+现在看来是十分的愚蠢。。。主要是那个时候自己也菜，
+所以现在想了办法预处理部分重新做一下。</code></pre>
+<h2 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h2><ul>
+<li>图片预处理部分要实现的功能很简单，就是把一整张图片中的数字和运算符号切割成单独的一个一个小图像就好了。<br>大概步骤就是这样：</li>
+</ul>
+<pre><code class="hljs ada">graph LR
+整张图片<span class="hljs-comment">--&gt;图片旋转闭操作等处理</span>
+图片旋转闭操作等处理<span class="hljs-comment">--&gt;切割单个等式</span>
+切割单个等式<span class="hljs-comment">--&gt;获取每一个数字与运算符</span></code></pre>
+<ul>
+<li><p>理想效果：<br>  原图⬇<br>  <img src="EF7E208AE0EE4C20923C8FCE1596E233" alt="0--test0"></p>
+<p>  结果⬇<br>  <img src="E0D1665B6D024C95BAA35ED62B95FFD3" alt="1"></p>
+</li>
+<li><p>其中图片的拍摄过程中需要解决的问题及解决方法：</p>
+<ol>
+<li>图片倾斜 –&gt; 霍夫变换</li>
+<li>不平整 –&gt; 闭操作透视变换</li>
+<li>噪点与阴影 –&gt; 二值化处理</li>
+<li>提取内容 –&gt; 算式框的边界检测</li>
+</ol>
+</li>
+</ul>
+<h2 id="模块具体实施步骤和结果"><a href="#模块具体实施步骤和结果" class="headerlink" title="模块具体实施步骤和结果"></a>模块具体实施步骤和结果</h2><ul>
+<li><p>步骤零：获取图片<br>  <img src="BC4FFD9E762F41B884F1561145188A38" alt="image"></p>
+</li>
+<li><p>步骤一：霍夫变换</p>
+<p>  这个地方因为拍摄的照片就比较正，所以霍夫变换的效果不是十分明显，仔细看是能看到这个图边缘黑边的地方就是进行旋转后的痕迹。结果如下：<br><img src="2CB054EC34C74753AC8B607F09C43EAB" alt="image"></p>
+</li>
+</ul>
+<ul>
+<li><p>步骤二：获取边界图片</p>
+<p>  opencv的边界检测方法<br>  <img src="26767B1C17EF41419DBFAB8DFB1A3F97" alt="image"></p>
+</li>
+<li><p>步骤三：灰度化闭操作及透视变换</p>
+<p>  闭操作：<br>  ‘’ 图片形态学操作中的一种，闭操作可使轮廓线更光滑，但与开操作相反的是，闭操作通常消弥狭窄的间断和长细的鸿沟，消除小的空洞，并填补轮廓线中的断裂。’’</p>
+<p>  简单点说：图片细节增强</p>
+<p>  透视变换：将原图投影到另一个平面上并通过点运算使图像更加平整。</p>
+<p>  二值化处理方法：根据Otsu’s方法取最佳阈值对图片进行二值化处理</p>
+<p>  结果如下：这里透明变换的效果并不是很好，目前还没有找到一个合适的参数使用，并且从分割的情况来看效果也还行，所以暂时就这样勉强用了。。。<br>  <img src="E3617599EB824E8299DABE0F092E2E2A" alt="image"></p>
+</li>
+<li><p>步骤四：分割单元格</p>
+<p>  opencv对图片轮廓进行识别：<br>  <img src="BAD59EB81C624531B685A71658D40A6B" alt="image"></p>
+<p>  使用opencv把边界画出来，效果简明易懂：</p>
+<p>  <img src="334DE774AEC74DFF92342E47D4D5DE59" alt="image"></p>
+<p>  单个单元格的提取：<br>  <img src="FBF03940D0494CCA8DA20F1EB9189084" alt="image"></p>
+</li>
+<li><p>步骤五：从单个单元格中提取数字及符号</p>
+<p>  因为用了垂直投影方法切割字符，在使用之前去噪点的步骤没有检测效果如何，导致这里用垂直投影会出现将噪点也切割出来的情况。返回重新调整一下二值化的阈值就可以了。</p>
+<p>  效果：<br>  <img src="8F285B11124A45CAB531F5BC452BA749" alt="1"></p>
+</li>
+</ul>
+<h2 id="其他："><a href="#其他：" class="headerlink" title="其他："></a>其他：</h2><ol>
+<li>使用png格式图片的原因<br>png它是无损压缩格式，jpg是有损</li>
+<li>写一个完整的系统代码一定要分方法分模块，否则到后面代码量增加起来之后对后续的维护很麻烦。</li>
+<li>对opencv模块的强大有了更加的了解。。。</li>
+<li>这里实名感谢”@ATP合成酶”大佬提供的相关处理思路，万分感谢</li>
+<li>项目为了赶时间基本只写了两周还有很多不完整的细节处理地方，如果继续做下去的话也还是蛮有意思的</li>
+<li>第一次感受到当程序员没日没夜的加班生活，想到以后还有很多次真的是很后悔如这一行了</li>
+</ol>
+]]></content>
+      <categories>
+        <category>学校</category>
+      </categories>
+      <tags>
+        <tag>opencv</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>熵权法计算权重</title>
     <url>/2020/10/15/%E7%86%B5%E6%9D%83%E6%B3%95%E8%AE%A1%E7%AE%97%E6%9D%83%E9%87%8D/</url>
     <content><![CDATA[<h1 id="1-熵权法说明"><a href="#1-熵权法说明" class="headerlink" title="1.熵权法说明"></a>1.熵权法说明</h1><p>通过信息熵的大小判断某项数据在整体数据评测中所占的比重大小。</p>
@@ -2169,62 +2181,6 @@ https:<span class="hljs-regexp">//</span>docs.docker.com<span class="hljs-regexp
       </categories>
       <tags>
         <tag>数据分析</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>随机森林和梯度决策树（GBDT）</title>
-    <url>/2020/03/27/%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97%E5%92%8C%E6%A2%AF%E5%BA%A6%E5%86%B3%E7%AD%96%E6%A0%91%EF%BC%88GBDT%EF%BC%89/</url>
-    <content><![CDATA[<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>随机森林和GBDT部分对比</p>
-<h2 id="一：随机森林-bagging思想"><a href="#一：随机森林-bagging思想" class="headerlink" title="一：随机森林(bagging思想)"></a>一：随机森林(bagging思想)</h2><ul>
-<li>通过构建决策树然后进行分类，最后选择种类比较多的类别</li>
-<li>随机：随机选取固定的样本和固定的特征</li>
-<li>集成学习：投票选举（民主集中制）</li>
-</ul>
-<h2 id="二：GBDT-boosting思想"><a href="#二：GBDT-boosting思想" class="headerlink" title="二：GBDT(boosting思想)"></a>二：GBDT(boosting思想)</h2><ul>
-<li>GBDT是回归树不是分类树</li>
-<li>核心在于累加所有树的结果最为最终结果</li>
-<li>利用损失函数的负梯度去模拟残差，使用残差构建决策树</li>
-<li><strong>为什么使用梯度决策树而不是回归算法</strong><pre><code class="hljs markdown"><span class="hljs-quote">&gt; 回归算法寻找参数和目标值之间存在的某种曲线关系，但是当某些特征与目标值之间无线性关系可使用梯度决策树。</span>
-<span class="hljs-quote">&gt; 梯度决策树是讲特征拟化成数值分类回归最佳结果。</span></code></pre>
-
-</li>
-</ul>
-<a id="more"></a>
-
-<h3 id="2-1-参数说明"><a href="#2-1-参数说明" class="headerlink" title="2.1 参数说明"></a>2.1 参数说明</h3><p><code>class sklearn.ensemble.GradientBoostingRegressor(loss=&#39;ls&#39;, learning_rate=0.1, n_estimators=100, subsample=1.0, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_depth=3, init=None, random_state=None, max_features=None, alpha=0.9, verbose=0, max_leaf_nodes=None, warm_start=False, presort=&#39;auto&#39;)</code></p>
-<ul>
-<li><p><strong>n_estimators</strong>：指GBR使用的学习算法的数量。通常，如果你的设备性能更好，可以把n_estimators设置的更大，效果也会更好。</p>
-</li>
-<li><p><strong>max_depth</strong>：应该在优化其他参数之前先调整max_depth参数。因为每个学习算法都是一颗决策树，max_depth决定了树生成的节点数。选择合适的节点数量可以更好的拟合数据，而更多的节点数可能造成拟合过度。</p>
-</li>
-<li><p><strong>loss</strong>:loss参数决定损失函数，也直接影响误差。默认值为ls，表示最小二乘法（least squares）。还有最小绝对值差值，Huber损失和分位数损失（quantiles）等等。</p>
-</li>
-<li><p><strong>learning_rate</strong>:学习率</p>
-</li>
-</ul>
-<h4 id="2-1-1-参数调整"><a href="#2-1-1-参数调整" class="headerlink" title="2.1.1 参数调整"></a>2.1.1 参数调整</h4><p><strong>Grid Search</strong>来选择性能表现最好的超参数</p>
-<p><a href="https://zhuanlan.zhihu.com/p/55524425">https://zhuanlan.zhihu.com/p/55524425</a></p>
-<p>在Gradient Boosting Regressor 模型中，有一些独立的参数最好是手动调整。</p>
-<p>超参数主要使用了：</p>
-<ul>
-<li>n_estimators=2000,</li>
-<li>learning_rate=0.01,</li>
-<li>max_depth=15,</li>
-<li>max_features=’sqrt’,</li>
-<li>min_samples_leaf=10,</li>
-<li>min_samples_split=10,</li>
-<li>loss=’ls’,</li>
-<li>random_state =42)<h3 id="2-2-负荷预测程序说明记录"><a href="#2-2-负荷预测程序说明记录" class="headerlink" title="2.2 负荷预测程序说明记录"></a>2.2 负荷预测程序说明记录</h3><h4 id="1-误差偏大的处理方法"><a href="#1-误差偏大的处理方法" class="headerlink" title="1. 误差偏大的处理方法"></a>1. 误差偏大的处理方法</h4><h5 id="误差偏大的原因：缺失值处理不当-0或空值设置为均值"><a href="#误差偏大的原因：缺失值处理不当-0或空值设置为均值" class="headerlink" title="误差偏大的原因：缺失值处理不当(0或空值设置为均值)"></a>误差偏大的原因：缺失值处理不当(0或空值设置为均值)</h5><blockquote>
-<p>因为数据波动较大，设置为历史均值是否存在较大的参考价值。其次数据量教少直接删除也不太可取。尝试设置为近一年的均值进行测试。</p>
-</blockquote>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>机器学习笔记</category>
-      </categories>
-      <tags>
-        <tag>machine learning</tag>
       </tags>
   </entry>
   <entry>
@@ -2434,6 +2390,62 @@ app.run(host=<span class="hljs-string">&quot;0.0.0.0&quot;</span>,port=<span cla
         <tag>python</tag>
         <tag>scala</tag>
         <tag>flask</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>随机森林和梯度决策树（GBDT）</title>
+    <url>/2020/03/27/%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97%E5%92%8C%E6%A2%AF%E5%BA%A6%E5%86%B3%E7%AD%96%E6%A0%91%EF%BC%88GBDT%EF%BC%89/</url>
+    <content><![CDATA[<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>随机森林和GBDT部分对比</p>
+<h2 id="一：随机森林-bagging思想"><a href="#一：随机森林-bagging思想" class="headerlink" title="一：随机森林(bagging思想)"></a>一：随机森林(bagging思想)</h2><ul>
+<li>通过构建决策树然后进行分类，最后选择种类比较多的类别</li>
+<li>随机：随机选取固定的样本和固定的特征</li>
+<li>集成学习：投票选举（民主集中制）</li>
+</ul>
+<h2 id="二：GBDT-boosting思想"><a href="#二：GBDT-boosting思想" class="headerlink" title="二：GBDT(boosting思想)"></a>二：GBDT(boosting思想)</h2><ul>
+<li>GBDT是回归树不是分类树</li>
+<li>核心在于累加所有树的结果最为最终结果</li>
+<li>利用损失函数的负梯度去模拟残差，使用残差构建决策树</li>
+<li><strong>为什么使用梯度决策树而不是回归算法</strong><pre><code class="hljs markdown"><span class="hljs-quote">&gt; 回归算法寻找参数和目标值之间存在的某种曲线关系，但是当某些特征与目标值之间无线性关系可使用梯度决策树。</span>
+<span class="hljs-quote">&gt; 梯度决策树是讲特征拟化成数值分类回归最佳结果。</span></code></pre>
+
+</li>
+</ul>
+<a id="more"></a>
+
+<h3 id="2-1-参数说明"><a href="#2-1-参数说明" class="headerlink" title="2.1 参数说明"></a>2.1 参数说明</h3><p><code>class sklearn.ensemble.GradientBoostingRegressor(loss=&#39;ls&#39;, learning_rate=0.1, n_estimators=100, subsample=1.0, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_depth=3, init=None, random_state=None, max_features=None, alpha=0.9, verbose=0, max_leaf_nodes=None, warm_start=False, presort=&#39;auto&#39;)</code></p>
+<ul>
+<li><p><strong>n_estimators</strong>：指GBR使用的学习算法的数量。通常，如果你的设备性能更好，可以把n_estimators设置的更大，效果也会更好。</p>
+</li>
+<li><p><strong>max_depth</strong>：应该在优化其他参数之前先调整max_depth参数。因为每个学习算法都是一颗决策树，max_depth决定了树生成的节点数。选择合适的节点数量可以更好的拟合数据，而更多的节点数可能造成拟合过度。</p>
+</li>
+<li><p><strong>loss</strong>:loss参数决定损失函数，也直接影响误差。默认值为ls，表示最小二乘法（least squares）。还有最小绝对值差值，Huber损失和分位数损失（quantiles）等等。</p>
+</li>
+<li><p><strong>learning_rate</strong>:学习率</p>
+</li>
+</ul>
+<h4 id="2-1-1-参数调整"><a href="#2-1-1-参数调整" class="headerlink" title="2.1.1 参数调整"></a>2.1.1 参数调整</h4><p><strong>Grid Search</strong>来选择性能表现最好的超参数</p>
+<p><a href="https://zhuanlan.zhihu.com/p/55524425">https://zhuanlan.zhihu.com/p/55524425</a></p>
+<p>在Gradient Boosting Regressor 模型中，有一些独立的参数最好是手动调整。</p>
+<p>超参数主要使用了：</p>
+<ul>
+<li>n_estimators=2000,</li>
+<li>learning_rate=0.01,</li>
+<li>max_depth=15,</li>
+<li>max_features=’sqrt’,</li>
+<li>min_samples_leaf=10,</li>
+<li>min_samples_split=10,</li>
+<li>loss=’ls’,</li>
+<li>random_state =42)<h3 id="2-2-负荷预测程序说明记录"><a href="#2-2-负荷预测程序说明记录" class="headerlink" title="2.2 负荷预测程序说明记录"></a>2.2 负荷预测程序说明记录</h3><h4 id="1-误差偏大的处理方法"><a href="#1-误差偏大的处理方法" class="headerlink" title="1. 误差偏大的处理方法"></a>1. 误差偏大的处理方法</h4><h5 id="误差偏大的原因：缺失值处理不当-0或空值设置为均值"><a href="#误差偏大的原因：缺失值处理不当-0或空值设置为均值" class="headerlink" title="误差偏大的原因：缺失值处理不当(0或空值设置为均值)"></a>误差偏大的原因：缺失值处理不当(0或空值设置为均值)</h5><blockquote>
+<p>因为数据波动较大，设置为历史均值是否存在较大的参考价值。其次数据量教少直接删除也不太可取。尝试设置为近一年的均值进行测试。</p>
+</blockquote>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>机器学习笔记</category>
+      </categories>
+      <tags>
+        <tag>machine learning</tag>
       </tags>
   </entry>
   <entry>

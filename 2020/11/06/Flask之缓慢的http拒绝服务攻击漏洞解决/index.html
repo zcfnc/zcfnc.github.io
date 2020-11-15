@@ -252,10 +252,14 @@
 </li>
 </ul>
 <h1 id="2-Flask应对措施"><a href="#2-Flask应对措施" class="headerlink" title="2. Flask应对措施"></a>2. Flask应对措施</h1><ul>
-<li>限制每次请求数据的大小</li>
-<li>限制单个HTTP请求头的最大许可时间</li>
-<li>限制单个ip请求数量</li>
-<li>。。。。。。</li>
+<li><p>限制每次请求数据的大小</p>
+</li>
+<li><p>限制单个HTTP请求头的最大许可时间</p>
+</li>
+<li><p>限制单个ip请求数量</p>
+</li>
+<li><p>。。。。。。</p>
+</li>
 </ul>
 <p>#3. 使用slowhttptest测试漏洞</p>
 <h2 id="3-1-slowhttptest的安装"><a href="#3-1-slowhttptest的安装" class="headerlink" title="3.1 slowhttptest的安装"></a>3.1 slowhttptest的安装</h2><blockquote>
@@ -313,15 +317,23 @@
 
 <h1 id="4-使用说明"><a href="#4-使用说明" class="headerlink" title="4.使用说明"></a>4.使用说明</h1><p>以下是分别使用四种方式对自己的服务进行测试的结果，先开始不太懂每个曲线图的意义。这里说明一下，上面的参数可以设置连接数量以及持续请求时间等参数。然后下面展现的是曲线图，主要看在测试程序运行时间内Connected的数量是否被释放，是否通过服务的设置不符合条件的请求被服务端关闭，Service是否正常运行（服务是否存在被漏洞攻击程序给冲宕机了）。</p>
 <p>##4.1 RANGE HEADERS</p>
-<img src="D:/学习/myBlog/themes/fluid/source/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115151719480.png" srcset="/img/loading.gif" alt="rangeHeader" style="zoom:67%;" />
+<img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115151719480.png" srcset="/img/loading.gif" alt="rangeHeader" style="zoom:67%;" />
+
+
 
 <p>##4.2 SLOW HEADERS(SlowLoris)</p>
-<img src="D:/学习/myBlog/themes/fluid/source/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115151939829.png" srcset="/img/loading.gif" alt="image-20201115151939829" style="zoom: 67%;" />
+<img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115151939829.png" srcset="/img/loading.gif" alt="image-20201115151939829" style="zoom: 67%;" />
+
+
 
 <p>##4.3 SLOW BODY(SLOW POST)</p>
-<img src="D:/学习/myBlog/themes/fluid/source/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115154404536.png" srcset="/img/loading.gif" alt="image-20201115154404536" style="zoom:67%;" />
+<img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115154404536.png" srcset="/img/loading.gif" alt="image-20201115154404536" style="zoom:67%;" />
 
-<h2 id="4-4-SLOW-READ"><a href="#4-4-SLOW-READ" class="headerlink" title="4.4  SLOW READ"></a>4.4  SLOW READ</h2><img src="D:/学习/myBlog/themes/fluid/source/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115152038635.png" srcset="/img/loading.gif" alt="image-20201115152038635" style="zoom:67%;" />
+
+
+<h2 id="4-4-SLOW-READ"><a href="#4-4-SLOW-READ" class="headerlink" title="4.4  SLOW READ"></a>4.4  SLOW READ</h2><img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115152038635.png" srcset="/img/loading.gif" style="zoom:67%;" />
+
+
             </div>
             <hr>
             <div>
