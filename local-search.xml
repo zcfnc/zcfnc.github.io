@@ -4,6 +4,50 @@
   
   
   <entry>
+    <title>python中方法及变量的下划线双下划线等含义</title>
+    <link href="/2020/12/23/python%E4%B8%AD%E6%96%B9%E6%B3%95%E5%8F%8A%E5%8F%98%E9%87%8F%E7%9A%84%E4%B8%8B%E5%88%92%E7%BA%BF%E5%8F%8C%E4%B8%8B%E5%88%92%E7%BA%BF%E7%AD%89%E5%90%AB%E4%B9%89/"/>
+    <url>/2020/12/23/python%E4%B8%AD%E6%96%B9%E6%B3%95%E5%8F%8A%E5%8F%98%E9%87%8F%E7%9A%84%E4%B8%8B%E5%88%92%E7%BA%BF%E5%8F%8C%E4%B8%8B%E5%88%92%E7%BA%BF%E7%AD%89%E5%90%AB%E4%B9%89/</url>
+    
+    <content type="html"><![CDATA[<p>#Python 下划线、双下划线</p><p>一般常见的下划线为以下几种：</p><ul><li>前置单下划线：<code>_var</code></li><li>后置单下划线：<code>var_</code></li><li>前置双下划线：<code>__var</code></li><li>前后双下划线：<code>__var__</code></li><li>单下划线：<code>_</code></li></ul><p>###1. 前置单下划线变量和单下划线方法的区别：</p><blockquote><p>前置单下划线表示在方法内部使用，单下划线变量可以从外部引用，而单下划线方法在使用通配符导入包时（from package import *）不可以，除非使用import package，然后使用”package._model”进行使用。</p></blockquote><pre><code class="hljs ruby"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span>:</span>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(<span class="hljs-keyword">self</span>)</span></span><span class="hljs-symbol">:</span>        <span class="hljs-keyword">self</span>.foo = <span class="hljs-number">11</span>        <span class="hljs-keyword">self</span>._bar = <span class="hljs-number">23</span><span class="hljs-meta">&gt;&gt;</span>&gt; t = Test()<span class="hljs-meta">&gt;&gt;</span>&gt; t.foo<span class="hljs-number">11</span><span class="hljs-meta">&gt;&gt;</span>&gt; t._bar<span class="hljs-number">23</span><span class="hljs-comment"># my_module.py：</span><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">external_func</span><span class="hljs-params">()</span></span><span class="hljs-symbol">:</span>    <span class="hljs-keyword">return</span> <span class="hljs-number">23</span><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">_internal_func</span><span class="hljs-params">()</span></span><span class="hljs-symbol">:</span>    <span class="hljs-keyword">return</span> <span class="hljs-number">42</span><span class="hljs-meta">&gt;&gt;</span>&gt; from my_module import *<span class="hljs-meta">&gt;&gt;</span>&gt; external_func()<span class="hljs-number">23</span><span class="hljs-meta">&gt;&gt;</span>&gt; _internal_func()<span class="hljs-symbol">NameError:</span> <span class="hljs-string">&quot;name &#x27;_internal_func&#x27; is not defined&quot;</span><span class="hljs-meta">&gt;&gt;</span>&gt; import my_module<span class="hljs-meta">&gt;&gt;</span>&gt; my_module.external_func()<span class="hljs-number">23</span><span class="hljs-meta">&gt;&gt;</span>&gt; my_module._internal_func()<span class="hljs-number">42</span></code></pre><h3 id="2-后置单下划线"><a href="#2-后置单下划线" class="headerlink" title="2. 后置单下划线"></a>2. 后置单下划线</h3><p>当需要使用的最合适的变量名与关键字所重复，可以使用后置单下划线来绕过命名冲突</p><pre><code class="hljs python-repl"><span class="hljs-meta">&gt;&gt;&gt;</span> <span class="python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">make_object</span>(<span class="hljs-params">name, class</span>):</span></span>SyntaxError: &quot;invalid syntax&quot;<span class="hljs-meta">&gt;&gt;&gt;</span> <span class="python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">make_object</span>(<span class="hljs-params">name, class_</span>):</span></span><span class="hljs-meta">...</span> <span class="python"><span class="hljs-keyword">pass</span></span></code></pre><h3 id="3-前置双下划线"><a href="#3-前置双下划线" class="headerlink" title="3. 前置双下划线"></a>3. 前置双下划线</h3><p>前置双下划线会被解释器进行命名改写。这个例子先声明<code>_MangledGlobal__mangled</code>为全局变量，然后在名为<code>MangledGlobal</code>的类环境中访问变量。由于名称改写，类中的<code>test()</code>方法仅用<code>__mangled</code>就能引用<code>_MangledGlobal__mangled</code>全局变量。<code>__mangled</code>以双下划线开头，因此Python解释器自动将名称扩展为<code>_MangledGlobal__mangled</code>。这表明名称改写不专门与类属性绑定，而是能够应用于类环境中所有以双下划线开头的名称</p><pre><code class="hljs ruby">_MangledGlobal__mangled = <span class="hljs-number">23</span><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MangledGlobal</span>:</span>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">test</span><span class="hljs-params">(<span class="hljs-keyword">self</span>)</span></span><span class="hljs-symbol">:</span>        <span class="hljs-keyword">return</span> __mangled<span class="hljs-meta">&gt;&gt;</span>&gt; MangledGlobal().test()<span class="hljs-number">23</span></code></pre><p>###4. 单独单下划线</p><p>单下划线有时用作名称，来表示变量是临时的或无关紧要的</p><pre><code class="hljs python-repl">例如下面的循环中并不需要访问运行的索引，那么可以使用_来表示它只是一个临时值：<span class="hljs-meta">&gt;&gt;&gt;</span> <span class="python"><span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> range(<span class="hljs-number">32</span>):</span><span class="hljs-meta">...</span> <span class="python">    print(<span class="hljs-string">&#x27;Hello, World.&#x27;</span>)</span></code></pre><h3 id="5-总结"><a href="#5-总结" class="headerlink" title="5.总结"></a>5.总结</h3><ul><li><strong>前置单下划线</strong><code>_var</code>：命名约定，用来表示该名称仅在内部使用。一般对Python解释器没有特殊含义（通配符导入除外），只能作为对程序员的提示。</li><li><strong>后置单下划线</strong><code>var_</code>：命名约定，用于避免与Python关键字发生命名冲突。</li><li><strong>前置双下划线</strong><code>__var</code>：在类环境中使用时会触发名称改写，对Python解释器有特殊含义。</li><li><strong>前后双下划线</strong><code>__var__</code>：表示由Python语言定义的特殊方法。在自定义的属性中要避免使用这种命名方式。</li><li><strong>单下划线</strong><code>_</code>：有时用作临时或无意义变量的名称（“不关心”）。此外还能表示Python REPL会话中上一个表达式的结果。</li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>python</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>python</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>剑指offer</title>
+    <link href="/2020/12/17/%E5%89%91%E6%8C%87offer/"/>
+    <url>/2020/12/17/%E5%89%91%E6%8C%87offer/</url>
+    
+    <content type="html"><![CDATA[<blockquote><p>摘录自<a href="https://github.com/CyC2018/CS-Notes/blob/master/notes/%E5%89%91%E6%8C%87%20Offer%20%E9%A2%98%E8%A7%A3%20-%20%E7%9B%AE%E5%BD%95.m">https://github.com/CyC2018/CS-Notes/blob/master/notes/%E5%89%91%E6%8C%87%20Offer%20%E9%A2%98%E8%A7%A3%20-%20%E7%9B%AE%E5%BD%95.m</a></p></blockquote><h1 id="3-数组中的重复数据"><a href="#3-数组中的重复数据" class="headerlink" title="3. 数组中的重复数据"></a>3. 数组中的重复数据</h1>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>算法刷题</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Flask之缓慢的http拒绝服务攻击漏洞解决</title>
     <link href="/2020/11/06/Flask%E4%B9%8B%E7%BC%93%E6%85%A2%E7%9A%84http%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB%E6%BC%8F%E6%B4%9E%E8%A7%A3%E5%86%B3/"/>
     <url>/2020/11/06/Flask%E4%B9%8B%E7%BC%93%E6%85%A2%E7%9A%84http%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB%E6%BC%8F%E6%B4%9E%E8%A7%A3%E5%86%B3/</url>

@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="zhousan">
   <meta name="keywords" content="">
-  <title>Flask之缓慢的http拒绝服务攻击漏洞解决 - 周三</title>
+  <title>python中方法及变量的下划线双下划线等含义 - 周三</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -177,8 +177,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2020-11-06 11:02" pubdate>
-        2020年11月6日 上午
+      <time datetime="2020-12-23 16:32" pubdate>
+        2020年12月23日 下午
       </time>
     </span>
   
@@ -189,7 +189,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      961 字
+      715 字
     </span>
   
 
@@ -199,7 +199,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      12
+      8
        分钟
     </span>
   
@@ -237,96 +237,79 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto" id="post">
             <!-- SEO header -->
-            <h1 style="display: none">Flask之缓慢的http拒绝服务攻击漏洞解决</h1>
+            <h1 style="display: none">python中方法及变量的下划线双下划线等含义</h1>
             
             <div class="markdown-body" id="post-body">
-              <h1 id="1-什么是缓慢的http拒绝服务攻击漏洞"><a href="#1-什么是缓慢的http拒绝服务攻击漏洞" class="headerlink" title="1.什么是缓慢的http拒绝服务攻击漏洞"></a>1.什么是缓慢的http拒绝服务攻击漏洞</h1><p>缓慢的http拒绝服务攻击是一种专门针对于Web的应用层拒绝服务攻击，攻击者操纵网络上的肉鸡，对目标Web服务器进行海量http request攻击，直到服务器带宽被打满，造成了拒绝服务。</p>
-<p>慢速HTTP拒绝服务攻击经过不断的演变和发展，主要有三种攻击类型，分别是Slow headers、Slow body、Slow read。</p>
+              <p>#Python 下划线、双下划线</p>
+<p>一般常见的下划线为以下几种：</p>
 <ul>
-<li><p><code>slowloris</code>：完整的http请求是以 <code>\r\n\r\n</code> 结尾，攻击时仅发送 <code>\r\n</code>，少发送一个 <code>\r\n</code>，服务器认为请求还未发完，就会一直等待直至超时</p>
-</li>
-<li><p><code>slow post</code>：通过声明一个较大的content-length后，body缓慢发送，导致服务器一直等待</p>
-<ul>
-<li><code>slow read</code>：向服务器发送一个正常合法的read请求，请求一个很大的文件，但把TCP滑动窗口设置得很小，服务器就会以滑动窗口的大小切割文件，然后发送，这时文件会长期存放在内存中，消耗资源</li>
+<li>前置单下划线：<code>_var</code></li>
+<li>后置单下划线：<code>var_</code></li>
+<li>前置双下划线：<code>__var</code></li>
+<li>前后双下划线：<code>__var__</code></li>
+<li>单下划线：<code>_</code></li>
 </ul>
-</li>
-</ul>
-<h1 id="2-Flask应对措施"><a href="#2-Flask应对措施" class="headerlink" title="2. Flask应对措施"></a>2. Flask应对措施</h1><ul>
-<li><p>限制每次请求数据的大小</p>
-</li>
-<li><p>限制单个HTTP请求头的最大许可时间</p>
-</li>
-<li><p>限制单个ip请求数量</p>
-</li>
-<li><p>。。。。。。</p>
-</li>
-</ul>
-<p>#3. 使用slowhttptest测试漏洞</p>
-<h2 id="3-1-slowhttptest的安装"><a href="#3-1-slowhttptest的安装" class="headerlink" title="3.1 slowhttptest的安装"></a>3.1 slowhttptest的安装</h2><blockquote>
-<p> 安装说明:<a target="_blank" rel="noopener" href="https://github.com/shekyan/slowhttptest/wiki/InstallationAndUsage1">https://github.com/shekyan/slowhttptest/wiki/InstallationAndUsage1</a></p>
+<p>###1. 前置单下划线变量和单下划线方法的区别：</p>
+<blockquote>
+<p>前置单下划线表示在方法内部使用，单下划线变量可以从外部引用，而单下划线方法在使用通配符导入包时（from package import *）不可以，除非使用import package，然后使用”package._model”进行使用。</p>
 </blockquote>
-<ol>
-<li><p>下载压缩包：<a target="_blank" rel="noopener" href="https://github.com/shekyan/slowhttptest/releases">https://github.com/shekyan/slowhttptest/releases</a></p>
-</li>
-<li><p>安装libssl-dev<br><code>$ yum install openssl openssl-devel</code></p>
-</li>
-<li><p>安装C++编译器<br><code>$ yum install gcc-c++</code></p>
-</li>
-<li><p>解压</p>
-<p><code>$ tar -xzvf slowhttptest-x.x.tar.gz</code> </p>
-</li>
-<li><p>编译安装</p>
-<pre><code class="hljs powershell"><span class="hljs-variable">$</span> <span class="hljs-built_in">cd</span> slowhttp<span class="hljs-built_in">test-x</span>.x
-<span class="hljs-variable">$</span> ./configure -<span class="hljs-literal">-prefix</span>=PREFIX
-<span class="hljs-variable">$</span> make
-<span class="hljs-variable">$</span> sudo make install</code></pre>
+<pre><code class="hljs ruby"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span>:</span>
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(<span class="hljs-keyword">self</span>)</span></span><span class="hljs-symbol">:</span>
+        <span class="hljs-keyword">self</span>.foo = <span class="hljs-number">11</span>
+        <span class="hljs-keyword">self</span>._bar = <span class="hljs-number">23</span>
+<span class="hljs-meta">&gt;&gt;</span>&gt; t = Test()
+<span class="hljs-meta">&gt;&gt;</span>&gt; t.foo
+<span class="hljs-number">11</span>
+<span class="hljs-meta">&gt;&gt;</span>&gt; t._bar
+<span class="hljs-number">23</span>
 
-</li>
-</ol>
-<h2 id="3-2-参数说明及使用测试"><a href="#3-2-参数说明及使用测试" class="headerlink" title="3.2 参数说明及使用测试"></a>3.2 参数说明及使用测试</h2><pre><code class="hljs diff"><span class="hljs-deletion">-g      在测试完成后，以时间戳为名生成一个CVS和HTML文件的统计数据</span>
-<span class="hljs-deletion">-H      SlowLoris模式</span>
-<span class="hljs-deletion">-B      Slow POST模式</span>
-<span class="hljs-deletion">-R      Range Header模式</span>
-<span class="hljs-deletion">-X      Slow Read模式</span>
-<span class="hljs-deletion">-c      number of connections 测试时建立的连接数</span>
-<span class="hljs-deletion">-d      HTTP proxy host:port  为所有连接指定代理</span>
-<span class="hljs-deletion">-e      HTTP proxy host:port  为探测连接指定代理</span>
-<span class="hljs-deletion">-i      seconds 在slowrois和Slow POST模式中，指定发送数据间的间隔。</span>
-<span class="hljs-deletion">-l      seconds 测试维持时间</span>
-<span class="hljs-deletion">-n      seconds 在Slow Read模式下，指定每次操作的时间间隔。</span>
-<span class="hljs-deletion">-o      file name 使用-g参数时，可以使用此参数指定输出文件名</span>
-<span class="hljs-deletion">-p      seconds 指定等待时间来确认DoS攻击已经成功</span>
-<span class="hljs-deletion">-r      connections per second 每秒连接个数</span>
-<span class="hljs-deletion">-s      bytes 声明Content-Length header的值</span>
-<span class="hljs-deletion">-t      HTTP verb 在请求时使用什么操作，默认GET</span>
-<span class="hljs-deletion">-u      URL  指定目标url</span>
-<span class="hljs-deletion">-v      level 日志等级（详细度）</span>
-<span class="hljs-deletion">-w      bytes slow read模式中指定tcp窗口范围下限</span>
-<span class="hljs-deletion">-x      bytes 在slowloris and Slow POST tests模式中，指定发送的最大数据长度</span>
-<span class="hljs-deletion">-y      bytes slow read模式中指定tcp窗口范围上限</span>
-<span class="hljs-deletion">-z      bytes 在每次的read()中，从buffer中读取数据量</span></code></pre>
+<span class="hljs-comment"># my_module.py：</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">external_func</span><span class="hljs-params">()</span></span><span class="hljs-symbol">:</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-number">23</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">_internal_func</span><span class="hljs-params">()</span></span><span class="hljs-symbol">:</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-number">42</span>
+<span class="hljs-meta">&gt;&gt;</span>&gt; from my_module import *
+<span class="hljs-meta">&gt;&gt;</span>&gt; external_func()
+<span class="hljs-number">23</span>
+<span class="hljs-meta">&gt;&gt;</span>&gt; _internal_func()
+<span class="hljs-symbol">NameError:</span> <span class="hljs-string">&quot;name &#x27;_internal_func&#x27; is not defined&quot;</span>
 
-<h2 id="3-2-1参考实例："><a href="#3-2-1参考实例：" class="headerlink" title="3.2.1参考实例："></a>3.2.1参考实例：</h2><p>slowloris模式：</p>
-<pre><code class="hljs apache"><span class="hljs-attribute">slowhttptest</span> -c <span class="hljs-number">1000</span> -H -g -o my_header_stats -i <span class="hljs-number">10</span> -r <span class="hljs-number">200</span> -t GET -u https://xxxxxx.xxxxx.xx -x <span class="hljs-number">24</span> -p <span class="hljs-number">3</span></code></pre>
+<span class="hljs-meta">&gt;&gt;</span>&gt; import my_module
+<span class="hljs-meta">&gt;&gt;</span>&gt; my_module.external_func()
+<span class="hljs-number">23</span>
+<span class="hljs-meta">&gt;&gt;</span>&gt; my_module._internal_func()
+<span class="hljs-number">42</span></code></pre>
 
-<p>slow post模式：</p>
-<pre><code class="hljs yaml"><span class="hljs-string">$</span> <span class="hljs-string">slowhttptest</span> <span class="hljs-string">-c</span> <span class="hljs-number">3000</span> <span class="hljs-string">-B</span> <span class="hljs-string">-g</span> <span class="hljs-string">-o</span> <span class="hljs-string">my_body_stats</span> <span class="hljs-string">-i</span> <span class="hljs-number">110</span> <span class="hljs-string">-r</span> <span class="hljs-number">200</span> <span class="hljs-string">-s</span> <span class="hljs-number">8192</span> <span class="hljs-string">-t</span> <span class="hljs-string">FAKEVERB</span> <span class="hljs-string">-u</span> <span class="hljs-string">http://xxx.xxx.xxx</span> <span class="hljs-string">-x</span> <span class="hljs-number">10</span> <span class="hljs-string">-p</span> <span class="hljs-number">3</span></code></pre>
+<h3 id="2-后置单下划线"><a href="#2-后置单下划线" class="headerlink" title="2. 后置单下划线"></a>2. 后置单下划线</h3><p>当需要使用的最合适的变量名与关键字所重复，可以使用后置单下划线来绕过命名冲突</p>
+<pre><code class="hljs python-repl"><span class="hljs-meta">&gt;&gt;&gt;</span> <span class="python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">make_object</span>(<span class="hljs-params">name, class</span>):</span></span>
+SyntaxError: &quot;invalid syntax&quot;
 
-<p>slow read模式：</p>
-<pre><code class="hljs angelscript">$ slowhttptest -c <span class="hljs-number">8000</span> -X -r <span class="hljs-number">200</span> -w <span class="hljs-number">512</span> -y <span class="hljs-number">1024</span> -n <span class="hljs-number">5</span> -z <span class="hljs-number">32</span> -k <span class="hljs-number">3</span> -u https:<span class="hljs-comment">//xxx.xxx.xxx -p 3</span></code></pre>
+<span class="hljs-meta">&gt;&gt;&gt;</span> <span class="python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">make_object</span>(<span class="hljs-params">name, class_</span>):</span></span>
+<span class="hljs-meta">...</span> <span class="python"><span class="hljs-keyword">pass</span></span></code></pre>
 
-<h1 id="4-使用说明"><a href="#4-使用说明" class="headerlink" title="4.使用说明"></a>4.使用说明</h1><p>以下是分别使用四种方式对自己的服务进行测试的结果，先开始不太懂每个曲线图的意义。这里说明一下，上面的参数可以设置连接数量以及持续请求时间等参数。然后下面展现的是曲线图，主要看在测试程序运行时间内Connected的数量是否被释放，是否通过服务的设置不符合条件的请求被服务端关闭，Service是否正常运行（服务是否存在被漏洞攻击程序给冲宕机了）。</p>
-<p>##4.1 RANGE HEADERS</p>
-<img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115151719480.png" srcset="/img/loading.gif" alt="rangeHeader" style="zoom:67%;" />
+<h3 id="3-前置双下划线"><a href="#3-前置双下划线" class="headerlink" title="3. 前置双下划线"></a>3. 前置双下划线</h3><p>前置双下划线会被解释器进行命名改写。这个例子先声明<code>_MangledGlobal__mangled</code>为全局变量，然后在名为<code>MangledGlobal</code>的类环境中访问变量。由于名称改写，类中的<code>test()</code>方法仅用<code>__mangled</code>就能引用<code>_MangledGlobal__mangled</code>全局变量。<code>__mangled</code>以双下划线开头，因此Python解释器自动将名称扩展为<code>_MangledGlobal__mangled</code>。这表明名称改写不专门与类属性绑定，而是能够应用于类环境中所有以双下划线开头的名称</p>
+<pre><code class="hljs ruby">_MangledGlobal__mangled = <span class="hljs-number">23</span>
 
-<p>##4.2 SLOW HEADERS(SlowLoris)</p>
-<img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115151939829.png" srcset="/img/loading.gif" alt="image-20201115151939829" style="zoom: 67%;" />
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MangledGlobal</span>:</span>
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">test</span><span class="hljs-params">(<span class="hljs-keyword">self</span>)</span></span><span class="hljs-symbol">:</span>
+        <span class="hljs-keyword">return</span> __mangled
 
-<p>##4.3 SLOW BODY(SLOW POST)</p>
-<img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115154404536.png" srcset="/img/loading.gif" alt="image-20201115154404536" style="zoom:67%;" />
+<span class="hljs-meta">&gt;&gt;</span>&gt; MangledGlobal().test()
+<span class="hljs-number">23</span></code></pre>
 
-<h2 id="4-4-SLOW-READ"><a href="#4-4-SLOW-READ" class="headerlink" title="4.4  SLOW READ"></a>4.4  SLOW READ</h2><img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115152038635.png" srcset="/img/loading.gif" style="zoom:67%;" />
+<p>###4. 单独单下划线</p>
+<p>单下划线有时用作名称，来表示变量是临时的或无关紧要的</p>
+<pre><code class="hljs python-repl">例如下面的循环中并不需要访问运行的索引，那么可以使用_来表示它只是一个临时值：
+<span class="hljs-meta">&gt;&gt;&gt;</span> <span class="python"><span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> range(<span class="hljs-number">32</span>):</span>
+<span class="hljs-meta">...</span> <span class="python">    print(<span class="hljs-string">&#x27;Hello, World.&#x27;</span>)</span></code></pre>
 
+<h3 id="5-总结"><a href="#5-总结" class="headerlink" title="5.总结"></a>5.总结</h3><ul>
+<li><strong>前置单下划线</strong><code>_var</code>：命名约定，用来表示该名称仅在内部使用。一般对Python解释器没有特殊含义（通配符导入除外），只能作为对程序员的提示。</li>
+<li><strong>后置单下划线</strong><code>var_</code>：命名约定，用于避免与Python关键字发生命名冲突。</li>
+<li><strong>前置双下划线</strong><code>__var</code>：在类环境中使用时会触发名称改写，对Python解释器有特殊含义。</li>
+<li><strong>前后双下划线</strong><code>__var__</code>：表示由Python语言定义的特殊方法。在自定义的属性中要避免使用这种命名方式。</li>
+<li><strong>单下划线</strong><code>_</code>：有时用作临时或无意义变量的名称（“不关心”）。此外还能表示Python REPL会话中上一个表达式的结果。</li>
+</ul>
 
             </div>
             <hr>
@@ -336,7 +319,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E5%B7%A5%E4%BD%9C%E7%9B%B8%E5%85%B3/">工作相关</a>
+                      <a class="hover-with-bg" href="/categories/python/">python</a>
                     
                   </div>
                 
@@ -345,8 +328,6 @@
                     <i class="iconfont icon-tags"></i>
                     
                       <a class="hover-with-bg" href="/tags/python/">python</a>
-                    
-                      <a class="hover-with-bg" href="/tags/Flask/">Flask</a>
                     
                   </div>
                 
@@ -359,18 +340,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/12/17/%E5%89%91%E6%8C%87offer/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">剑指offer</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/10/15/%E7%86%B5%E6%9D%83%E6%B3%95%E8%AE%A1%E7%AE%97%E6%9D%83%E9%87%8D/">
-                        <span class="hidden-mobile">熵权法计算权重</span>
+                      <a href="/2020/12/17/%E5%89%91%E6%8C%87offer/">
+                        <span class="hidden-mobile">剑指offer</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -571,7 +546,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "Flask之缓慢的http拒绝服务攻击漏洞解决&nbsp;",
+        "python中方法及变量的下划线双下划线等含义&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,
