@@ -2001,7 +2001,7 @@ app.run(host=<span class="hljs-string">&quot;0.0.0.0&quot;</span>,port=<span cla
 
 </li>
 </ul>
-<a id="more"></a>
+<!-- more -->
 
 <h3 id="2-1-参数说明"><a href="#2-1-参数说明" class="headerlink" title="2.1 参数说明"></a>2.1 参数说明</h3><p><code>class sklearn.ensemble.GradientBoostingRegressor(loss=&#39;ls&#39;, learning_rate=0.1, n_estimators=100, subsample=1.0, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_depth=3, init=None, random_state=None, max_features=None, alpha=0.9, verbose=0, max_leaf_nodes=None, warm_start=False, presort=&#39;auto&#39;)</code></p>
 <ul>
@@ -2046,7 +2046,7 @@ app.run(host=<span class="hljs-string">&quot;0.0.0.0&quot;</span>,port=<span cla
 <h1 id="1-线性回归"><a href="#1-线性回归" class="headerlink" title="1. 线性回归"></a>1. 线性回归</h1><h2 id="1-1-特征缩放（归一化）"><a href="#1-1-特征缩放（归一化）" class="headerlink" title="1.1 特征缩放（归一化）"></a>1.1 特征缩放（归一化）</h2><h3 id="1-1-1-Standardization"><a href="#1-1-1-Standardization" class="headerlink" title="1.1.1 Standardization"></a>1.1.1 Standardization</h3><p>Standardization又称为 Z-score normalization，量化后的特征将服从标准正态分布：</p>
 <p>z = （X<sub>i</sub>-μ）/δ</p>
 <p>其中， μ ， δ  分别为对应特征  x<sub>i</sub>  的均值和标准差。量化后的特征将分布在  [−1,1]  区间</p>
-<a id="more"></a>
+<!-- more -->
 
 <h3 id="1-1-2-Min-Max-Scaling"><a href="#1-1-2-Min-Max-Scaling" class="headerlink" title="1.1.2 Min-Max Scaling"></a>1.1.2 Min-Max Scaling</h3><p>Min-Max Scaling 又称为 normalization，特征量化的公式为：</p>
 <p>z = x<sub>i</sub>−min(x<sub>i</sub>)  /  max(x<sub>i</sub>)−min(x<sub>i</sub>)</p>
