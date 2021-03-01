@@ -1,105 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Flask之缓慢的http拒绝服务攻击漏洞解决</title>
-    <url>/2020/11/06/Flask%E4%B9%8B%E7%BC%93%E6%85%A2%E7%9A%84http%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB%E6%BC%8F%E6%B4%9E%E8%A7%A3%E5%86%B3/</url>
-    <content><![CDATA[<h1 id="1-什么是缓慢的http拒绝服务攻击漏洞"><a href="#1-什么是缓慢的http拒绝服务攻击漏洞" class="headerlink" title="1.什么是缓慢的http拒绝服务攻击漏洞"></a>1.什么是缓慢的http拒绝服务攻击漏洞</h1><p>缓慢的http拒绝服务攻击是一种专门针对于Web的应用层拒绝服务攻击，攻击者操纵网络上的肉鸡，对目标Web服务器进行海量http request攻击，直到服务器带宽被打满，造成了拒绝服务。</p>
-<p>慢速HTTP拒绝服务攻击经过不断的演变和发展，主要有三种攻击类型，分别是Slow headers、Slow body、Slow read。</p>
-<ul>
-<li><p><code>slowloris</code>：完整的http请求是以 <code>\r\n\r\n</code> 结尾，攻击时仅发送 <code>\r\n</code>，少发送一个 <code>\r\n</code>，服务器认为请求还未发完，就会一直等待直至超时</p>
-</li>
-<li><p><code>slow post</code>：通过声明一个较大的content-length后，body缓慢发送，导致服务器一直等待</p>
-<ul>
-<li><code>slow read</code>：向服务器发送一个正常合法的read请求，请求一个很大的文件，但把TCP滑动窗口设置得很小，服务器就会以滑动窗口的大小切割文件，然后发送，这时文件会长期存放在内存中，消耗资源</li>
-</ul>
-</li>
-</ul>
-<h1 id="2-Flask应对措施"><a href="#2-Flask应对措施" class="headerlink" title="2. Flask应对措施"></a>2. Flask应对措施</h1><ul>
-<li><p>限制每次请求数据的大小</p>
-</li>
-<li><p>限制单个HTTP请求头的最大许可时间</p>
-</li>
-<li><p>限制单个ip请求数量</p>
-</li>
-<li><p>。。。。。。</p>
-</li>
-</ul>
-<p>#3. 使用slowhttptest测试漏洞</p>
-<h2 id="3-1-slowhttptest的安装"><a href="#3-1-slowhttptest的安装" class="headerlink" title="3.1 slowhttptest的安装"></a>3.1 slowhttptest的安装</h2><blockquote>
-<p> 安装说明:<a href="https://github.com/shekyan/slowhttptest/wiki/InstallationAndUsage1">https://github.com/shekyan/slowhttptest/wiki/InstallationAndUsage1</a></p>
-</blockquote>
-<ol>
-<li><p>下载压缩包：<a href="https://github.com/shekyan/slowhttptest/releases">https://github.com/shekyan/slowhttptest/releases</a></p>
-</li>
-<li><p>安装libssl-dev<br><code>$ yum install openssl openssl-devel</code></p>
-</li>
-<li><p>安装C++编译器<br><code>$ yum install gcc-c++</code></p>
-</li>
-<li><p>解压</p>
-<p><code>$ tar -xzvf slowhttptest-x.x.tar.gz</code> </p>
-</li>
-<li><p>编译安装</p>
-<pre><code class="hljs powershell"><span class="hljs-variable">$</span> <span class="hljs-built_in">cd</span> slowhttp<span class="hljs-built_in">test-x</span>.x
-<span class="hljs-variable">$</span> ./configure -<span class="hljs-literal">-prefix</span>=PREFIX
-<span class="hljs-variable">$</span> make
-<span class="hljs-variable">$</span> sudo make install</code></pre>
-
-</li>
-</ol>
-<h2 id="3-2-参数说明及使用测试"><a href="#3-2-参数说明及使用测试" class="headerlink" title="3.2 参数说明及使用测试"></a>3.2 参数说明及使用测试</h2><pre><code class="hljs diff"><span class="hljs-deletion">-g      在测试完成后，以时间戳为名生成一个CVS和HTML文件的统计数据</span>
-<span class="hljs-deletion">-H      SlowLoris模式</span>
-<span class="hljs-deletion">-B      Slow POST模式</span>
-<span class="hljs-deletion">-R      Range Header模式</span>
-<span class="hljs-deletion">-X      Slow Read模式</span>
-<span class="hljs-deletion">-c      number of connections 测试时建立的连接数</span>
-<span class="hljs-deletion">-d      HTTP proxy host:port  为所有连接指定代理</span>
-<span class="hljs-deletion">-e      HTTP proxy host:port  为探测连接指定代理</span>
-<span class="hljs-deletion">-i      seconds 在slowrois和Slow POST模式中，指定发送数据间的间隔。</span>
-<span class="hljs-deletion">-l      seconds 测试维持时间</span>
-<span class="hljs-deletion">-n      seconds 在Slow Read模式下，指定每次操作的时间间隔。</span>
-<span class="hljs-deletion">-o      file name 使用-g参数时，可以使用此参数指定输出文件名</span>
-<span class="hljs-deletion">-p      seconds 指定等待时间来确认DoS攻击已经成功</span>
-<span class="hljs-deletion">-r      connections per second 每秒连接个数</span>
-<span class="hljs-deletion">-s      bytes 声明Content-Length header的值</span>
-<span class="hljs-deletion">-t      HTTP verb 在请求时使用什么操作，默认GET</span>
-<span class="hljs-deletion">-u      URL  指定目标url</span>
-<span class="hljs-deletion">-v      level 日志等级（详细度）</span>
-<span class="hljs-deletion">-w      bytes slow read模式中指定tcp窗口范围下限</span>
-<span class="hljs-deletion">-x      bytes 在slowloris and Slow POST tests模式中，指定发送的最大数据长度</span>
-<span class="hljs-deletion">-y      bytes slow read模式中指定tcp窗口范围上限</span>
-<span class="hljs-deletion">-z      bytes 在每次的read()中，从buffer中读取数据量</span></code></pre>
-
-<h2 id="3-2-1参考实例："><a href="#3-2-1参考实例：" class="headerlink" title="3.2.1参考实例："></a>3.2.1参考实例：</h2><p>slowloris模式：</p>
-<pre><code class="hljs apache"><span class="hljs-attribute">slowhttptest</span> -c <span class="hljs-number">1000</span> -H -g -o my_header_stats -i <span class="hljs-number">10</span> -r <span class="hljs-number">200</span> -t GET -u https://xxxxxx.xxxxx.xx -x <span class="hljs-number">24</span> -p <span class="hljs-number">3</span></code></pre>
-
-<p>slow post模式：</p>
-<pre><code class="hljs yaml"><span class="hljs-string">$</span> <span class="hljs-string">slowhttptest</span> <span class="hljs-string">-c</span> <span class="hljs-number">3000</span> <span class="hljs-string">-B</span> <span class="hljs-string">-g</span> <span class="hljs-string">-o</span> <span class="hljs-string">my_body_stats</span> <span class="hljs-string">-i</span> <span class="hljs-number">110</span> <span class="hljs-string">-r</span> <span class="hljs-number">200</span> <span class="hljs-string">-s</span> <span class="hljs-number">8192</span> <span class="hljs-string">-t</span> <span class="hljs-string">FAKEVERB</span> <span class="hljs-string">-u</span> <span class="hljs-string">http://xxx.xxx.xxx</span> <span class="hljs-string">-x</span> <span class="hljs-number">10</span> <span class="hljs-string">-p</span> <span class="hljs-number">3</span></code></pre>
-
-<p>slow read模式：</p>
-<pre><code class="hljs angelscript">$ slowhttptest -c <span class="hljs-number">8000</span> -X -r <span class="hljs-number">200</span> -w <span class="hljs-number">512</span> -y <span class="hljs-number">1024</span> -n <span class="hljs-number">5</span> -z <span class="hljs-number">32</span> -k <span class="hljs-number">3</span> -u https:<span class="hljs-comment">//xxx.xxx.xxx -p 3</span></code></pre>
-
-<h1 id="4-使用说明"><a href="#4-使用说明" class="headerlink" title="4.使用说明"></a>4.使用说明</h1><p>以下是分别使用四种方式对自己的服务进行测试的结果，先开始不太懂每个曲线图的意义。这里说明一下，上面的参数可以设置连接数量以及持续请求时间等参数。然后下面展现的是曲线图，主要看在测试程序运行时间内Connected的数量是否被释放，是否通过服务的设置不符合条件的请求被服务端关闭，Service是否正常运行（服务是否存在被漏洞攻击程序给冲宕机了）。</p>
-<p>##4.1 RANGE HEADERS</p>
-<img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115151719480.png" alt="rangeHeader" style="zoom:67%;" />
-
-<p>##4.2 SLOW HEADERS(SlowLoris)</p>
-<img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115151939829.png" alt="image-20201115151939829" style="zoom: 67%;" />
-
-<p>##4.3 SLOW BODY(SLOW POST)</p>
-<img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115154404536.png" alt="image-20201115154404536" style="zoom:67%;" />
-
-<h2 id="4-4-SLOW-READ"><a href="#4-4-SLOW-READ" class="headerlink" title="4.4  SLOW READ"></a>4.4  SLOW READ</h2><img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115152038635.png" style="zoom:67%;" />
-
-]]></content>
-      <categories>
-        <category>工作相关</category>
-      </categories>
-      <tags>
-        <tag>python</tag>
-        <tag>Flask</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>本地安装faceswap与一键使用google的colab搭建faceswap两种方式</title>
     <url>/2020/09/23/faceswap%E5%AE%89%E8%A3%85%E4%B8%8E%E8%B8%A9%E5%9D%91/</url>
     <content><![CDATA[<h1 id="0-摘要"><a href="#0-摘要" class="headerlink" title="0. 摘要"></a>0. 摘要</h1><ul>
@@ -1178,310 +1079,6 @@ git <span class="hljs-built_in">push</span> -u <span class="hljs-built_in">origi
       <tags>
         <tag>git</tag>
         <tag>版本控制</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>pyqt5使用及出现问题</title>
-    <url>/2020/09/17/pyqt5%E4%BD%BF%E7%94%A8%E5%8F%8A%E5%87%BA%E7%8E%B0%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<h1 id="1-pyqt5及qtdesigner的安装"><a href="#1-pyqt5及qtdesigner的安装" class="headerlink" title="1. pyqt5及qtdesigner的安装"></a>1. pyqt5及qtdesigner的安装</h1><h2 id="1-1-安装包"><a href="#1-1-安装包" class="headerlink" title="1.1 安装包"></a>1.1 安装包</h2><pre><code class="hljs cmake">pip <span class="hljs-keyword">install</span>  PyQt5-tools
-pip <span class="hljs-keyword">install</span> pyqt5
-pip <span class="hljs-keyword">install</span> sip</code></pre>
-
-<h2 id="1-2-配置pycharm"><a href="#1-2-配置pycharm" class="headerlink" title="1.2 配置pycharm"></a>1.2 配置pycharm</h2><ul>
-<li>报错:</li>
-</ul>
-<p><img src="/img/pyqt5%E4%BD%BF%E7%94%A8%E5%8F%8A%E5%87%BA%E7%8E%B0%E9%97%AE%E9%A2%98/1.png" alt="在这里插入图片描述"></p>
-<ul>
-<li><p>解决方法</p>
-<blockquote>
-<p>添加系统环境变量</p>
-<p>QT_QPA_PLATFORM_PLUGIN_PATH</p>
-<p>C:\ProgramData\Anaconda3\Lib\site-packages\PyQt5\Qt\plugins</p>
-</blockquote>
-</li>
-</ul>
-<h1 id="2-使用"><a href="#2-使用" class="headerlink" title="2. 使用"></a>2. 使用</h1>]]></content>
-      <categories>
-        <category>编程语言特性相关</category>
-      </categories>
-      <tags>
-        <tag>python</tag>
-        <tag>pyqt5</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>python打包程序移植到生产环境redhat出现的问题</title>
-    <url>/2020/04/13/python%E6%89%93%E5%8C%85%E7%A8%8B%E5%BA%8F%E7%A7%BB%E6%A4%8D%E5%88%B0%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83redhat%E5%87%BA%E7%8E%B0%E7%9A%84%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<h1 id="1-出现问题及解决"><a href="#1-出现问题及解决" class="headerlink" title="1.出现问题及解决"></a>1.出现问题及解决</h1><h2 id="1-1-python打包访问oracle数据库无instantclient相关问题"><a href="#1-1-python打包访问oracle数据库无instantclient相关问题" class="headerlink" title="1.1 python打包访问oracle数据库无instantclient相关问题"></a>1.1 python打包访问oracle数据库无instantclient相关问题</h2><h3 id="1-1-1-问题1：cx-Oracle-DatabaseError-DPI-1047-64-bit-Oracle-Client-library-cannot-be-loaded解决方法”"><a href="#1-1-1-问题1：cx-Oracle-DatabaseError-DPI-1047-64-bit-Oracle-Client-library-cannot-be-loaded解决方法”" class="headerlink" title="1.1.1 问题1：cx_Oracle.DatabaseError: DPI-1047: 64-bit Oracle Client library cannot be loaded解决方法”"></a>1.1.1 问题1：cx_Oracle.DatabaseError: DPI-1047: 64-bit Oracle Client library cannot be loaded解决方法”</h3><blockquote>
-<p>解决方法：本机安装instantclient，安装步骤如下(参考：<a href="http://www.360doc.com/content/12/1103/21/8827884_245559524.shtml">http://www.360doc.com/content/12/1103/21/8827884_245559524.shtml</a>)</p>
-</blockquote>
-<ul>
-<li>第一步，先安装Oracle客户端，结合你的情况自己找合适的版本，我下载的是 oracle-instantclient11.2-basic-11.2.0.3.0-1.x86_64.rpm<br>下载地址为（<a href="http://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html%EF%BC%89">http://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html）</a></li>
-</ul>
-<pre><code class="hljs apache"><span class="hljs-attribute">rpm</span> -ivh oracle-instantclient<span class="hljs-number">11</span>.<span class="hljs-number">2</span>-basic-<span class="hljs-number">11.2.0.3</span>.<span class="hljs-number">0</span>-<span class="hljs-number">1</span>.x<span class="hljs-number">86</span>_<span class="hljs-number">64</span>.rpm</code></pre>
-
-<ul>
-<li><p>第二步，找出你的ORACLE_HOME，我安装之后在这里：/usr/lib/oracle/11.2/client64/lib/</p>
-</li>
-<li><p>第三步，下载oracle-instantclient11.2-sdk-11.2.0.1.0-1.x86_64.zip 下载地址。解压，把里面那个叫sdk的文件夹复制到 /usr/lib/oracle/11.2/client64/lib/</p>
-</li>
-<li><p>第四步，做一个软链：</p>
-<pre><code class="hljs crystal">$ cd /usr/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">oracle</span>/11.2/<span class="hljs-title">client64</span>/<span class="hljs-title">lib</span>/</span>
-$ ln -s libclntsh.so.<span class="hljs-number">11.1</span> libclntsh.so</code></pre></li>
-<li><p>第五步，安装cx_Oracle:</p>
-<pre><code class="hljs crystal">$ export ORACLE_HOME=<span class="hljs-regexp">/usr/lib</span><span class="hljs-regexp">/oracle/</span><span class="hljs-number">11.2</span>/client64/<span class="hljs-class"><span class="hljs-keyword">lib</span></span>
-$ export LD_LIBRARY_PATH=$<span class="hljs-symbol">LD_LIBRARY_PATH:</span>$ORACLE_HOME
-$ easy_install cx_Oracle</code></pre></li>
-<li><p>试一下：</p>
-<pre><code class="hljs elixir"><span class="hljs-variable">$ </span>python
-<span class="hljs-variable">$ </span><span class="hljs-keyword">import</span> cx_Oracle</code></pre>
-<p>  done.</p>
-</li>
-<li><p>不过还没配环境变量，一退再进去就不行了，在.bashrc里加入刚才安装之前的那两句：</p>
-</li>
-</ul>
-<pre><code class="hljs crystal">$cd vim ~<span class="hljs-regexp">/.bashrc</span>
-<span class="hljs-regexp">export ORACLE_HOME=/usr</span><span class="hljs-regexp">/lib/oracle</span><span class="hljs-regexp">/11.2/client</span>64/<span class="hljs-class"><span class="hljs-keyword">lib</span></span>
-export LD_LIBRARY_PATH=$<span class="hljs-symbol">LD_LIBRARY_PATH:</span>$ORACLE_HOME
-
-source ~<span class="hljs-regexp">/.bashrc</span></code></pre>
-
-<h3 id="1-1-2-问题2：上述问题解决后出现“cx-Oracle-DatabaseError-Error-while-trying-to-retrieve-text-for-error-ORA-01804”问题"><a href="#1-1-2-问题2：上述问题解决后出现“cx-Oracle-DatabaseError-Error-while-trying-to-retrieve-text-for-error-ORA-01804”问题" class="headerlink" title="1.1.2 问题2：上述问题解决后出现“cx_Oracle.DatabaseError: Error while trying to retrieve text for error ORA-01804”问题"></a>1.1.2 问题2：上述问题解决后出现“cx_Oracle.DatabaseError: Error while trying to retrieve text for error ORA-01804”问题</h3><blockquote>
-<p>解决方法（参考“<a href="https://blog.csdn.net/zklth/article/details/7184032%EF%BC%89%E2%80%9D%EF%BC%9A">https://blog.csdn.net/zklth/article/details/7184032）”：</a></p>
-</blockquote>
-<pre><code class="hljs dart">注释掉
-os.environ[<span class="hljs-string">&quot;LD_LIBRARY_PATH&quot;</span>] = <span class="hljs-string">&#x27;<span class="hljs-subst">$LD_LIBRARY_PATH</span>:<span class="hljs-subst">$ORACLE_HOME</span>:<span class="hljs-subst">$ORACLE_HOME</span>&#x27;</span></code></pre>
-<blockquote>
-<p>出现新问题 “cx_Oracle连接数据库错误ORA-21561: 生成 OID 失败”</p>
-</blockquote>
-<blockquote>
-<p>解决方法:参考“<a href="https://www.rookiefly.cn/detail/161%E2%80%9D">https://www.rookiefly.cn/detail/161”</a></p>
-</blockquote>
-<pre><code class="hljs accesslog">修改本机hostname名称，然后终于成功
-cat /etc/hosts  
-<span class="hljs-number">127.0.0.1</span>   localhost redhat6
-::<span class="hljs-number">1</span>         localhost redhat6</code></pre>
-<h2 id="1-1-3-问题3：数据库可以访问后出现-“from-numpy-testing-import-nosetester-ImportError-cannot-import-name-‘nosetester’”问题"><a href="#1-1-3-问题3：数据库可以访问后出现-“from-numpy-testing-import-nosetester-ImportError-cannot-import-name-‘nosetester’”问题" class="headerlink" title="1.1.3 问题3：数据库可以访问后出现 “from numpy.testing import nosetester  ImportError: cannot import name ‘nosetester’”问题"></a>1.1.3 问题3：数据库可以访问后出现 “from numpy.testing import nosetester  ImportError: cannot import name ‘nosetester’”问题</h2><blockquote>
-<p>问题原因：当前安装在python3.5.2的numpy版本和pandas版本冲突，修改版本<br>可用版本: </p>
-</blockquote>
-<pre><code class="hljs apache"><span class="hljs-attribute">numpy</span> (<span class="hljs-number">1</span>.<span class="hljs-number">11</span>.<span class="hljs-number">1</span>)
-<span class="hljs-attribute">pandas</span> (<span class="hljs-number">0</span>.<span class="hljs-number">18</span>.<span class="hljs-number">1</span>)</code></pre>
-<h2 id="1-1-4-问题4：打包报错“-File-“sklearn-metrics-pairwise-fast-pyx”-line-1-in-init-sklearn-metrics-pairwise-fast-ImportError-No-module-named-‘sklearn-utils-cython-blas’”"><a href="#1-1-4-问题4：打包报错“-File-“sklearn-metrics-pairwise-fast-pyx”-line-1-in-init-sklearn-metrics-pairwise-fast-ImportError-No-module-named-‘sklearn-utils-cython-blas’”" class="headerlink" title="1.1.4 问题4：打包报错“ File “sklearn/metrics/pairwise_fast.pyx”, line 1, in init sklearn.metrics.pairwise_fast ImportError: No module named ‘sklearn.utils._cython_blas’”"></a>1.1.4 问题4：打包报错“ File “sklearn/metrics/pairwise_fast.pyx”, line 1, in init sklearn.metrics.pairwise_fast ImportError: No module named ‘sklearn.utils._cython_blas’”</h2><blockquote>
-<p>问题原因：打包的时候无法自动加入sklearn包，手动添加即可</p>
-</blockquote>
-<blockquote>
-<p>解决方法：在main.spec中的hiddenimports属性中手动添加</p>
-</blockquote>
-<pre><code class="hljs sml">hiddenimports=[<span class="hljs-symbol">&#x27;cython&#x27;</span>,  <span class="hljs-symbol">&#x27;sklearn&#x27;</span>, <span class="hljs-symbol">&#x27;sklearn</span>.utils._cython_blas&#x27;,<span class="hljs-symbol">&#x27;sklearn</span>.neighbors.typedefs&#x27;,
-           <span class="hljs-symbol">&#x27;sklearn</span>.neighbors.quad_tree&#x27;,<span class="hljs-symbol">&#x27;sklearn</span>.tree&#x27;,<span class="hljs-symbol">&#x27;sklearn</span>.tree._utils&#x27;],</code></pre>
-
-<h2 id="1-1-5-问题5：打包后运行然后又报问题2，“cx-Oracle-DatabaseError-Error-while-trying-to-retrieve-text-for-error-ORA-01804”"><a href="#1-1-5-问题5：打包后运行然后又报问题2，“cx-Oracle-DatabaseError-Error-while-trying-to-retrieve-text-for-error-ORA-01804”" class="headerlink" title="1.1.5 问题5：打包后运行然后又报问题2，“cx_Oracle.DatabaseError: Error while trying to retrieve text for error ORA-01804”"></a>1.1.5 问题5：打包后运行然后又报问题2，“cx_Oracle.DatabaseError: Error while trying to retrieve text for error ORA-01804”</h2><blockquote>
-<p>问题原因：缺少相关的oracle包</p>
-</blockquote>
-<blockquote>
-<p>解决方法: 在main.spec中添加：</p>
-</blockquote>
-<pre><code class="hljs stylus"><span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> = <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> + [(<span class="hljs-string">&#x27;libclntsh.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libclntsh.so.11.1&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
-<span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> = <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> + [(<span class="hljs-string">&#x27;libnnz11.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libnnz11.so&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
-<span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> = <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> + [(<span class="hljs-string">&#x27;libocci.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libocci.so.11.1&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
-<span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> = <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> + [(<span class="hljs-string">&#x27;libociicus.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libociicus.so&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]</code></pre>
-
-<h2 id="1-1-6-问题6：添加上述包之后出现“Oracle-returned-an-error-ORA-12737-Instant-Client-Light-unsupported-server-character-set-SIMPLIFIED-CHINESE-CHINA-UTF8-”"><a href="#1-1-6-问题6：添加上述包之后出现“Oracle-returned-an-error-ORA-12737-Instant-Client-Light-unsupported-server-character-set-SIMPLIFIED-CHINESE-CHINA-UTF8-”" class="headerlink" title="1.1.6 问题6：添加上述包之后出现“Oracle returned an error. ORA-12737: Instant Client Light: unsupported server character set SIMPLIFIED CHINESE_CHINA.UTF8 ”"></a>1.1.6 问题6：添加上述包之后出现“Oracle returned an error. ORA-12737: Instant Client Light: unsupported server character set SIMPLIFIED CHINESE_CHINA.UTF8 ”</h2><blockquote>
-<p>问题原因： 见（<a href="https://thwack.solarwinds.com/t5/SAM-Discussions/Oracle-returned-an-error-ORA-12737-Instant-Client-Light/td-p/356034%EF%BC%89">https://thwack.solarwinds.com/t5/SAM-Discussions/Oracle-returned-an-error-ORA-12737-Instant-Client-Light/td-p/356034）</a><br>或<a href="https://www.cnblogs.com/chenjianhong/p/4144399.html">https://www.cnblogs.com/chenjianhong/p/4144399.html</a></p>
-</blockquote>
-<p>在Instant Client Light中，语言只能是美国语言，地区可以是任何受支持的地区，字符集可以是以下任意一项：</p>
-<p>＆＃9632; 单字节</p>
-<p>US7ASCII<br>WE8DEC<br>WE8MSWIN1252<br>WE8ISO8859P1<br>＆＃9632; 统一码</p>
-<p>UTF8<br>AL16UTF16<br>AL32UTF8<br>指定除列出为客户端或服务器字符集的字符集或国家字符集以外的字符集或国家字符集，或者在客户端上以NLS_LANG设置语言时，将引发以下错误之一：</p>
-<ul>
-<li>＆＃9632; ORA-12734</li>
-<li>＆＃9632; ORA-12735</li>
-<li>＆＃9632; ORA-12736</li>
-<li>＆＃9632; ORA-12737</li>
-</ul>
-<p>使用Instant Client Light，获得的错误消息仅是英文的。因此，NLS_LANG设置的有效值的类型为：American_territory.characterset ，其中，region可以是任何有效且受支持的领域，并且characterset可以</p>
-<p>可以是前面列出的任何字符集。Instant Client Light可以与在OCI_UTF16模式下创建的OCI环境句柄一起使用。</p>
-<blockquote>
-<p>解决方法：<br>修改文字编码：</p>
-</blockquote>
-<pre><code class="hljs lua">将<span class="hljs-built_in">os</span>.environ[<span class="hljs-string">&#x27;NLS_LANG&#x27;</span>] = <span class="hljs-string">&#x27;SIMPLIFIED CHINESE_CHINA.UTF8&#x27;</span>  修改为<span class="hljs-built_in">os</span>.environ[<span class="hljs-string">&#x27;NLS_LANG&#x27;</span>] = <span class="hljs-string">&#x27;AMERICAN_AMERICA.AL32UTF8&#x27;</span></code></pre>
-
-<h1 id="2-最终打包成功样例"><a href="#2-最终打包成功样例" class="headerlink" title="2.最终打包成功样例"></a>2.最终打包成功样例</h1><h2 id="步骤0：下载oracle客户端驱动文件"><a href="#步骤0：下载oracle客户端驱动文件" class="headerlink" title="步骤0：下载oracle客户端驱动文件"></a>步骤0：下载oracle客户端驱动文件</h2><pre><code class="hljs apache"><span class="hljs-attribute">instantclient</span>-sdk-linux.x<span class="hljs-number">64</span>-<span class="hljs-number">11.2.0.4</span>.<span class="hljs-number">0</span>_<span class="hljs-number">2</span>
-<span class="hljs-attribute">instantclient</span>-basic-linux.x<span class="hljs-number">64</span>-<span class="hljs-number">11.2.0.4</span>.<span class="hljs-number">0</span>
-<span class="hljs-comment"># basic中要包含libclntsh.so，libnnz11.so，libocci.so，libociicus.so这四个文件</span>
-<span class="hljs-comment"># 如果没有从instantclient-basiclite-linux.x64-11.2.0.4.0包中找</span>
-<span class="hljs-comment"># 官方下载链接“https://www.oracle.com/database/technologies/instant-client/downloads.html”</span></code></pre>
-<h2 id="步骤1-添加依赖链接在main-spec中"><a href="#步骤1-添加依赖链接在main-spec中" class="headerlink" title="步骤1:添加依赖链接在main.spec中"></a>步骤1:添加依赖链接在main.spec中</h2><pre><code class="hljs routeros">main.spec： pyinstaller打包的说明文件，里面编写一些打包的时候手动添加的文件
-
-<span class="hljs-comment"># -*- mode: python ; coding: utf-8 -*-</span>
-
-block_cipher = None
-
-a = Analysis([<span class="hljs-string">&#x27;main.py&#x27;</span>],
-             pathex=[<span class="hljs-string">&#x27;/home/redhat/Desktop/monthPredict&#x27;</span>],
-             datas=[],
-             hiddenimports=[<span class="hljs-string">&#x27;cython&#x27;</span>,  <span class="hljs-string">&#x27;sklearn&#x27;</span>, <span class="hljs-string">&#x27;sklearn.utils._cython_blas&#x27;</span>,<span class="hljs-string">&#x27;sklearn.neighbors.typedefs&#x27;</span>,
-             <span class="hljs-string">&#x27;sklearn.neighbors.quad_tree&#x27;</span>,<span class="hljs-string">&#x27;sklearn.tree&#x27;</span>,<span class="hljs-string">&#x27;sklearn.tree._utils&#x27;</span>],
-             hookspath=[],
-             runtime_hooks=[],
-             excludes=[],
-             <span class="hljs-attribute">win_no_prefer_redirects</span>=<span class="hljs-literal">False</span>,
-             <span class="hljs-attribute">win_private_assemblies</span>=<span class="hljs-literal">False</span>,
-             <span class="hljs-attribute">cipher</span>=block_cipher,
-             <span class="hljs-attribute">noarchive</span>=<span class="hljs-literal">False</span>)
-
-a.binaries = a.binaries + [(<span class="hljs-string">&#x27;libclntsh.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libclntsh.so.11.1&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
-a.binaries = a.binaries + [(<span class="hljs-string">&#x27;libnnz11.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libnnz11.so&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
-a.binaries = a.binaries + [(<span class="hljs-string">&#x27;libocci.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libocci.so.11.1&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
-a.binaries = a.binaries + [(<span class="hljs-string">&#x27;libociicus.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libociicus.so&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
-
-pyz = PYZ(a.pure, a.zipped_data,
-             <span class="hljs-attribute">cipher</span>=block_cipher)
-exe = EXE(pyz,
-          a.scripts,
-          a.binaries,
-          a.zipfiles,
-          a.datas,
-          [],
-          <span class="hljs-attribute">name</span>=<span class="hljs-string">&#x27;main&#x27;</span>,
-          <span class="hljs-attribute">debug</span>=<span class="hljs-literal">False</span>,
-          <span class="hljs-attribute">bootloader_ignore_signals</span>=<span class="hljs-literal">False</span>,
-          <span class="hljs-attribute">strip</span>=<span class="hljs-literal">False</span>,
-          <span class="hljs-attribute">upx</span>=<span class="hljs-literal">True</span>,
-          upx_exclude=[],
-          <span class="hljs-attribute">runtime_tmpdir</span>=None,
-          <span class="hljs-attribute">console</span>=<span class="hljs-literal">True</span> )
-</code></pre>
-<h2 id="步骤2：打包"><a href="#步骤2：打包" class="headerlink" title="步骤2：打包"></a>步骤2：打包</h2><pre><code class="hljs crmsh">使用 pyinstaller  main.<span class="hljs-keyword">spec</span> 命令打包</code></pre>]]></content>
-      <categories>
-        <category>工作相关</category>
-      </categories>
-      <tags>
-        <tag>python</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>python相关</title>
-    <url>/2020/09/08/python%E7%9B%B8%E5%85%B3/</url>
-    <content><![CDATA[<h1 id="1-线程池ThreadPoolExecutor"><a href="#1-线程池ThreadPoolExecutor" class="headerlink" title="1.线程池ThreadPoolExecutor"></a>1.线程池ThreadPoolExecutor</h1><p><a href="https://www.jianshu.com/p/120b61aa4cee">https://www.jianshu.com/p/120b61aa4cee</a></p>
-<h1 id="2-装饰器"><a href="#2-装饰器" class="headerlink" title="2. 装饰器"></a>2. 装饰器</h1><p><strong>装饰器本质上是一个 Python 函数或类，它可以让其他函数或类在不需要做任何代码修改的前提下增加额外功能，装饰器的返回值也是一个函数/类对象。它经常用于有切面需求的场景，比如：插入日志、性能测试、事务处理、缓存、权限校验等场景，装饰器是解决这类问题的绝佳设计。有了装饰器，我们就可以抽离出大量与函数功能本身无关的雷同代码到装饰器中并继续重用。概括的讲，装饰器的作用就是为已经存在的对象添加额外的功能</strong>。<br>先来看一个简单例子，如果你要对多个函数进行统计运行时间，不使用装饰器会是这样的：</p>
-<pre><code class="hljs pgsql"><span class="hljs-keyword">from</span> <span class="hljs-type">time</span> <span class="hljs-keyword">import</span> <span class="hljs-type">time</span>, sleep
-
-def fun_one():
-    start = <span class="hljs-type">time</span>()
-    sleep(<span class="hljs-number">1</span>)
-    end = <span class="hljs-type">time</span>()
-    cost_time = <span class="hljs-keyword">end</span> - <span class="hljs-keyword">start</span>
-    print(&quot;func one run time &#123;&#125;&quot;.format(cost_time))
-    
-def fun_two():
-    start = <span class="hljs-type">time</span>()
-    sleep(<span class="hljs-number">1</span>)
-    end = <span class="hljs-type">time</span>()
-    cost_time = <span class="hljs-keyword">end</span> - <span class="hljs-keyword">start</span>
-    print(&quot;func two run time &#123;&#125;&quot;.format(cost_time))</code></pre>
-<p>在每个函数里都需要获取开始时间start、结束时间end、计算耗费时间cost_time、加上一个输出语句。<br>使用装饰器的方法是这样的</p>
-<p>简单装饰器</p>
-<pre><code class="hljs pgsql">def run_time(func):
-    def <span class="hljs-keyword">wrapper</span>():
-        start = <span class="hljs-type">time</span>()
-        func()                  # **函数在这里运行**
-        end = <span class="hljs-type">time</span>()
-        cost_time = <span class="hljs-keyword">end</span> - <span class="hljs-keyword">start</span>
-        print(&quot;func three run time &#123;&#125;&quot;.format(cost_time))
-    <span class="hljs-keyword">return</span> <span class="hljs-keyword">wrapper</span>
-
-@run_time
-def fun_one():
-    sleep(<span class="hljs-number">1</span>)
-    
-@run_time
-def fun_two():
-    sleep(<span class="hljs-number">1</span>)</code></pre>
-<h1 id="3-anconda升级python版本"><a href="#3-anconda升级python版本" class="headerlink" title="3.anconda升级python版本"></a>3.anconda升级python版本</h1><ul>
-<li>先查看本地镜像源，清华镜像源从2019年已经停用了，建议使用中科大的镜像源</li>
-<li>然后直接命令指定升级python版本即可，如果不升级镜像源的话可能报404或者下载速度慢</li>
-</ul>
-<h2 id="3-1-修改镜像源"><a href="#3-1-修改镜像源" class="headerlink" title="3.1 修改镜像源"></a>3.1 修改镜像源</h2><p>先查看已经安装过的镜像源，cmd窗口执行命令：</p>
-<pre><code class="hljs routeros">conda<span class="hljs-built_in"> config </span>--show</code></pre>
-<p>查看配置项channels，如果显示带有tsinghua，则说明已安装过清华镜像。</p>
-<pre><code class="hljs awk">channels:
-- https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/tensorflow/</span>linux<span class="hljs-regexp">/cpu/</span>
-- https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/anaconda/</span>cloud<span class="hljs-regexp">/msys2/</span>
-- https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/anaconda/</span>cloud<span class="hljs-regexp">/conda-forge/</span>
-- https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/anaconda/</span>pkgs<span class="hljs-regexp">/free/</span>
-- https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/anaconda/</span>cloud<span class="hljs-regexp">/pytorch/</span></code></pre>
-<p>下一步，使用<code>conda config --remove channels url地址</code>删除清华镜像，如下命令删除第一个。然后，依次删除所有镜像源</p>
-<pre><code class="hljs awk">conda config --remove channels https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/tensorflow/</span>linux<span class="hljs-regexp">/cpu/</span></code></pre>
-<p>添加目前可用的中科大镜像源：</p>
-<pre><code class="hljs awk">conda config --add channels https:<span class="hljs-regexp">//mi</span>rrors.ustc.edu.cn<span class="hljs-regexp">/anaconda/</span>pkgs<span class="hljs-regexp">/free/</span></code></pre>
-<p>并设置搜索时显示通道地址：</p>
-<pre><code class="hljs routeros">conda<span class="hljs-built_in"> config </span>--<span class="hljs-builtin-name">set</span> show_channel_urls <span class="hljs-literal">yes</span></code></pre>
-<p>确认是否安装镜像源成功，执行<code>conda config --show</code>，找到<code>channels</code>值为如下：</p>
-<pre><code class="hljs awk">channels:
-  - https:<span class="hljs-regexp">//mi</span>rrors.ustc.edu.cn<span class="hljs-regexp">/anaconda/</span>pkgs<span class="hljs-regexp">/free/</span>
-  - defaults</code></pre>
-<h2 id="3-2-升级python版本"><a href="#3-2-升级python版本" class="headerlink" title="3.2 升级python版本"></a>3.2 升级python版本</h2><p>打开Anaconda Prompt，<br>输入</p>
-<pre><code class="hljs apache"><span class="hljs-attribute">conda</span> create -n python<span class="hljs-number">36</span> python=<span class="hljs-number">3</span>.<span class="hljs-number">6</span> anaconda</code></pre>
-
-<h1 id="4-文件io"><a href="#4-文件io" class="headerlink" title="4.文件io"></a>4.文件io</h1><h2 id="4-1-文件打开方式，r-w-a-的说明"><a href="#4-1-文件打开方式，r-w-a-的说明" class="headerlink" title="4.1 文件打开方式，r/w/a/+的说明"></a>4.1 文件打开方式，r/w/a/+的说明</h2><ul>
-<li>r只读，r+读写(覆盖写)，不创建</li>
-<li>w新建只写，w+新建读写，二者都会将文件内容清零</li>
-<li>w+与r+区别：</li>
-<li><blockquote>
-<p>r+：可读可写，若文件不存在，报错；w+: 可读可写，若文件不存在，创建</p>
-</blockquote>
-</li>
-<li>a：附加写方式打开，不可读；</li>
-<li>a+: 附加读写方式打开</li>
-</ul>
-<p>#5. 代码规范性测试</p>
-<p>pylint代码规范测试</p>
-<h1 id="6-fileinput-懒惰行迭代"><a href="#6-fileinput-懒惰行迭代" class="headerlink" title="6. fileinput 懒惰行迭代"></a>6. fileinput 懒惰行迭代</h1><p>只读取实际需要的文件部分</p>
-<h1 id="7-编码规范"><a href="#7-编码规范" class="headerlink" title="7. 编码规范"></a>7. 编码规范</h1><ol>
-<li>多次使用的常量使用全大写命名，并考虑设置为全局变量</li>
-<li>创建单独的配置文件模块，保存一些配置的参数<blockquote>
-<p>简单配置或者使用configparser模块</p>
-</blockquote>
-</li>
-<li>在需要的时候使用日志记录（logging模块）</li>
-</ol>
-<h1 id="8-魔法方法理解"><a href="#8-魔法方法理解" class="headerlink" title="8.魔法方法理解"></a>8.魔法方法理解</h1><p>魔法方法是python内置方法，不需要主动调用，存在的目的是为了给python的解释器进行调用，几乎每个魔法方法都有一个对应的内置函数，或者运算符，当我们对这个对象使用这些函数或者运算符时就会调用类中的对应魔法方法，可以理解为重写内置函数</p>
-<p>实际上, 当我们调用x = SomeClass()的时候调用,__init__并不是第一个执行的, __new__才是。所以准确来说,是__new__和__init__共同构成了”构造函数”.</p>
-<p><strong>new</strong>() 是一种负责创建类实例的静态方法，它无需使用 staticmethod 装饰器修饰，且该方法会优先 <strong>init</strong>() 初始化方法被调用</p>
-<h1 id="9-正则表达式"><a href="#9-正则表达式" class="headerlink" title="9.正则表达式"></a>9.正则表达式</h1><p>##9.1 match()和search()比较</p>
-<pre><code class="hljs ruby">m = re.match(<span class="hljs-string">&#x27;foo&#x27;</span>, <span class="hljs-string">&#x27;seafood&#x27;</span>) 
-m.group()
-<span class="hljs-meta">&gt;&gt;</span>&gt; None    <span class="hljs-comment"># 匹配失败</span>
-
-m = re.search(<span class="hljs-string">&#x27;foo&#x27;</span>, <span class="hljs-string">&#x27;seafood&#x27;</span>) 
-m.group()
-<span class="hljs-meta">&gt;&gt;</span>&gt; <span class="hljs-string">&#x27;foo&#x27;</span> <span class="hljs-comment"># 搜索成功， 但是之前匹配失败</span></code></pre>
-<p>match是从字符串的起始部分开始匹配模式，把字符串当作一个整体来匹配，而search表示字符串中任意位置出现符合匹配模式的字符串，都将其提取出来。<br>##9.2  中括号（[cr][23][dp][o2]）和或运算符（r2d2|c3po）的区别</p>
-<ul>
-<li>[cr][23][dp][o2]<blockquote>
-<p>上述表示匹配由四个字符组成的类似‘ABCD’字符串，每一个字符匹配一个中括号内的两个字符中的一个</p>
-</blockquote>
-</li>
-<li>r2d2|c3po<blockquote>
-<p>上述表示匹配“r2d2”或“c3po”<br>##9.3 使用group()或groups()访问匹配组</p>
-</blockquote>
-</li>
-</ul>
-<p>pattern中每一个括号为一个匹配模式，返回的结果保存在group()中，而groups()可以查看所有的子组匹配结果（如果pattern中无括号分组模式则groups为空）。</p>
-<blockquote>
-<blockquote>
-<p>m = re.match(‘(\w\w\w)-(\d\d\d)’, ‘abc-123’)<br>m.group() # 完整匹配<br>‘abc-123’<br>m.group(1) # 子组 1<br>‘abc’<br>m.group(2) # 子组 2<br>‘123’<br>m.groups() # 全部子组<br>(‘abc’, ‘123’)</p>
-</blockquote>
-</blockquote>
-<h2 id="9-4-findall和search方法的区别"><a href="#9-4-findall和search方法的区别" class="headerlink" title="9.4 findall和search方法的区别"></a>9.4 findall和search方法的区别</h2><p>findall()查询字符串中某个正则表达式模式全部的非重复出现情况，和search类似，但是findall总是返回一个列表，<strong>当匹配失败时列表为空；当匹配成功时返回所有成功的匹配部分</strong>。</p>
-<h2 id="9-5-sub-和subn-，表示替换"><a href="#9-5-sub-和subn-，表示替换" class="headerlink" title="9.5 sub()和subn()，表示替换"></a>9.5 sub()和subn()，表示替换</h2><p>sub和subn基本一样，但是subn还返回了替换的次数。</p>
-]]></content>
-      <categories>
-        <category>编程语言特性相关</category>
-      </categories>
-      <tags>
-        <tag>python</tag>
       </tags>
   </entry>
   <entry>
@@ -3202,8 +2799,217 @@ public <span class="hljs-class"><span class="hljs-keyword">class</span> <span cl
       </tags>
   </entry>
   <entry>
+    <title>剑指offer</title>
+    <url>/2020/12/17/%E5%89%91%E6%8C%87offer/</url>
+    <content><![CDATA[<blockquote>
+<p>摘录自<a href="https://github.com/CyC2018/CS-Notes/blob/master/notes/%E5%89%91%E6%8C%87%20Offer%20%E9%A2%98%E8%A7%A3%20-%20%E7%9B%AE%E5%BD%95.m">https://github.com/CyC2018/CS-Notes/blob/master/notes/%E5%89%91%E6%8C%87%20Offer%20%E9%A2%98%E8%A7%A3%20-%20%E7%9B%AE%E5%BD%95.m</a></p>
+</blockquote>
+<h1 id="3-数组中的重复数据"><a href="#3-数组中的重复数据" class="headerlink" title="3. 数组中的重复数据"></a>3. 数组中的重复数据</h1>]]></content>
+      <tags>
+        <tag>算法刷题</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Flask之缓慢的http拒绝服务攻击漏洞解决</title>
+    <url>/2020/11/06/python/Flask%E4%B9%8B%E7%BC%93%E6%85%A2%E7%9A%84http%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB%E6%BC%8F%E6%B4%9E%E8%A7%A3%E5%86%B3/</url>
+    <content><![CDATA[<h1 id="1-什么是缓慢的http拒绝服务攻击漏洞"><a href="#1-什么是缓慢的http拒绝服务攻击漏洞" class="headerlink" title="1.什么是缓慢的http拒绝服务攻击漏洞"></a>1.什么是缓慢的http拒绝服务攻击漏洞</h1><p>缓慢的http拒绝服务攻击是一种专门针对于Web的应用层拒绝服务攻击，攻击者操纵网络上的肉鸡，对目标Web服务器进行海量http request攻击，直到服务器带宽被打满，造成了拒绝服务。</p>
+<p>慢速HTTP拒绝服务攻击经过不断的演变和发展，主要有三种攻击类型，分别是Slow headers、Slow body、Slow read。</p>
+<ul>
+<li><p><code>slowloris</code>：完整的http请求是以 <code>\r\n\r\n</code> 结尾，攻击时仅发送 <code>\r\n</code>，少发送一个 <code>\r\n</code>，服务器认为请求还未发完，就会一直等待直至超时</p>
+</li>
+<li><p><code>slow post</code>：通过声明一个较大的content-length后，body缓慢发送，导致服务器一直等待</p>
+<ul>
+<li><code>slow read</code>：向服务器发送一个正常合法的read请求，请求一个很大的文件，但把TCP滑动窗口设置得很小，服务器就会以滑动窗口的大小切割文件，然后发送，这时文件会长期存放在内存中，消耗资源</li>
+</ul>
+</li>
+</ul>
+<h1 id="2-Flask应对措施"><a href="#2-Flask应对措施" class="headerlink" title="2. Flask应对措施"></a>2. Flask应对措施</h1><ul>
+<li><p>限制每次请求数据的大小</p>
+</li>
+<li><p>限制单个HTTP请求头的最大许可时间</p>
+</li>
+<li><p>限制单个ip请求数量</p>
+</li>
+<li><p>。。。。。。</p>
+</li>
+</ul>
+<p>#3. 使用slowhttptest测试漏洞</p>
+<h2 id="3-1-slowhttptest的安装"><a href="#3-1-slowhttptest的安装" class="headerlink" title="3.1 slowhttptest的安装"></a>3.1 slowhttptest的安装</h2><blockquote>
+<p> 安装说明:<a href="https://github.com/shekyan/slowhttptest/wiki/InstallationAndUsage1">https://github.com/shekyan/slowhttptest/wiki/InstallationAndUsage1</a></p>
+</blockquote>
+<ol>
+<li><p>下载压缩包：<a href="https://github.com/shekyan/slowhttptest/releases">https://github.com/shekyan/slowhttptest/releases</a></p>
+</li>
+<li><p>安装libssl-dev<br><code>$ yum install openssl openssl-devel</code></p>
+</li>
+<li><p>安装C++编译器<br><code>$ yum install gcc-c++</code></p>
+</li>
+<li><p>解压</p>
+<p><code>$ tar -xzvf slowhttptest-x.x.tar.gz</code> </p>
+</li>
+<li><p>编译安装</p>
+<pre><code class="hljs powershell"><span class="hljs-variable">$</span> <span class="hljs-built_in">cd</span> slowhttp<span class="hljs-built_in">test-x</span>.x
+<span class="hljs-variable">$</span> ./configure -<span class="hljs-literal">-prefix</span>=PREFIX
+<span class="hljs-variable">$</span> make
+<span class="hljs-variable">$</span> sudo make install</code></pre>
+
+</li>
+</ol>
+<h2 id="3-2-参数说明及使用测试"><a href="#3-2-参数说明及使用测试" class="headerlink" title="3.2 参数说明及使用测试"></a>3.2 参数说明及使用测试</h2><pre><code class="hljs diff"><span class="hljs-deletion">-g      在测试完成后，以时间戳为名生成一个CVS和HTML文件的统计数据</span>
+<span class="hljs-deletion">-H      SlowLoris模式</span>
+<span class="hljs-deletion">-B      Slow POST模式</span>
+<span class="hljs-deletion">-R      Range Header模式</span>
+<span class="hljs-deletion">-X      Slow Read模式</span>
+<span class="hljs-deletion">-c      number of connections 测试时建立的连接数</span>
+<span class="hljs-deletion">-d      HTTP proxy host:port  为所有连接指定代理</span>
+<span class="hljs-deletion">-e      HTTP proxy host:port  为探测连接指定代理</span>
+<span class="hljs-deletion">-i      seconds 在slowrois和Slow POST模式中，指定发送数据间的间隔。</span>
+<span class="hljs-deletion">-l      seconds 测试维持时间</span>
+<span class="hljs-deletion">-n      seconds 在Slow Read模式下，指定每次操作的时间间隔。</span>
+<span class="hljs-deletion">-o      file name 使用-g参数时，可以使用此参数指定输出文件名</span>
+<span class="hljs-deletion">-p      seconds 指定等待时间来确认DoS攻击已经成功</span>
+<span class="hljs-deletion">-r      connections per second 每秒连接个数</span>
+<span class="hljs-deletion">-s      bytes 声明Content-Length header的值</span>
+<span class="hljs-deletion">-t      HTTP verb 在请求时使用什么操作，默认GET</span>
+<span class="hljs-deletion">-u      URL  指定目标url</span>
+<span class="hljs-deletion">-v      level 日志等级（详细度）</span>
+<span class="hljs-deletion">-w      bytes slow read模式中指定tcp窗口范围下限</span>
+<span class="hljs-deletion">-x      bytes 在slowloris and Slow POST tests模式中，指定发送的最大数据长度</span>
+<span class="hljs-deletion">-y      bytes slow read模式中指定tcp窗口范围上限</span>
+<span class="hljs-deletion">-z      bytes 在每次的read()中，从buffer中读取数据量</span></code></pre>
+
+<h2 id="3-2-1参考实例："><a href="#3-2-1参考实例：" class="headerlink" title="3.2.1参考实例："></a>3.2.1参考实例：</h2><p>slowloris模式：</p>
+<pre><code class="hljs apache"><span class="hljs-attribute">slowhttptest</span> -c <span class="hljs-number">1000</span> -H -g -o my_header_stats -i <span class="hljs-number">10</span> -r <span class="hljs-number">200</span> -t GET -u https://xxxxxx.xxxxx.xx -x <span class="hljs-number">24</span> -p <span class="hljs-number">3</span></code></pre>
+
+<p>slow post模式：</p>
+<pre><code class="hljs yaml"><span class="hljs-string">$</span> <span class="hljs-string">slowhttptest</span> <span class="hljs-string">-c</span> <span class="hljs-number">3000</span> <span class="hljs-string">-B</span> <span class="hljs-string">-g</span> <span class="hljs-string">-o</span> <span class="hljs-string">my_body_stats</span> <span class="hljs-string">-i</span> <span class="hljs-number">110</span> <span class="hljs-string">-r</span> <span class="hljs-number">200</span> <span class="hljs-string">-s</span> <span class="hljs-number">8192</span> <span class="hljs-string">-t</span> <span class="hljs-string">FAKEVERB</span> <span class="hljs-string">-u</span> <span class="hljs-string">http://xxx.xxx.xxx</span> <span class="hljs-string">-x</span> <span class="hljs-number">10</span> <span class="hljs-string">-p</span> <span class="hljs-number">3</span></code></pre>
+
+<p>slow read模式：</p>
+<pre><code class="hljs angelscript">$ slowhttptest -c <span class="hljs-number">8000</span> -X -r <span class="hljs-number">200</span> -w <span class="hljs-number">512</span> -y <span class="hljs-number">1024</span> -n <span class="hljs-number">5</span> -z <span class="hljs-number">32</span> -k <span class="hljs-number">3</span> -u https:<span class="hljs-comment">//xxx.xxx.xxx -p 3</span></code></pre>
+
+<h1 id="4-使用说明"><a href="#4-使用说明" class="headerlink" title="4.使用说明"></a>4.使用说明</h1><p>以下是分别使用四种方式对自己的服务进行测试的结果，先开始不太懂每个曲线图的意义。这里说明一下，上面的参数可以设置连接数量以及持续请求时间等参数。然后下面展现的是曲线图，主要看在测试程序运行时间内Connected的数量是否被释放，是否通过服务的设置不符合条件的请求被服务端关闭，Service是否正常运行（服务是否存在被漏洞攻击程序给冲宕机了）。</p>
+<p>##4.1 RANGE HEADERS</p>
+<img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115151719480.png" alt="rangeHeader" style="zoom:67%;" />
+
+<p>##4.2 SLOW HEADERS(SlowLoris)</p>
+<img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115151939829.png" alt="image-20201115151939829" style="zoom: 67%;" />
+
+<p>##4.3 SLOW BODY(SLOW POST)</p>
+<img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115154404536.png" alt="image-20201115154404536" style="zoom:67%;" />
+
+<h2 id="4-4-SLOW-READ"><a href="#4-4-SLOW-READ" class="headerlink" title="4.4  SLOW READ"></a>4.4  SLOW READ</h2><img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115152038635.png" style="zoom:67%;" />
+
+]]></content>
+      <categories>
+        <category>工作相关</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+        <tag>Flask</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>pyqt5使用及出现问题</title>
+    <url>/2020/09/17/python/pyqt5%E4%BD%BF%E7%94%A8%E5%8F%8A%E5%87%BA%E7%8E%B0%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<h1 id="1-pyqt5及qtdesigner的安装"><a href="#1-pyqt5及qtdesigner的安装" class="headerlink" title="1. pyqt5及qtdesigner的安装"></a>1. pyqt5及qtdesigner的安装</h1><h2 id="1-1-安装包"><a href="#1-1-安装包" class="headerlink" title="1.1 安装包"></a>1.1 安装包</h2><pre><code class="hljs cmake">pip <span class="hljs-keyword">install</span>  PyQt5-tools
+pip <span class="hljs-keyword">install</span> pyqt5
+pip <span class="hljs-keyword">install</span> sip</code></pre>
+
+<h2 id="1-2-配置pycharm"><a href="#1-2-配置pycharm" class="headerlink" title="1.2 配置pycharm"></a>1.2 配置pycharm</h2><ul>
+<li>报错:</li>
+</ul>
+<p><img src="/img/pyqt5%E4%BD%BF%E7%94%A8%E5%8F%8A%E5%87%BA%E7%8E%B0%E9%97%AE%E9%A2%98/1.png" alt="在这里插入图片描述"></p>
+<ul>
+<li><p>解决方法</p>
+<blockquote>
+<p>添加系统环境变量</p>
+<p>QT_QPA_PLATFORM_PLUGIN_PATH</p>
+<p>C:\ProgramData\Anaconda3\Lib\site-packages\PyQt5\Qt\plugins</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="2-使用"><a href="#2-使用" class="headerlink" title="2. 使用"></a>2. 使用</h1>]]></content>
+      <categories>
+        <category>编程语言特性相关</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+        <tag>pyqt5</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>&#39;pyspark读取hbase跑模型尝试&#39;</title>
+    <url>/2021/03/01/python/pyspark%E8%AF%BB%E5%8F%96hbase%E8%B7%91%E6%A8%A1%E5%9E%8B%E5%B0%9D%E8%AF%95/</url>
+    <content><![CDATA[<h1 id="0-需求说明"><a href="#0-需求说明" class="headerlink" title="0. 需求说明"></a>0. 需求说明</h1><p>需求是对变压器的负荷进行预测，每一个变压器当作一个独立的个体。需要训练的个体数过多，所以尝试使用pyspark进行训练。原始数据保存在hbase中，程序的整体设计流程为：从hbase中读取数据 –&gt; 数据预处理 –&gt; 使用pyspark训练模型并进行预测 </p>
+<h2 id="1-读取hbase"><a href="#1-读取hbase" class="headerlink" title="1. 读取hbase"></a>1. 读取hbase</h2><blockquote>
+<p>因为是在自己的本地windows进行测试，电脑内存较小就没上虚拟机了。</p>
+</blockquote>
+<h3 id="1-1-pyspark读取hbase需要配置相关包"><a href="#1-1-pyspark读取hbase需要配置相关包" class="headerlink" title="1.1 pyspark读取hbase需要配置相关包"></a>1.1 pyspark读取hbase需要配置相关包</h3><p>将HBase的lib目录下的如下包复制到spark的目录下（因为放在其他目录中需要添加该目录的环境变量，所以为了省事就全部放在spark的默认jar目录中了，在spark启动的时候会全部加载进去，在<a href="http://127.0.0.1:4040/environment/%E6%9C%80%E4%B8%8B%E9%9D%A2%E7%9A%84**Resource**%E4%B8%AD%E5%8F%AF%E4%BB%A5%E6%9F%A5%E7%9C%8B%E5%88%B0%EF%BC%89">http://127.0.0.1:4040/environment/最下面的**Resource**中可以查看到）</a></p>
+<ul>
+<li><p>所有hbase开头的jar文件</p>
+</li>
+<li><p>guava-12.0.1.jar</p>
+</li>
+<li><p>htrace-core-3.1.0-incubating.jar</p>
+</li>
+<li><p>protobuf-java-2.5.0.jar</p>
+</li>
+<li><p><a href="https://mvnrepository.com/artifact/org.apache.spark/spark-examples_2.11/1.6.0-typesafe-001">spark-example-1.6.0.jar</a>（把hbase的数据转换python可读取的jar包）</p>
+</li>
+<li><p><strong>metrics-core-2.2.0.jar</strong></p>
+</li>
+</ul>
+<h3 id="1-2-读取数据"><a href="#1-2-读取数据" class="headerlink" title="1.2 读取数据"></a>1.2 读取数据</h3><pre><code class="hljs python"><span class="hljs-comment"># 在pyspark中打开</span>
+host = <span class="hljs-string">&#x27;172.16.221.102&#x27;</span>
+table = <span class="hljs-string">&#x27;PSSC:HT_E_MP_CURVE_RELA&#x27;</span>
+conf = &#123;<span class="hljs-string">&quot;hbase.zookeeper.quorum&quot;</span>: host, <span class="hljs-string">&quot;hbase.mapreduce.inputtable&quot;</span>: table&#125;
+keyConv = <span class="hljs-string">&quot;org.apache.spark.examples.pythonconverters.ImmutableBytesWritableToStringConverter&quot;</span>
+valueConv = <span class="hljs-string">&quot;org.apache.spark.examples.pythonconverters.HBaseResultToStringConverter&quot;</span>
+hbase_rdd = sc.newAPIHadoopRDD(<span class="hljs-string">&quot;org.apache.hadoop.hbase.mapreduce.TableInputFormat&quot;</span>,<span class="hljs-string">&quot;org.apache.hadoop.hbase.io.ImmutableBytesWritable&quot;</span>,<span class="hljs-string">&quot;org.apache.hadoop.hbase.client.Result&quot;</span>,keyConverter=keyConv,valueConverter=valueConv,conf=conf)
+count = hbase_rdd.count()
+hbase_rdd.cache()
+output = hbase_rdd.collect()
+<span class="hljs-keyword">for</span> (k, v) <span class="hljs-keyword">in</span> output:
+        <span class="hljs-keyword">print</span> (k, v)
+
+<span class="hljs-comment"># 显示部分结果如下</span>
+&#123;<span class="hljs-string">&quot;qualifier&quot;</span> : <span class="hljs-string">&quot;IC85&quot;</span>, <span class="hljs-string">&quot;timestamp&quot;</span> : <span class="hljs-string">&quot;1614130918336&quot;</span>, <span class="hljs-string">&quot;columnFamily&quot;</span> : <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;row&quot;</span> : <span class="hljs-string">&quot;20201115&quot;</span>, <span class="hljs-string">&quot;type&quot;</span> : <span class="hljs-string">&quot;Put&quot;</span>, <span class="hljs-string">&quot;value&quot;</span> : <span class="hljs-string">&quot;0.0000&quot;</span>&#125;
+&#123;<span class="hljs-string">&quot;qualifier&quot;</span> : <span class="hljs-string">&quot;IC86&quot;</span>, <span class="hljs-string">&quot;timestamp&quot;</span> : <span class="hljs-string">&quot;1614130918336&quot;</span>, <span class="hljs-string">&quot;columnFamily&quot;</span> : <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;row&quot;</span> : <span class="hljs-string">&quot;20201115&quot;</span>, <span class="hljs-string">&quot;type&quot;</span> : <span class="hljs-string">&quot;Put&quot;</span>, <span class="hljs-string">&quot;value&quot;</span> : <span class="hljs-string">&quot;0.0000&quot;</span>&#125;
+&#123;<span class="hljs-string">&quot;qualifier&quot;</span> : <span class="hljs-string">&quot;IC87&quot;</span>, <span class="hljs-string">&quot;timestamp&quot;</span> : <span class="hljs-string">&quot;1614130918336&quot;</span>, <span class="hljs-string">&quot;columnFamily&quot;</span> : <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;row&quot;</span> : <span class="hljs-string">&quot;20201115&quot;</span>, <span class="hljs-string">&quot;type&quot;</span> : <span class="hljs-string">&quot;Put&quot;</span>, <span class="hljs-string">&quot;value&quot;</span> : <span class="hljs-string">&quot;0.0000&quot;</span>&#125;
+&#123;<span class="hljs-string">&quot;qualifier&quot;</span> : <span class="hljs-string">&quot;IC88&quot;</span>, <span class="hljs-string">&quot;timestamp&quot;</span> : <span class="hljs-string">&quot;1614130918336&quot;</span>, <span class="hljs-string">&quot;columnFamily&quot;</span> : <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;row&quot;</span> : <span class="hljs-string">&quot;20201115&quot;</span>, <span class="hljs-string">&quot;type&quot;</span> : <span class="hljs-string">&quot;Put&quot;</span>, <span class="hljs-string">&quot;value&quot;</span> : <span class="hljs-string">&quot;0.0000&quot;</span>&#125;
+&#123;<span class="hljs-string">&quot;qualifier&quot;</span> : <span class="hljs-string">&quot;IC89&quot;</span>, <span class="hljs-string">&quot;timestamp&quot;</span> : <span class="hljs-string">&quot;1614130918336&quot;</span>, <span class="hljs-string">&quot;columnFamily&quot;</span> : <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;row&quot;</span> : <span class="hljs-string">&quot;20201115&quot;</span>, <span class="hljs-string">&quot;type&quot;</span> : <span class="hljs-string">&quot;Put&quot;</span>, <span class="hljs-string">&quot;value&quot;</span> : <span class="hljs-string">&quot;0.0000&quot;</span>&#125;</code></pre>
+
+<h3 id="1-3-遇到问题"><a href="#1-3-遇到问题" class="headerlink" title="1.3 遇到问题"></a>1.3 遇到问题</h3><p>遇到问题要自己思考出现问题的原因是什么，以及找到问题的解决方法之后要思考底层是如何运行的，为什么这个方法能够解决这个问题。</p>
+<ul>
+<li>问题复现：</li>
+</ul>
+<pre><code class="hljs routeros"><span class="hljs-comment"># 包放好后启动报如下错误（第一部分）</span>
+An <span class="hljs-builtin-name">error</span> occurred <span class="hljs-keyword">while</span> calling z:org.apache.spark.api.python.PythonRDD.newAPIHadoopRDD.
+: org.apache.hadoop.hbase.client.RetriesExhaustedException: Failed after <span class="hljs-attribute">attempts</span>=32, exceptions:
+Mon Mar 01 14:28:51 CST 2021, <span class="hljs-literal">null</span>, java.net.SocketTimeoutException: <span class="hljs-attribute">callTimeout</span>=60000, <span class="hljs-attribute">callDuration</span>=68422: row <span class="hljs-string">&#x27;PSSC:HT_E_MP_CURVE_RELA,,00000000000000&#x27;</span> on table <span class="hljs-string">&#x27;hbase:meta&#x27;</span> at <span class="hljs-attribute">region</span>=hbase:meta,,1.1588230740, <span class="hljs-attribute">hostname</span>=worker01,60020,1613617191977, <span class="hljs-attribute">seqNum</span>=0
+<span class="hljs-built_in">..</span><span class="hljs-built_in">..</span><span class="hljs-built_in">..</span>
+<span class="hljs-comment"># 并且下面会有这样一句：（第二部分）</span>
+Caused by: java.io.IOException: com.google.protobuf.ServiceException: java.lang.NoClassDefFoundError: com/yammer/metrics/core/Gauge</code></pre>
+
+<ul>
+<li><p>解决：</p>
+<p>在google了很多之后以上第一部分的问题之后，都是在说一些hosts映射的解决方法。但是我的hosts是没有问题的，启动之前就已经添加过主机名的映射了，未解决我的问题。</p>
+<p>然后仔细将所有的报错提示从头到尾看了一遍，发现了上面第二部分的问题，然后在想是不是因为第二部分的问题导致了第一部分的错误，然后去网上搜该方法，显示”com/yammer/metrics/core/Gauge”是<strong>metrics-core-2.2.0.jar</strong>包里面的方法，然后在hbase的lib文件夹下面找到了该包，于是导入后遂解决了问题。</p>
+</li>
+</ul>
+<p>##2. 大批量跑模型</p>
+]]></content>
+      <categories>
+        <category>工作相关</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+        <tag>pyspark</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>python中方法及变量的下划线双下划线等含义</title>
-    <url>/2020/12/23/python%E4%B8%AD%E6%96%B9%E6%B3%95%E5%8F%8A%E5%8F%98%E9%87%8F%E7%9A%84%E4%B8%8B%E5%88%92%E7%BA%BF%E5%8F%8C%E4%B8%8B%E5%88%92%E7%BA%BF%E7%AD%89%E5%90%AB%E4%B9%89/</url>
+    <url>/2020/12/23/python/python%E4%B8%AD%E6%96%B9%E6%B3%95%E5%8F%8A%E5%8F%98%E9%87%8F%E7%9A%84%E4%B8%8B%E5%88%92%E7%BA%BF%E5%8F%8C%E4%B8%8B%E5%88%92%E7%BA%BF%E7%AD%89%E5%90%AB%E4%B9%89/</url>
     <content><![CDATA[<p>#Python 下划线、双下划线</p>
 <p>一般常见的下划线为以下几种：</p>
 <ul>
@@ -3283,14 +3089,366 @@ SyntaxError: &quot;invalid syntax&quot;
       </tags>
   </entry>
   <entry>
-    <title>剑指offer</title>
-    <url>/2020/12/17/%E5%89%91%E6%8C%87offer/</url>
-    <content><![CDATA[<blockquote>
-<p>摘录自<a href="https://github.com/CyC2018/CS-Notes/blob/master/notes/%E5%89%91%E6%8C%87%20Offer%20%E9%A2%98%E8%A7%A3%20-%20%E7%9B%AE%E5%BD%95.m">https://github.com/CyC2018/CS-Notes/blob/master/notes/%E5%89%91%E6%8C%87%20Offer%20%E9%A2%98%E8%A7%A3%20-%20%E7%9B%AE%E5%BD%95.m</a></p>
+    <title>python打包程序移植到生产环境redhat出现的问题</title>
+    <url>/2020/04/13/python/python%E6%89%93%E5%8C%85%E7%A8%8B%E5%BA%8F%E7%A7%BB%E6%A4%8D%E5%88%B0%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83redhat%E5%87%BA%E7%8E%B0%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<h1 id="1-出现问题及解决"><a href="#1-出现问题及解决" class="headerlink" title="1.出现问题及解决"></a>1.出现问题及解决</h1><h2 id="1-1-python打包访问oracle数据库无instantclient相关问题"><a href="#1-1-python打包访问oracle数据库无instantclient相关问题" class="headerlink" title="1.1 python打包访问oracle数据库无instantclient相关问题"></a>1.1 python打包访问oracle数据库无instantclient相关问题</h2><h3 id="1-1-1-问题1：cx-Oracle-DatabaseError-DPI-1047-64-bit-Oracle-Client-library-cannot-be-loaded解决方法”"><a href="#1-1-1-问题1：cx-Oracle-DatabaseError-DPI-1047-64-bit-Oracle-Client-library-cannot-be-loaded解决方法”" class="headerlink" title="1.1.1 问题1：cx_Oracle.DatabaseError: DPI-1047: 64-bit Oracle Client library cannot be loaded解决方法”"></a>1.1.1 问题1：cx_Oracle.DatabaseError: DPI-1047: 64-bit Oracle Client library cannot be loaded解决方法”</h3><blockquote>
+<p>解决方法：本机安装instantclient，安装步骤如下(参考：<a href="http://www.360doc.com/content/12/1103/21/8827884_245559524.shtml">http://www.360doc.com/content/12/1103/21/8827884_245559524.shtml</a>)</p>
 </blockquote>
-<h1 id="3-数组中的重复数据"><a href="#3-数组中的重复数据" class="headerlink" title="3. 数组中的重复数据"></a>3. 数组中的重复数据</h1>]]></content>
+<ul>
+<li>第一步，先安装Oracle客户端，结合你的情况自己找合适的版本，我下载的是 oracle-instantclient11.2-basic-11.2.0.3.0-1.x86_64.rpm<br>下载地址为（<a href="http://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html%EF%BC%89">http://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html）</a></li>
+</ul>
+<pre><code class="hljs apache"><span class="hljs-attribute">rpm</span> -ivh oracle-instantclient<span class="hljs-number">11</span>.<span class="hljs-number">2</span>-basic-<span class="hljs-number">11.2.0.3</span>.<span class="hljs-number">0</span>-<span class="hljs-number">1</span>.x<span class="hljs-number">86</span>_<span class="hljs-number">64</span>.rpm</code></pre>
+
+<ul>
+<li><p>第二步，找出你的ORACLE_HOME，我安装之后在这里：/usr/lib/oracle/11.2/client64/lib/</p>
+</li>
+<li><p>第三步，下载oracle-instantclient11.2-sdk-11.2.0.1.0-1.x86_64.zip 下载地址。解压，把里面那个叫sdk的文件夹复制到 /usr/lib/oracle/11.2/client64/lib/</p>
+</li>
+<li><p>第四步，做一个软链：</p>
+<pre><code class="hljs crystal">$ cd /usr/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">oracle</span>/11.2/<span class="hljs-title">client64</span>/<span class="hljs-title">lib</span>/</span>
+$ ln -s libclntsh.so.<span class="hljs-number">11.1</span> libclntsh.so</code></pre></li>
+<li><p>第五步，安装cx_Oracle:</p>
+<pre><code class="hljs crystal">$ export ORACLE_HOME=<span class="hljs-regexp">/usr/lib</span><span class="hljs-regexp">/oracle/</span><span class="hljs-number">11.2</span>/client64/<span class="hljs-class"><span class="hljs-keyword">lib</span></span>
+$ export LD_LIBRARY_PATH=$<span class="hljs-symbol">LD_LIBRARY_PATH:</span>$ORACLE_HOME
+$ easy_install cx_Oracle</code></pre></li>
+<li><p>试一下：</p>
+<pre><code class="hljs elixir"><span class="hljs-variable">$ </span>python
+<span class="hljs-variable">$ </span><span class="hljs-keyword">import</span> cx_Oracle</code></pre>
+<p>  done.</p>
+</li>
+<li><p>不过还没配环境变量，一退再进去就不行了，在.bashrc里加入刚才安装之前的那两句：</p>
+</li>
+</ul>
+<pre><code class="hljs crystal">$cd vim ~<span class="hljs-regexp">/.bashrc</span>
+<span class="hljs-regexp">export ORACLE_HOME=/usr</span><span class="hljs-regexp">/lib/oracle</span><span class="hljs-regexp">/11.2/client</span>64/<span class="hljs-class"><span class="hljs-keyword">lib</span></span>
+export LD_LIBRARY_PATH=$<span class="hljs-symbol">LD_LIBRARY_PATH:</span>$ORACLE_HOME
+
+source ~<span class="hljs-regexp">/.bashrc</span></code></pre>
+
+<h3 id="1-1-2-问题2：上述问题解决后出现“cx-Oracle-DatabaseError-Error-while-trying-to-retrieve-text-for-error-ORA-01804”问题"><a href="#1-1-2-问题2：上述问题解决后出现“cx-Oracle-DatabaseError-Error-while-trying-to-retrieve-text-for-error-ORA-01804”问题" class="headerlink" title="1.1.2 问题2：上述问题解决后出现“cx_Oracle.DatabaseError: Error while trying to retrieve text for error ORA-01804”问题"></a>1.1.2 问题2：上述问题解决后出现“cx_Oracle.DatabaseError: Error while trying to retrieve text for error ORA-01804”问题</h3><blockquote>
+<p>解决方法（参考“<a href="https://blog.csdn.net/zklth/article/details/7184032%EF%BC%89%E2%80%9D%EF%BC%9A">https://blog.csdn.net/zklth/article/details/7184032）”：</a></p>
+</blockquote>
+<pre><code class="hljs dart">注释掉
+os.environ[<span class="hljs-string">&quot;LD_LIBRARY_PATH&quot;</span>] = <span class="hljs-string">&#x27;<span class="hljs-subst">$LD_LIBRARY_PATH</span>:<span class="hljs-subst">$ORACLE_HOME</span>:<span class="hljs-subst">$ORACLE_HOME</span>&#x27;</span></code></pre>
+<blockquote>
+<p>出现新问题 “cx_Oracle连接数据库错误ORA-21561: 生成 OID 失败”</p>
+</blockquote>
+<blockquote>
+<p>解决方法:参考“<a href="https://www.rookiefly.cn/detail/161%E2%80%9D">https://www.rookiefly.cn/detail/161”</a></p>
+</blockquote>
+<pre><code class="hljs accesslog">修改本机hostname名称，然后终于成功
+cat /etc/hosts  
+<span class="hljs-number">127.0.0.1</span>   localhost redhat6
+::<span class="hljs-number">1</span>         localhost redhat6</code></pre>
+<h2 id="1-1-3-问题3：数据库可以访问后出现-“from-numpy-testing-import-nosetester-ImportError-cannot-import-name-‘nosetester’”问题"><a href="#1-1-3-问题3：数据库可以访问后出现-“from-numpy-testing-import-nosetester-ImportError-cannot-import-name-‘nosetester’”问题" class="headerlink" title="1.1.3 问题3：数据库可以访问后出现 “from numpy.testing import nosetester  ImportError: cannot import name ‘nosetester’”问题"></a>1.1.3 问题3：数据库可以访问后出现 “from numpy.testing import nosetester  ImportError: cannot import name ‘nosetester’”问题</h2><blockquote>
+<p>问题原因：当前安装在python3.5.2的numpy版本和pandas版本冲突，修改版本<br>可用版本: </p>
+</blockquote>
+<pre><code class="hljs apache"><span class="hljs-attribute">numpy</span> (<span class="hljs-number">1</span>.<span class="hljs-number">11</span>.<span class="hljs-number">1</span>)
+<span class="hljs-attribute">pandas</span> (<span class="hljs-number">0</span>.<span class="hljs-number">18</span>.<span class="hljs-number">1</span>)</code></pre>
+<h2 id="1-1-4-问题4：打包报错“-File-“sklearn-metrics-pairwise-fast-pyx”-line-1-in-init-sklearn-metrics-pairwise-fast-ImportError-No-module-named-‘sklearn-utils-cython-blas’”"><a href="#1-1-4-问题4：打包报错“-File-“sklearn-metrics-pairwise-fast-pyx”-line-1-in-init-sklearn-metrics-pairwise-fast-ImportError-No-module-named-‘sklearn-utils-cython-blas’”" class="headerlink" title="1.1.4 问题4：打包报错“ File “sklearn/metrics/pairwise_fast.pyx”, line 1, in init sklearn.metrics.pairwise_fast ImportError: No module named ‘sklearn.utils._cython_blas’”"></a>1.1.4 问题4：打包报错“ File “sklearn/metrics/pairwise_fast.pyx”, line 1, in init sklearn.metrics.pairwise_fast ImportError: No module named ‘sklearn.utils._cython_blas’”</h2><blockquote>
+<p>问题原因：打包的时候无法自动加入sklearn包，手动添加即可</p>
+</blockquote>
+<blockquote>
+<p>解决方法：在main.spec中的hiddenimports属性中手动添加</p>
+</blockquote>
+<pre><code class="hljs sml">hiddenimports=[<span class="hljs-symbol">&#x27;cython&#x27;</span>,  <span class="hljs-symbol">&#x27;sklearn&#x27;</span>, <span class="hljs-symbol">&#x27;sklearn</span>.utils._cython_blas&#x27;,<span class="hljs-symbol">&#x27;sklearn</span>.neighbors.typedefs&#x27;,
+           <span class="hljs-symbol">&#x27;sklearn</span>.neighbors.quad_tree&#x27;,<span class="hljs-symbol">&#x27;sklearn</span>.tree&#x27;,<span class="hljs-symbol">&#x27;sklearn</span>.tree._utils&#x27;],</code></pre>
+
+<h2 id="1-1-5-问题5：打包后运行然后又报问题2，“cx-Oracle-DatabaseError-Error-while-trying-to-retrieve-text-for-error-ORA-01804”"><a href="#1-1-5-问题5：打包后运行然后又报问题2，“cx-Oracle-DatabaseError-Error-while-trying-to-retrieve-text-for-error-ORA-01804”" class="headerlink" title="1.1.5 问题5：打包后运行然后又报问题2，“cx_Oracle.DatabaseError: Error while trying to retrieve text for error ORA-01804”"></a>1.1.5 问题5：打包后运行然后又报问题2，“cx_Oracle.DatabaseError: Error while trying to retrieve text for error ORA-01804”</h2><blockquote>
+<p>问题原因：缺少相关的oracle包</p>
+</blockquote>
+<blockquote>
+<p>解决方法: 在main.spec中添加：</p>
+</blockquote>
+<pre><code class="hljs stylus"><span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> = <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> + [(<span class="hljs-string">&#x27;libclntsh.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libclntsh.so.11.1&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
+<span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> = <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> + [(<span class="hljs-string">&#x27;libnnz11.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libnnz11.so&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
+<span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> = <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> + [(<span class="hljs-string">&#x27;libocci.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libocci.so.11.1&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
+<span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> = <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.binaries</span> + [(<span class="hljs-string">&#x27;libociicus.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libociicus.so&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]</code></pre>
+
+<h2 id="1-1-6-问题6：添加上述包之后出现“Oracle-returned-an-error-ORA-12737-Instant-Client-Light-unsupported-server-character-set-SIMPLIFIED-CHINESE-CHINA-UTF8-”"><a href="#1-1-6-问题6：添加上述包之后出现“Oracle-returned-an-error-ORA-12737-Instant-Client-Light-unsupported-server-character-set-SIMPLIFIED-CHINESE-CHINA-UTF8-”" class="headerlink" title="1.1.6 问题6：添加上述包之后出现“Oracle returned an error. ORA-12737: Instant Client Light: unsupported server character set SIMPLIFIED CHINESE_CHINA.UTF8 ”"></a>1.1.6 问题6：添加上述包之后出现“Oracle returned an error. ORA-12737: Instant Client Light: unsupported server character set SIMPLIFIED CHINESE_CHINA.UTF8 ”</h2><blockquote>
+<p>问题原因： 见（<a href="https://thwack.solarwinds.com/t5/SAM-Discussions/Oracle-returned-an-error-ORA-12737-Instant-Client-Light/td-p/356034%EF%BC%89">https://thwack.solarwinds.com/t5/SAM-Discussions/Oracle-returned-an-error-ORA-12737-Instant-Client-Light/td-p/356034）</a><br>或<a href="https://www.cnblogs.com/chenjianhong/p/4144399.html">https://www.cnblogs.com/chenjianhong/p/4144399.html</a></p>
+</blockquote>
+<p>在Instant Client Light中，语言只能是美国语言，地区可以是任何受支持的地区，字符集可以是以下任意一项：</p>
+<p>＆＃9632; 单字节</p>
+<p>US7ASCII<br>WE8DEC<br>WE8MSWIN1252<br>WE8ISO8859P1<br>＆＃9632; 统一码</p>
+<p>UTF8<br>AL16UTF16<br>AL32UTF8<br>指定除列出为客户端或服务器字符集的字符集或国家字符集以外的字符集或国家字符集，或者在客户端上以NLS_LANG设置语言时，将引发以下错误之一：</p>
+<ul>
+<li>＆＃9632; ORA-12734</li>
+<li>＆＃9632; ORA-12735</li>
+<li>＆＃9632; ORA-12736</li>
+<li>＆＃9632; ORA-12737</li>
+</ul>
+<p>使用Instant Client Light，获得的错误消息仅是英文的。因此，NLS_LANG设置的有效值的类型为：American_territory.characterset ，其中，region可以是任何有效且受支持的领域，并且characterset可以</p>
+<p>可以是前面列出的任何字符集。Instant Client Light可以与在OCI_UTF16模式下创建的OCI环境句柄一起使用。</p>
+<blockquote>
+<p>解决方法：<br>修改文字编码：</p>
+</blockquote>
+<pre><code class="hljs lua">将<span class="hljs-built_in">os</span>.environ[<span class="hljs-string">&#x27;NLS_LANG&#x27;</span>] = <span class="hljs-string">&#x27;SIMPLIFIED CHINESE_CHINA.UTF8&#x27;</span>  修改为<span class="hljs-built_in">os</span>.environ[<span class="hljs-string">&#x27;NLS_LANG&#x27;</span>] = <span class="hljs-string">&#x27;AMERICAN_AMERICA.AL32UTF8&#x27;</span></code></pre>
+
+<h1 id="2-最终打包成功样例"><a href="#2-最终打包成功样例" class="headerlink" title="2.最终打包成功样例"></a>2.最终打包成功样例</h1><h2 id="步骤0：下载oracle客户端驱动文件"><a href="#步骤0：下载oracle客户端驱动文件" class="headerlink" title="步骤0：下载oracle客户端驱动文件"></a>步骤0：下载oracle客户端驱动文件</h2><pre><code class="hljs apache"><span class="hljs-attribute">instantclient</span>-sdk-linux.x<span class="hljs-number">64</span>-<span class="hljs-number">11.2.0.4</span>.<span class="hljs-number">0</span>_<span class="hljs-number">2</span>
+<span class="hljs-attribute">instantclient</span>-basic-linux.x<span class="hljs-number">64</span>-<span class="hljs-number">11.2.0.4</span>.<span class="hljs-number">0</span>
+<span class="hljs-comment"># basic中要包含libclntsh.so，libnnz11.so，libocci.so，libociicus.so这四个文件</span>
+<span class="hljs-comment"># 如果没有从instantclient-basiclite-linux.x64-11.2.0.4.0包中找</span>
+<span class="hljs-comment"># 官方下载链接“https://www.oracle.com/database/technologies/instant-client/downloads.html”</span></code></pre>
+<h2 id="步骤1-添加依赖链接在main-spec中"><a href="#步骤1-添加依赖链接在main-spec中" class="headerlink" title="步骤1:添加依赖链接在main.spec中"></a>步骤1:添加依赖链接在main.spec中</h2><pre><code class="hljs routeros">main.spec： pyinstaller打包的说明文件，里面编写一些打包的时候手动添加的文件
+
+<span class="hljs-comment"># -*- mode: python ; coding: utf-8 -*-</span>
+
+block_cipher = None
+
+a = Analysis([<span class="hljs-string">&#x27;main.py&#x27;</span>],
+             pathex=[<span class="hljs-string">&#x27;/home/redhat/Desktop/monthPredict&#x27;</span>],
+             datas=[],
+             hiddenimports=[<span class="hljs-string">&#x27;cython&#x27;</span>,  <span class="hljs-string">&#x27;sklearn&#x27;</span>, <span class="hljs-string">&#x27;sklearn.utils._cython_blas&#x27;</span>,<span class="hljs-string">&#x27;sklearn.neighbors.typedefs&#x27;</span>,
+             <span class="hljs-string">&#x27;sklearn.neighbors.quad_tree&#x27;</span>,<span class="hljs-string">&#x27;sklearn.tree&#x27;</span>,<span class="hljs-string">&#x27;sklearn.tree._utils&#x27;</span>],
+             hookspath=[],
+             runtime_hooks=[],
+             excludes=[],
+             <span class="hljs-attribute">win_no_prefer_redirects</span>=<span class="hljs-literal">False</span>,
+             <span class="hljs-attribute">win_private_assemblies</span>=<span class="hljs-literal">False</span>,
+             <span class="hljs-attribute">cipher</span>=block_cipher,
+             <span class="hljs-attribute">noarchive</span>=<span class="hljs-literal">False</span>)
+
+a.binaries = a.binaries + [(<span class="hljs-string">&#x27;libclntsh.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libclntsh.so.11.1&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
+a.binaries = a.binaries + [(<span class="hljs-string">&#x27;libnnz11.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libnnz11.so&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
+a.binaries = a.binaries + [(<span class="hljs-string">&#x27;libocci.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libocci.so.11.1&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
+a.binaries = a.binaries + [(<span class="hljs-string">&#x27;libociicus.so&#x27;</span>, <span class="hljs-string">&#x27;/usr/lib/oracle/11.2/client64/lib/libociicus.so&#x27;</span>,<span class="hljs-string">&#x27;BINARY&#x27;</span>)]
+
+pyz = PYZ(a.pure, a.zipped_data,
+             <span class="hljs-attribute">cipher</span>=block_cipher)
+exe = EXE(pyz,
+          a.scripts,
+          a.binaries,
+          a.zipfiles,
+          a.datas,
+          [],
+          <span class="hljs-attribute">name</span>=<span class="hljs-string">&#x27;main&#x27;</span>,
+          <span class="hljs-attribute">debug</span>=<span class="hljs-literal">False</span>,
+          <span class="hljs-attribute">bootloader_ignore_signals</span>=<span class="hljs-literal">False</span>,
+          <span class="hljs-attribute">strip</span>=<span class="hljs-literal">False</span>,
+          <span class="hljs-attribute">upx</span>=<span class="hljs-literal">True</span>,
+          upx_exclude=[],
+          <span class="hljs-attribute">runtime_tmpdir</span>=None,
+          <span class="hljs-attribute">console</span>=<span class="hljs-literal">True</span> )
+</code></pre>
+<h2 id="步骤2：打包"><a href="#步骤2：打包" class="headerlink" title="步骤2：打包"></a>步骤2：打包</h2><pre><code class="hljs crmsh">使用 pyinstaller  main.<span class="hljs-keyword">spec</span> 命令打包</code></pre>]]></content>
+      <categories>
+        <category>工作相关</category>
+      </categories>
       <tags>
-        <tag>算法刷题</tag>
+        <tag>python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python相关</title>
+    <url>/2021/01/18/python/python%E7%9B%B8%E5%85%B3/</url>
+    <content><![CDATA[<h1 id="1-线程池ThreadPoolExecutor"><a href="#1-线程池ThreadPoolExecutor" class="headerlink" title="1.线程池ThreadPoolExecutor"></a>1.线程池ThreadPoolExecutor</h1><p><a href="https://www.jianshu.com/p/120b61aa4cee">https://www.jianshu.com/p/120b61aa4cee</a></p>
+<h1 id="2-装饰器"><a href="#2-装饰器" class="headerlink" title="2. 装饰器"></a>2. 装饰器</h1><p><strong>装饰器本质上是一个 Python 函数或类，它可以让其他函数或类在不需要做任何代码修改的前提下增加额外功能，装饰器的返回值也是一个函数/类对象。它经常用于有切面需求的场景，比如：插入日志、性能测试、事务处理、缓存、权限校验等场景，装饰器是解决这类问题的绝佳设计。有了装饰器，我们就可以抽离出大量与函数功能本身无关的雷同代码到装饰器中并继续重用。概括的讲，装饰器的作用就是为已经存在的对象添加额外的功能</strong>。<br>先来看一个简单例子，如果你要对多个函数进行统计运行时间，不使用装饰器会是这样的：</p>
+<pre><code class="hljs pgsql"><span class="hljs-keyword">from</span> <span class="hljs-type">time</span> <span class="hljs-keyword">import</span> <span class="hljs-type">time</span>, sleep
+
+def fun_one():
+    start = <span class="hljs-type">time</span>()
+    sleep(<span class="hljs-number">1</span>)
+    end = <span class="hljs-type">time</span>()
+    cost_time = <span class="hljs-keyword">end</span> - <span class="hljs-keyword">start</span>
+    print(&quot;func one run time &#123;&#125;&quot;.format(cost_time))
+    
+def fun_two():
+    start = <span class="hljs-type">time</span>()
+    sleep(<span class="hljs-number">1</span>)
+    end = <span class="hljs-type">time</span>()
+    cost_time = <span class="hljs-keyword">end</span> - <span class="hljs-keyword">start</span>
+    print(&quot;func two run time &#123;&#125;&quot;.format(cost_time))</code></pre>
+<p>在每个函数里都需要获取开始时间start、结束时间end、计算耗费时间cost_time、加上一个输出语句。<br>使用装饰器的方法是这样的</p>
+<p>简单装饰器</p>
+<pre><code class="hljs pgsql">def run_time(func):
+    def <span class="hljs-keyword">wrapper</span>():
+        start = <span class="hljs-type">time</span>()
+        func()                  # **函数在这里运行**
+        end = <span class="hljs-type">time</span>()
+        cost_time = <span class="hljs-keyword">end</span> - <span class="hljs-keyword">start</span>
+        print(&quot;func three run time &#123;&#125;&quot;.format(cost_time))
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">wrapper</span>
+
+@run_time
+def fun_one():
+    sleep(<span class="hljs-number">1</span>)
+    
+@run_time
+def fun_two():
+    sleep(<span class="hljs-number">1</span>)</code></pre>
+<h1 id="3-anconda升级python版本"><a href="#3-anconda升级python版本" class="headerlink" title="3.anconda升级python版本"></a>3.anconda升级python版本</h1><ul>
+<li>先查看本地镜像源，清华镜像源从2019年已经停用了，建议使用中科大的镜像源</li>
+<li>然后直接命令指定升级python版本即可，如果不升级镜像源的话可能报404或者下载速度慢</li>
+</ul>
+<h2 id="3-1-修改镜像源"><a href="#3-1-修改镜像源" class="headerlink" title="3.1 修改镜像源"></a>3.1 修改镜像源</h2><p>先查看已经安装过的镜像源，cmd窗口执行命令：</p>
+<pre><code class="hljs routeros">conda<span class="hljs-built_in"> config </span>--show</code></pre>
+<p>查看配置项channels，如果显示带有tsinghua，则说明已安装过清华镜像。</p>
+<pre><code class="hljs awk">channels:
+- https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/tensorflow/</span>linux<span class="hljs-regexp">/cpu/</span>
+- https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/anaconda/</span>cloud<span class="hljs-regexp">/msys2/</span>
+- https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/anaconda/</span>cloud<span class="hljs-regexp">/conda-forge/</span>
+- https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/anaconda/</span>pkgs<span class="hljs-regexp">/free/</span>
+- https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/anaconda/</span>cloud<span class="hljs-regexp">/pytorch/</span></code></pre>
+<p>下一步，使用<code>conda config --remove channels url地址</code>删除清华镜像，如下命令删除第一个。然后，依次删除所有镜像源</p>
+<pre><code class="hljs awk">conda config --remove channels https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/tensorflow/</span>linux<span class="hljs-regexp">/cpu/</span></code></pre>
+<p>添加目前可用的中科大镜像源：</p>
+<pre><code class="hljs awk">conda config --add channels https:<span class="hljs-regexp">//mi</span>rrors.ustc.edu.cn<span class="hljs-regexp">/anaconda/</span>pkgs<span class="hljs-regexp">/free/</span></code></pre>
+<p>并设置搜索时显示通道地址：</p>
+<pre><code class="hljs routeros">conda<span class="hljs-built_in"> config </span>--<span class="hljs-builtin-name">set</span> show_channel_urls <span class="hljs-literal">yes</span></code></pre>
+<p>确认是否安装镜像源成功，执行<code>conda config --show</code>，找到<code>channels</code>值为如下：</p>
+<pre><code class="hljs awk">channels:
+  - https:<span class="hljs-regexp">//mi</span>rrors.ustc.edu.cn<span class="hljs-regexp">/anaconda/</span>pkgs<span class="hljs-regexp">/free/</span>
+  - defaults</code></pre>
+<h2 id="3-2-升级python版本"><a href="#3-2-升级python版本" class="headerlink" title="3.2 升级python版本"></a>3.2 升级python版本</h2><p>打开Anaconda Prompt，<br>输入</p>
+<pre><code class="hljs apache"><span class="hljs-attribute">conda</span> create -n python<span class="hljs-number">36</span> python=<span class="hljs-number">3</span>.<span class="hljs-number">6</span> anaconda</code></pre>
+
+<h1 id="4-文件io"><a href="#4-文件io" class="headerlink" title="4.文件io"></a>4.文件io</h1><h2 id="4-1-文件打开方式，r-w-a-的说明"><a href="#4-1-文件打开方式，r-w-a-的说明" class="headerlink" title="4.1 文件打开方式，r/w/a/+的说明"></a>4.1 文件打开方式，r/w/a/+的说明</h2><ul>
+<li>r只读，r+读写(覆盖写)，不创建</li>
+<li>w新建只写，w+新建读写，二者都会将文件内容清零</li>
+<li>w+与r+区别：</li>
+<li><blockquote>
+<p>r+：可读可写，若文件不存在，报错；w+: 可读可写，若文件不存在，创建</p>
+</blockquote>
+</li>
+<li>a：附加写方式打开，不可读；</li>
+<li>a+: 附加读写方式打开</li>
+</ul>
+<p>#5. 代码规范性测试</p>
+<p>pylint代码规范测试</p>
+<h1 id="6-fileinput-懒惰行迭代"><a href="#6-fileinput-懒惰行迭代" class="headerlink" title="6. fileinput 懒惰行迭代"></a>6. fileinput 懒惰行迭代</h1><p>只读取实际需要的文件部分</p>
+<h1 id="7-编码规范"><a href="#7-编码规范" class="headerlink" title="7. 编码规范"></a>7. 编码规范</h1><ol>
+<li>多次使用的常量使用全大写命名，并考虑设置为全局变量</li>
+<li>创建单独的配置文件模块，保存一些配置的参数<blockquote>
+<p>简单配置或者使用configparser模块</p>
+</blockquote>
+</li>
+<li>在需要的时候使用日志记录（logging模块）</li>
+</ol>
+<h1 id="8-魔法方法理解"><a href="#8-魔法方法理解" class="headerlink" title="8.魔法方法理解"></a>8.魔法方法理解</h1><p>魔法方法是python内置方法，不需要主动调用，存在的目的是为了给python的解释器进行调用，几乎每个魔法方法都有一个对应的内置函数，或者运算符，当我们对这个对象使用这些函数或者运算符时就会调用类中的对应魔法方法，可以理解为重写内置函数</p>
+<p>实际上, 当我们调用x = SomeClass()的时候调用,__init__并不是第一个执行的, __new__才是。所以准确来说,是__new__和__init__共同构成了”构造函数”.</p>
+<p><strong>new</strong>() 是一种负责创建类实例的静态方法，它无需使用 staticmethod 装饰器修饰，且该方法会优先 <strong>init</strong>() 初始化方法被调用</p>
+<h1 id="9-正则表达式"><a href="#9-正则表达式" class="headerlink" title="9.正则表达式"></a>9.正则表达式</h1><p>##9.1 match()和search()比较</p>
+<pre><code class="hljs ruby">m = re.match(<span class="hljs-string">&#x27;foo&#x27;</span>, <span class="hljs-string">&#x27;seafood&#x27;</span>) 
+m.group()
+<span class="hljs-meta">&gt;&gt;</span>&gt; None    <span class="hljs-comment"># 匹配失败</span>
+
+m = re.search(<span class="hljs-string">&#x27;foo&#x27;</span>, <span class="hljs-string">&#x27;seafood&#x27;</span>) 
+m.group()
+<span class="hljs-meta">&gt;&gt;</span>&gt; <span class="hljs-string">&#x27;foo&#x27;</span> <span class="hljs-comment"># 搜索成功， 但是之前匹配失败</span></code></pre>
+<p>match是从字符串的起始部分开始匹配模式，把字符串当作一个整体来匹配，而search表示字符串中任意位置出现符合匹配模式的字符串，都将其提取出来。<br>##9.2  中括号（[cr][23][dp][o2]）和或运算符（r2d2|c3po）的区别</p>
+<ul>
+<li>[cr][23][dp][o2]<blockquote>
+<p>上述表示匹配由四个字符组成的类似‘ABCD’字符串，每一个字符匹配一个中括号内的两个字符中的一个</p>
+</blockquote>
+</li>
+<li>r2d2|c3po<blockquote>
+<p>上述表示匹配“r2d2”或“c3po”<br>##9.3 使用group()或groups()访问匹配组</p>
+</blockquote>
+</li>
+</ul>
+<p>pattern中每一个括号为一个匹配模式，返回的结果保存在group()中，而groups()可以查看所有的子组匹配结果（如果pattern中无括号分组模式则groups为空）。</p>
+<blockquote>
+<blockquote>
+<p>m = re.match(‘(\w\w\w)-(\d\d\d)’, ‘abc-123’)<br>m.group() # 完整匹配<br>‘abc-123’<br>m.group(1) # 子组 1<br>‘abc’<br>m.group(2) # 子组 2<br>‘123’<br>m.groups() # 全部子组<br>(‘abc’, ‘123’)</p>
+</blockquote>
+</blockquote>
+<h2 id="9-4-findall和search方法的区别"><a href="#9-4-findall和search方法的区别" class="headerlink" title="9.4 findall和search方法的区别"></a>9.4 findall和search方法的区别</h2><p>findall()查询字符串中某个正则表达式模式全部的非重复出现情况，和search类似，但是findall总是返回一个列表，<strong>当匹配失败时列表为空；当匹配成功时返回所有成功的匹配部分</strong>。</p>
+<h2 id="9-5-sub-和subn-，表示替换"><a href="#9-5-sub-和subn-，表示替换" class="headerlink" title="9.5 sub()和subn()，表示替换"></a>9.5 sub()和subn()，表示替换</h2><p>sub和subn基本一样，但是subn还返回了替换的次数。</p>
+<h1 id="10-python多线程与多进程"><a href="#10-python多线程与多进程" class="headerlink" title="10 python多线程与多进程"></a>10 python多线程与多进程</h1><p>参考<a href="https://www.cnblogs.com/kaituorensheng/p/4465768.html">python进程池：multiprocessing.pool - jihite - 博客园 (cnblogs.com)</a></p>
+<h2 id="10-1-总结"><a href="#10-1-总结" class="headerlink" title="10.1 总结"></a>10.1 总结</h2><p><strong>i/o密集型任务用多线程，多任务计算使用多进程</strong></p>
+<h2 id="10-2-使用进程池"><a href="#10-2-使用进程池" class="headerlink" title="10.2 使用进程池"></a>10.2 使用进程池</h2><h3 id="10-2-1-样例"><a href="#10-2-1-样例" class="headerlink" title="10.2.1 样例"></a>10.2.1 样例</h3><pre><code class="hljs swift">#coding: utf-<span class="hljs-number">8</span>
+<span class="hljs-keyword">import</span> multiprocessing
+<span class="hljs-keyword">import</span> time
+
+def <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(msg)</span></span>:
+    <span class="hljs-built_in">print</span> <span class="hljs-string">&quot;msg:&quot;</span>, msg
+    time.sleep(<span class="hljs-number">3</span>)
+    <span class="hljs-built_in">print</span> <span class="hljs-string">&quot;end&quot;</span>
+
+<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:
+    pool = multiprocessing.<span class="hljs-type">Pool</span>(processes = <span class="hljs-number">3</span>)
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> xrange(<span class="hljs-number">4</span>):
+        msg = <span class="hljs-string">&quot;hello %d&quot;</span> %(i)
+        pool.apply_async(<span class="hljs-function"><span class="hljs-keyword">func</span>, <span class="hljs-params">(msg, )</span></span>)   #维持**同时**执行的进程总数为processes，当一个进程执行完毕后会添加新的进程进去（多通道）
+   		#pool.apply(<span class="hljs-function"><span class="hljs-keyword">func</span>, <span class="hljs-params">(msg, )</span></span>) # 而使用apply方法的时候是通道阻塞的，一次只有一个进程在运行，当一个进程执行完毕后再添加新的进程（单通道）
+    <span class="hljs-built_in">print</span> <span class="hljs-string">&quot;Mark~ Mark~ Mark~~~~~~~~~~~~~~~~~~~~~~&quot;</span>
+    pool.close()
+    pool.<span class="hljs-built_in">join</span>()   #调用<span class="hljs-built_in">join</span>之前，先调用close函数，否则会出错。执行完close后不会有新的进程加入到pool,<span class="hljs-built_in">join</span>函数等待所有子进程结束
+    <span class="hljs-built_in">print</span> <span class="hljs-string">&quot;Sub-process(es) done.&quot;</span></code></pre>
+
+<h3 id="10-2-2-结果："><a href="#10-2-2-结果：" class="headerlink" title="10.2.2 结果："></a>10.2.2 结果：</h3><p>apply_async方法，多通道</p>
+<pre><code class="hljs yaml"><span class="hljs-attr">mMsg:</span> <span class="hljs-string">hark~</span> <span class="hljs-string">Mark~</span> <span class="hljs-string">Mark~~~~~~~~~~~~~~~~~~~~~~ello</span> <span class="hljs-number">0</span>
+ 
+<span class="hljs-attr">msg:</span> <span class="hljs-string">hello</span> <span class="hljs-number">1</span>
+<span class="hljs-attr">msg:</span> <span class="hljs-string">hello</span> <span class="hljs-number">2</span>
+<span class="hljs-string">end</span>
+<span class="hljs-attr">msg:</span> <span class="hljs-string">hello</span> <span class="hljs-number">3</span>
+<span class="hljs-string">end</span>
+<span class="hljs-string">end</span>
+<span class="hljs-string">end</span>
+<span class="hljs-string">Sub-process(es)</span> <span class="hljs-string">done.</span></code></pre>
+
+<p>apply方法，单通道</p>
+<pre><code class="hljs yaml"><span class="hljs-attr">msg:</span> <span class="hljs-string">hello</span> <span class="hljs-number">0</span>
+<span class="hljs-string">end</span>
+<span class="hljs-attr">msg:</span> <span class="hljs-string">hello</span> <span class="hljs-number">1</span>
+<span class="hljs-string">end</span>
+<span class="hljs-attr">msg:</span> <span class="hljs-string">hello</span> <span class="hljs-number">2</span>
+<span class="hljs-string">end</span>
+<span class="hljs-attr">msg:</span> <span class="hljs-string">hello</span> <span class="hljs-number">3</span>
+<span class="hljs-string">end</span>
+<span class="hljs-string">Mark~</span> <span class="hljs-string">Mark~</span> <span class="hljs-string">Mark~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="hljs-string">Sub-process(es)</span> <span class="hljs-string">done.</span></code></pre>
+
+<h1 id="11-python-集合set中-add与update的区别"><a href="#11-python-集合set中-add与update的区别" class="headerlink" title="11 python 集合set中 add与update的区别"></a>11 python 集合set中 add与update的区别</h1><p>集合set是一个无序不重复元素的集</p>
+<pre><code class="hljs python">set([<span class="hljs-string">&#x27;hello&#x27;</span>,<span class="hljs-string">&#x27;hello&#x27;</span>,<span class="hljs-string">&#x27;hi&#x27;</span>])
+<span class="hljs-comment"># &#123;&#x27;hello&#x27;, &#x27;hi&#x27;&#125;</span>
+set(<span class="hljs-string">&#x27;hello hello hi&#x27;</span>)
+<span class="hljs-comment"># &#123;&#x27; &#x27;, &#x27;e&#x27;, &#x27;h&#x27;, &#x27;i&#x27;, &#x27;l&#x27;, &#x27;o&#x27;&#125;</span></code></pre>
+
+<p><code>set.add()</code> 与<code>set.update()</code>的区别</p>
+<pre><code class="hljs python">myset1 = set()
+myset1.add(<span class="hljs-string">&#x27;hello&#x27;</span>)
+<span class="hljs-comment">#&#123;&#x27;hello&#x27;&#125;</span>
+myset1.update(<span class="hljs-string">&#x27;world&#x27;</span>)
+<span class="hljs-comment">#&#123;&#x27;d&#x27;, &#x27;hello&#x27;, &#x27;l&#x27;, &#x27;o&#x27;, &#x27;r&#x27;, &#x27;w&#x27;&#125;</span>
+
+myset2 = set()
+myset2.add(<span class="hljs-string">&#x27;123&#x27;</span>)
+myset2.update(<span class="hljs-string">&#x27;123&#x27;</span>)
+<span class="hljs-comment">#&#123;&#x27;1&#x27;, &#x27;123&#x27;, &#x27;2&#x27;, &#x27;3&#x27;&#125;</span></code></pre>
+
+]]></content>
+      <categories>
+        <category>编程语言特性相关</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>&#39;捕蛇者说&#39;</title>
+    <url>/2021/02/23/python/%E6%8D%95%E8%9B%87%E8%80%85%E8%AF%B4/</url>
+    <content><![CDATA[<h2 id="第一节："><a href="#第一节：" class="headerlink" title="第一节："></a>第一节：</h2><ul>
+<li><p>Python’s super() considered super! <a href="https://rhettinger.wordpress.com/2011/05/26/super-considered-super/">Python’s super() considered super! | Deep Thoughts by Raymond Hettinger (wordpress.com)</a></p>
+</li>
+<li><p>提问的智慧（<a href="https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/main/README-zh_CN.md#%E5%A3%B0%E6%98%8E%EF%BC%89">https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/main/README-zh_CN.md#%E5%A3%B0%E6%98%8E）</a></p>
+</li>
+<li><p>XY program <a href="https://xyproblem.info/">The XY Problem</a></p>
+</li>
+<li><p>APScheduler： 定時任務框架 </p>
+</li>
+<li><p><a href="https://www.youtube.com/watch?v=MCs5OvhV9S4">David Beazley - Python Concurrency From the Ground Up: LIVE! - PyCon 2015</a></p>
+</li>
+<li><p>书籍：ddia</p>
+</li>
+<li><p>播客：tgtalk</p>
+</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>python</tag>
       </tags>
   </entry>
 </search>

@@ -1,0 +1,853 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/self.jpg">
+  <link rel="icon" type="image/png" href="/img/self.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="zhousan">
+  <meta name="keywords" content="">
+  <title>python相关 - 周三</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+    
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_pf9vaxs7x7b.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>周三的精神家园</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-01-18 14:57" pubdate>
+        2021年1月18日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      25
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">python相关</h1>
+            
+            <div class="markdown-body" id="post-body">
+              <h1 id="1-线程池ThreadPoolExecutor"><a href="#1-线程池ThreadPoolExecutor" class="headerlink" title="1.线程池ThreadPoolExecutor"></a>1.线程池ThreadPoolExecutor</h1><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/120b61aa4cee">https://www.jianshu.com/p/120b61aa4cee</a></p>
+<h1 id="2-装饰器"><a href="#2-装饰器" class="headerlink" title="2. 装饰器"></a>2. 装饰器</h1><p><strong>装饰器本质上是一个 Python 函数或类，它可以让其他函数或类在不需要做任何代码修改的前提下增加额外功能，装饰器的返回值也是一个函数/类对象。它经常用于有切面需求的场景，比如：插入日志、性能测试、事务处理、缓存、权限校验等场景，装饰器是解决这类问题的绝佳设计。有了装饰器，我们就可以抽离出大量与函数功能本身无关的雷同代码到装饰器中并继续重用。概括的讲，装饰器的作用就是为已经存在的对象添加额外的功能</strong>。<br>先来看一个简单例子，如果你要对多个函数进行统计运行时间，不使用装饰器会是这样的：</p>
+<pre><code class="hljs pgsql"><span class="hljs-keyword">from</span> <span class="hljs-type">time</span> <span class="hljs-keyword">import</span> <span class="hljs-type">time</span>, sleep
+
+def fun_one():
+    start = <span class="hljs-type">time</span>()
+    sleep(<span class="hljs-number">1</span>)
+    end = <span class="hljs-type">time</span>()
+    cost_time = <span class="hljs-keyword">end</span> - <span class="hljs-keyword">start</span>
+    print(&quot;func one run time &#123;&#125;&quot;.format(cost_time))
+    
+def fun_two():
+    start = <span class="hljs-type">time</span>()
+    sleep(<span class="hljs-number">1</span>)
+    end = <span class="hljs-type">time</span>()
+    cost_time = <span class="hljs-keyword">end</span> - <span class="hljs-keyword">start</span>
+    print(&quot;func two run time &#123;&#125;&quot;.format(cost_time))</code></pre>
+<p>在每个函数里都需要获取开始时间start、结束时间end、计算耗费时间cost_time、加上一个输出语句。<br>使用装饰器的方法是这样的</p>
+<p>简单装饰器</p>
+<pre><code class="hljs pgsql">def run_time(func):
+    def <span class="hljs-keyword">wrapper</span>():
+        start = <span class="hljs-type">time</span>()
+        func()                  # **函数在这里运行**
+        end = <span class="hljs-type">time</span>()
+        cost_time = <span class="hljs-keyword">end</span> - <span class="hljs-keyword">start</span>
+        print(&quot;func three run time &#123;&#125;&quot;.format(cost_time))
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">wrapper</span>
+
+@run_time
+def fun_one():
+    sleep(<span class="hljs-number">1</span>)
+    
+@run_time
+def fun_two():
+    sleep(<span class="hljs-number">1</span>)</code></pre>
+<h1 id="3-anconda升级python版本"><a href="#3-anconda升级python版本" class="headerlink" title="3.anconda升级python版本"></a>3.anconda升级python版本</h1><ul>
+<li>先查看本地镜像源，清华镜像源从2019年已经停用了，建议使用中科大的镜像源</li>
+<li>然后直接命令指定升级python版本即可，如果不升级镜像源的话可能报404或者下载速度慢</li>
+</ul>
+<h2 id="3-1-修改镜像源"><a href="#3-1-修改镜像源" class="headerlink" title="3.1 修改镜像源"></a>3.1 修改镜像源</h2><p>先查看已经安装过的镜像源，cmd窗口执行命令：</p>
+<pre><code class="hljs routeros">conda<span class="hljs-built_in"> config </span>--show</code></pre>
+<p>查看配置项channels，如果显示带有tsinghua，则说明已安装过清华镜像。</p>
+<pre><code class="hljs awk">channels:
+- https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/tensorflow/</span>linux<span class="hljs-regexp">/cpu/</span>
+- https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/anaconda/</span>cloud<span class="hljs-regexp">/msys2/</span>
+- https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/anaconda/</span>cloud<span class="hljs-regexp">/conda-forge/</span>
+- https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/anaconda/</span>pkgs<span class="hljs-regexp">/free/</span>
+- https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/anaconda/</span>cloud<span class="hljs-regexp">/pytorch/</span></code></pre>
+<p>下一步，使用<code>conda config --remove channels url地址</code>删除清华镜像，如下命令删除第一个。然后，依次删除所有镜像源</p>
+<pre><code class="hljs awk">conda config --remove channels https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/tensorflow/</span>linux<span class="hljs-regexp">/cpu/</span></code></pre>
+<p>添加目前可用的中科大镜像源：</p>
+<pre><code class="hljs awk">conda config --add channels https:<span class="hljs-regexp">//mi</span>rrors.ustc.edu.cn<span class="hljs-regexp">/anaconda/</span>pkgs<span class="hljs-regexp">/free/</span></code></pre>
+<p>并设置搜索时显示通道地址：</p>
+<pre><code class="hljs routeros">conda<span class="hljs-built_in"> config </span>--<span class="hljs-builtin-name">set</span> show_channel_urls <span class="hljs-literal">yes</span></code></pre>
+<p>确认是否安装镜像源成功，执行<code>conda config --show</code>，找到<code>channels</code>值为如下：</p>
+<pre><code class="hljs awk">channels:
+  - https:<span class="hljs-regexp">//mi</span>rrors.ustc.edu.cn<span class="hljs-regexp">/anaconda/</span>pkgs<span class="hljs-regexp">/free/</span>
+  - defaults</code></pre>
+<h2 id="3-2-升级python版本"><a href="#3-2-升级python版本" class="headerlink" title="3.2 升级python版本"></a>3.2 升级python版本</h2><p>打开Anaconda Prompt，<br>输入</p>
+<pre><code class="hljs apache"><span class="hljs-attribute">conda</span> create -n python<span class="hljs-number">36</span> python=<span class="hljs-number">3</span>.<span class="hljs-number">6</span> anaconda</code></pre>
+
+<h1 id="4-文件io"><a href="#4-文件io" class="headerlink" title="4.文件io"></a>4.文件io</h1><h2 id="4-1-文件打开方式，r-w-a-的说明"><a href="#4-1-文件打开方式，r-w-a-的说明" class="headerlink" title="4.1 文件打开方式，r/w/a/+的说明"></a>4.1 文件打开方式，r/w/a/+的说明</h2><ul>
+<li>r只读，r+读写(覆盖写)，不创建</li>
+<li>w新建只写，w+新建读写，二者都会将文件内容清零</li>
+<li>w+与r+区别：</li>
+<li><blockquote>
+<p>r+：可读可写，若文件不存在，报错；w+: 可读可写，若文件不存在，创建</p>
+</blockquote>
+</li>
+<li>a：附加写方式打开，不可读；</li>
+<li>a+: 附加读写方式打开</li>
+</ul>
+<p>#5. 代码规范性测试</p>
+<p>pylint代码规范测试</p>
+<h1 id="6-fileinput-懒惰行迭代"><a href="#6-fileinput-懒惰行迭代" class="headerlink" title="6. fileinput 懒惰行迭代"></a>6. fileinput 懒惰行迭代</h1><p>只读取实际需要的文件部分</p>
+<h1 id="7-编码规范"><a href="#7-编码规范" class="headerlink" title="7. 编码规范"></a>7. 编码规范</h1><ol>
+<li>多次使用的常量使用全大写命名，并考虑设置为全局变量</li>
+<li>创建单独的配置文件模块，保存一些配置的参数<blockquote>
+<p>简单配置或者使用configparser模块</p>
+</blockquote>
+</li>
+<li>在需要的时候使用日志记录（logging模块）</li>
+</ol>
+<h1 id="8-魔法方法理解"><a href="#8-魔法方法理解" class="headerlink" title="8.魔法方法理解"></a>8.魔法方法理解</h1><p>魔法方法是python内置方法，不需要主动调用，存在的目的是为了给python的解释器进行调用，几乎每个魔法方法都有一个对应的内置函数，或者运算符，当我们对这个对象使用这些函数或者运算符时就会调用类中的对应魔法方法，可以理解为重写内置函数</p>
+<p>实际上, 当我们调用x = SomeClass()的时候调用,__init__并不是第一个执行的, __new__才是。所以准确来说,是__new__和__init__共同构成了”构造函数”.</p>
+<p><strong>new</strong>() 是一种负责创建类实例的静态方法，它无需使用 staticmethod 装饰器修饰，且该方法会优先 <strong>init</strong>() 初始化方法被调用</p>
+<h1 id="9-正则表达式"><a href="#9-正则表达式" class="headerlink" title="9.正则表达式"></a>9.正则表达式</h1><p>##9.1 match()和search()比较</p>
+<pre><code class="hljs ruby">m = re.match(<span class="hljs-string">&#x27;foo&#x27;</span>, <span class="hljs-string">&#x27;seafood&#x27;</span>) 
+m.group()
+<span class="hljs-meta">&gt;&gt;</span>&gt; None    <span class="hljs-comment"># 匹配失败</span>
+
+m = re.search(<span class="hljs-string">&#x27;foo&#x27;</span>, <span class="hljs-string">&#x27;seafood&#x27;</span>) 
+m.group()
+<span class="hljs-meta">&gt;&gt;</span>&gt; <span class="hljs-string">&#x27;foo&#x27;</span> <span class="hljs-comment"># 搜索成功， 但是之前匹配失败</span></code></pre>
+<p>match是从字符串的起始部分开始匹配模式，把字符串当作一个整体来匹配，而search表示字符串中任意位置出现符合匹配模式的字符串，都将其提取出来。<br>##9.2  中括号（[cr][23][dp][o2]）和或运算符（r2d2|c3po）的区别</p>
+<ul>
+<li>[cr][23][dp][o2]<blockquote>
+<p>上述表示匹配由四个字符组成的类似‘ABCD’字符串，每一个字符匹配一个中括号内的两个字符中的一个</p>
+</blockquote>
+</li>
+<li>r2d2|c3po<blockquote>
+<p>上述表示匹配“r2d2”或“c3po”<br>##9.3 使用group()或groups()访问匹配组</p>
+</blockquote>
+</li>
+</ul>
+<p>pattern中每一个括号为一个匹配模式，返回的结果保存在group()中，而groups()可以查看所有的子组匹配结果（如果pattern中无括号分组模式则groups为空）。</p>
+<blockquote>
+<blockquote>
+<p>m = re.match(‘(\w\w\w)-(\d\d\d)’, ‘abc-123’)<br>m.group() # 完整匹配<br>‘abc-123’<br>m.group(1) # 子组 1<br>‘abc’<br>m.group(2) # 子组 2<br>‘123’<br>m.groups() # 全部子组<br>(‘abc’, ‘123’)</p>
+</blockquote>
+</blockquote>
+<h2 id="9-4-findall和search方法的区别"><a href="#9-4-findall和search方法的区别" class="headerlink" title="9.4 findall和search方法的区别"></a>9.4 findall和search方法的区别</h2><p>findall()查询字符串中某个正则表达式模式全部的非重复出现情况，和search类似，但是findall总是返回一个列表，<strong>当匹配失败时列表为空；当匹配成功时返回所有成功的匹配部分</strong>。</p>
+<h2 id="9-5-sub-和subn-，表示替换"><a href="#9-5-sub-和subn-，表示替换" class="headerlink" title="9.5 sub()和subn()，表示替换"></a>9.5 sub()和subn()，表示替换</h2><p>sub和subn基本一样，但是subn还返回了替换的次数。</p>
+<h1 id="10-python多线程与多进程"><a href="#10-python多线程与多进程" class="headerlink" title="10 python多线程与多进程"></a>10 python多线程与多进程</h1><p>参考<a target="_blank" rel="noopener" href="https://www.cnblogs.com/kaituorensheng/p/4465768.html">python进程池：multiprocessing.pool - jihite - 博客园 (cnblogs.com)</a></p>
+<h2 id="10-1-总结"><a href="#10-1-总结" class="headerlink" title="10.1 总结"></a>10.1 总结</h2><p><strong>i/o密集型任务用多线程，多任务计算使用多进程</strong></p>
+<h2 id="10-2-使用进程池"><a href="#10-2-使用进程池" class="headerlink" title="10.2 使用进程池"></a>10.2 使用进程池</h2><h3 id="10-2-1-样例"><a href="#10-2-1-样例" class="headerlink" title="10.2.1 样例"></a>10.2.1 样例</h3><pre><code class="hljs swift">#coding: utf-<span class="hljs-number">8</span>
+<span class="hljs-keyword">import</span> multiprocessing
+<span class="hljs-keyword">import</span> time
+
+def <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(msg)</span></span>:
+    <span class="hljs-built_in">print</span> <span class="hljs-string">&quot;msg:&quot;</span>, msg
+    time.sleep(<span class="hljs-number">3</span>)
+    <span class="hljs-built_in">print</span> <span class="hljs-string">&quot;end&quot;</span>
+
+<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:
+    pool = multiprocessing.<span class="hljs-type">Pool</span>(processes = <span class="hljs-number">3</span>)
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> xrange(<span class="hljs-number">4</span>):
+        msg = <span class="hljs-string">&quot;hello %d&quot;</span> %(i)
+        pool.apply_async(<span class="hljs-function"><span class="hljs-keyword">func</span>, <span class="hljs-params">(msg, )</span></span>)   #维持**同时**执行的进程总数为processes，当一个进程执行完毕后会添加新的进程进去（多通道）
+   		#pool.apply(<span class="hljs-function"><span class="hljs-keyword">func</span>, <span class="hljs-params">(msg, )</span></span>) # 而使用apply方法的时候是通道阻塞的，一次只有一个进程在运行，当一个进程执行完毕后再添加新的进程（单通道）
+    <span class="hljs-built_in">print</span> <span class="hljs-string">&quot;Mark~ Mark~ Mark~~~~~~~~~~~~~~~~~~~~~~&quot;</span>
+    pool.close()
+    pool.<span class="hljs-built_in">join</span>()   #调用<span class="hljs-built_in">join</span>之前，先调用close函数，否则会出错。执行完close后不会有新的进程加入到pool,<span class="hljs-built_in">join</span>函数等待所有子进程结束
+    <span class="hljs-built_in">print</span> <span class="hljs-string">&quot;Sub-process(es) done.&quot;</span></code></pre>
+
+<h3 id="10-2-2-结果："><a href="#10-2-2-结果：" class="headerlink" title="10.2.2 结果："></a>10.2.2 结果：</h3><p>apply_async方法，多通道</p>
+<pre><code class="hljs yaml"><span class="hljs-attr">mMsg:</span> <span class="hljs-string">hark~</span> <span class="hljs-string">Mark~</span> <span class="hljs-string">Mark~~~~~~~~~~~~~~~~~~~~~~ello</span> <span class="hljs-number">0</span>
+ 
+<span class="hljs-attr">msg:</span> <span class="hljs-string">hello</span> <span class="hljs-number">1</span>
+<span class="hljs-attr">msg:</span> <span class="hljs-string">hello</span> <span class="hljs-number">2</span>
+<span class="hljs-string">end</span>
+<span class="hljs-attr">msg:</span> <span class="hljs-string">hello</span> <span class="hljs-number">3</span>
+<span class="hljs-string">end</span>
+<span class="hljs-string">end</span>
+<span class="hljs-string">end</span>
+<span class="hljs-string">Sub-process(es)</span> <span class="hljs-string">done.</span></code></pre>
+
+<p>apply方法，单通道</p>
+<pre><code class="hljs yaml"><span class="hljs-attr">msg:</span> <span class="hljs-string">hello</span> <span class="hljs-number">0</span>
+<span class="hljs-string">end</span>
+<span class="hljs-attr">msg:</span> <span class="hljs-string">hello</span> <span class="hljs-number">1</span>
+<span class="hljs-string">end</span>
+<span class="hljs-attr">msg:</span> <span class="hljs-string">hello</span> <span class="hljs-number">2</span>
+<span class="hljs-string">end</span>
+<span class="hljs-attr">msg:</span> <span class="hljs-string">hello</span> <span class="hljs-number">3</span>
+<span class="hljs-string">end</span>
+<span class="hljs-string">Mark~</span> <span class="hljs-string">Mark~</span> <span class="hljs-string">Mark~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="hljs-string">Sub-process(es)</span> <span class="hljs-string">done.</span></code></pre>
+
+<h1 id="11-python-集合set中-add与update的区别"><a href="#11-python-集合set中-add与update的区别" class="headerlink" title="11 python 集合set中 add与update的区别"></a>11 python 集合set中 add与update的区别</h1><p>集合set是一个无序不重复元素的集</p>
+<pre><code class="hljs python">set([<span class="hljs-string">&#x27;hello&#x27;</span>,<span class="hljs-string">&#x27;hello&#x27;</span>,<span class="hljs-string">&#x27;hi&#x27;</span>])
+<span class="hljs-comment"># &#123;&#x27;hello&#x27;, &#x27;hi&#x27;&#125;</span>
+set(<span class="hljs-string">&#x27;hello hello hi&#x27;</span>)
+<span class="hljs-comment"># &#123;&#x27; &#x27;, &#x27;e&#x27;, &#x27;h&#x27;, &#x27;i&#x27;, &#x27;l&#x27;, &#x27;o&#x27;&#125;</span></code></pre>
+
+<p><code>set.add()</code> 与<code>set.update()</code>的区别</p>
+<pre><code class="hljs python">myset1 = set()
+myset1.add(<span class="hljs-string">&#x27;hello&#x27;</span>)
+<span class="hljs-comment">#&#123;&#x27;hello&#x27;&#125;</span>
+myset1.update(<span class="hljs-string">&#x27;world&#x27;</span>)
+<span class="hljs-comment">#&#123;&#x27;d&#x27;, &#x27;hello&#x27;, &#x27;l&#x27;, &#x27;o&#x27;, &#x27;r&#x27;, &#x27;w&#x27;&#125;</span>
+
+myset2 = set()
+myset2.add(<span class="hljs-string">&#x27;123&#x27;</span>)
+myset2.update(<span class="hljs-string">&#x27;123&#x27;</span>)
+<span class="hljs-comment">#&#123;&#x27;1&#x27;, &#x27;123&#x27;, &#x27;2&#x27;, &#x27;3&#x27;&#125;</span></code></pre>
+
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/">编程语言特性相关</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/python/">python</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/02/23/python/%E6%8D%95%E8%9B%87%E8%80%85%E8%AF%B4/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">'捕蛇者说'</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/12/23/python/python%E4%B8%AD%E6%96%B9%E6%B3%95%E5%8F%8A%E5%8F%98%E9%87%8F%E7%9A%84%E4%B8%8B%E5%88%92%E7%BA%BF%E5%8F%8C%E4%B8%8B%E5%88%92%E7%BA%BF%E7%AD%89%E5%90%AB%E4%B9%89/">
+                        <span class="hidden-mobile">python中方法及变量的下划线双下划线等含义</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments">
+                
+                
+  <div id="vcomments"></div>
+  <script type="text/javascript">
+    function loadValine() {
+      addScript('https://cdn.staticfile.org/valine/1.4.14/Valine.min.js', function () {
+        new Valine({
+          el: "#vcomments",
+          app_id: "fuCGMO98CkmL7yo4PnW8pU01-gzGzoHsz",
+          app_key: "QgEPoTG9NK3OTaJIzm2LBdb8",
+          placeholder: "say something",
+          path: window.location.pathname,
+          avatar: "retro",
+          meta: ["nick","mail","link"],
+          pageSize: "10",
+          lang: "zh-CN",
+          highlight: false,
+          recordIP: true,
+          serverURLs: "https://fucgmo98.lc-cn-n1-shared.com",
+        });
+      });
+    }
+    waitElementVisible('vcomments', loadValine);
+  </script>
+  <noscript>Please enable JavaScript to view the <a target="_blank" href="https://valine.js.org" rel="nofollow noopener noopener">comments
+      powered by Valine.</a></noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "python相关&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.staticfile.org/mathjax/3.0.5/es5/tex-svg.js" ></script>
+
+  
+
+
+
+  
+  
+    <script type="text/javascript">
+      //定义获取词语下标
+      var a_idx = 0;
+      jQuery(document).ready(function ($) {
+        //点击body时触发事件
+        $("body").click(function (e) {
+          //需要显示的词语
+          var a = new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正", "法治", "爱国", "敬业", "诚信", "友善");
+          //设置词语给span标签
+          var $i = $("<span/>").text(a[a_idx]);
+          //下标等于原来下标+1  余 词语总数
+          a_idx = (a_idx + 1) % a.length;
+          //获取鼠标指针的位置，分别相对于文档的左和右边缘。
+          //获取x和y的指针坐标
+          var x = e.pageX, y = e.pageY;
+          //在鼠标的指针的位置给$i定义的span标签添加css样式
+          $i.css({
+            "z-index": 999,
+            "top": y - 20,
+            "left": x,
+            "position": "absolute",
+            "font-weight": "bold",
+            "color": rand_color()
+          });
+          // 随机颜色
+          function rand_color() {
+            return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+          }
+          //在body添加这个标签
+          $("body").append($i);
+          //animate() 方法执行 CSS 属性集的自定义动画。
+          //该方法通过CSS样式将元素从一个状态改变为另一个状态。CSS属性值是逐渐改变的，这样就可以创建动画效果。
+          //详情请看http://www.w3school.com.cn/jquery/effect_animate.asp
+          $i.animate({
+            //将原来的位置向上移动180
+            "top": y - 180,
+            "opacity": 0
+            //1500动画的速度
+          }, 1500, function () {
+            //时间到了自动删除
+            $i.remove();
+          });
+        });
+      })
+      ;
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?71f2748195d61de7d95360410c8b74c1";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+</body>
+</html>
