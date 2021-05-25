@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="zhousan">
   <meta name="keywords" content="">
-  <title>Flask之缓慢的http拒绝服务攻击漏洞解决 - 周三</title>
+  <title>spark学习 - 周三</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -177,8 +177,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2020-11-06 11:02" pubdate>
-        2020年11月6日 上午
+      <time datetime="2021-03-03 16:01" pubdate>
+        2021年3月3日 下午
       </time>
     </span>
   
@@ -189,7 +189,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      961 字
+      1.4k 字
     </span>
   
 
@@ -199,7 +199,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      12
+      18
        分钟
     </span>
   
@@ -237,118 +237,180 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto" id="post">
             <!-- SEO header -->
-            <h1 style="display: none">Flask之缓慢的http拒绝服务攻击漏洞解决</h1>
+            <h1 style="display: none">spark学习</h1>
             
             <div class="markdown-body" id="post-body">
-              <h1 id="1-什么是缓慢的http拒绝服务攻击漏洞"><a href="#1-什么是缓慢的http拒绝服务攻击漏洞" class="headerlink" title="1.什么是缓慢的http拒绝服务攻击漏洞"></a>1.什么是缓慢的http拒绝服务攻击漏洞</h1><p>缓慢的http拒绝服务攻击是一种专门针对于Web的应用层拒绝服务攻击，攻击者操纵网络上的肉鸡，对目标Web服务器进行海量http request攻击，直到服务器带宽被打满，造成了拒绝服务。</p>
-<p>慢速HTTP拒绝服务攻击经过不断的演变和发展，主要有三种攻击类型，分别是Slow headers、Slow body、Slow read。</p>
-<ul>
-<li><p><code>slowloris</code>：完整的http请求是以 <code>\r\n\r\n</code> 结尾，攻击时仅发送 <code>\r\n</code>，少发送一个 <code>\r\n</code>，服务器认为请求还未发完，就会一直等待直至超时</p>
-</li>
-<li><p><code>slow post</code>：通过声明一个较大的content-length后，body缓慢发送，导致服务器一直等待</p>
-<ul>
-<li><code>slow read</code>：向服务器发送一个正常合法的read请求，请求一个很大的文件，但把TCP滑动窗口设置得很小，服务器就会以滑动窗口的大小切割文件，然后发送，这时文件会长期存放在内存中，消耗资源</li>
+              <h1 id="1-0-基础概念"><a href="#1-0-基础概念" class="headerlink" title="1.0 基础概念"></a>1.0 基础概念</h1><h2 id="1-1-核心组件"><a href="#1-1-核心组件" class="headerlink" title="1.1 核心组件"></a>1.1 核心组件</h2><ul>
+<li>Driver</li>
 </ul>
-</li>
-</ul>
-<h1 id="2-Flask应对措施"><a href="#2-Flask应对措施" class="headerlink" title="2. Flask应对措施"></a>2. Flask应对措施</h1><ul>
-<li><p>限制每次请求数据的大小</p>
-</li>
-<li><p>限制单个HTTP请求头的最大许可时间</p>
-</li>
-<li><p>限制单个ip请求数量</p>
-</li>
-<li><p>。。。。。。</p>
-</li>
-</ul>
-<p>#3. 使用slowhttptest测试漏洞</p>
-<h2 id="3-1-slowhttptest的安装"><a href="#3-1-slowhttptest的安装" class="headerlink" title="3.1 slowhttptest的安装"></a>3.1 slowhttptest的安装</h2><blockquote>
-<p> 安装说明:<a target="_blank" rel="noopener" href="https://github.com/shekyan/slowhttptest/wiki/InstallationAndUsage1">https://github.com/shekyan/slowhttptest/wiki/InstallationAndUsage1</a></p>
+<blockquote>
+<p>将用户程序转化成任务（job）</p>
+<p>在Executor之间执行任务调度</p>
+<p>跟踪Executor的执行情况</p>
+<p>通过UI站视查询运行情况</p>
 </blockquote>
-<ol>
-<li><p>下载压缩包：<a target="_blank" rel="noopener" href="https://github.com/shekyan/slowhttptest/releases">https://github.com/shekyan/slowhttptest/releases</a></p>
+<ul>
+<li>Executor：</li>
+</ul>
+<blockquote>
+<p>执行任务并返回给Driver</p>
+<p>通过自身的Block Manager为用户程序中需要缓存的RDD提供内存式存储。RDD是直接存储在Executor中的进程内的，因此任务在运行时可以充分利用缓存数据加速运算。</p>
+</blockquote>
+<ul>
+<li>Master</li>
+</ul>
+<blockquote>
+<p> 资源调度和分配，集群的监控</p>
+</blockquote>
+<ul>
+<li>Worker</li>
+</ul>
+<blockquote>
+<p>由Master分配任务并进行计算</p>
+</blockquote>
+<ul>
+<li>ApplicantsMaster</li>
+</ul>
+<blockquote>
+<p>对Driver与Master的直接通信进行解耦合，Driver通过ApplicantsMaster与Master进行通信，监控任务的执行等任务</p>
+</blockquote>
+<h2 id="1-2-核心概念"><a href="#1-2-核心概念" class="headerlink" title="1.2 核心概念"></a>1.2 核心概念</h2><ul>
+<li>Executor和Core</li>
+</ul>
+<blockquote>
+<p>Executor为提供计算的节点个数，Core为核数</p>
+</blockquote>
+<ul>
+<li>并行度</li>
+</ul>
+<blockquote>
+<p>整个集群并行执行任务的数量</p>
+</blockquote>
+<h2 id="1-3-其他相关"><a href="#1-3-其他相关" class="headerlink" title="1.3 其他相关"></a>1.3 其他相关</h2><ul>
+<li><strong>序列化</strong>（serialization）在<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%A7%91%E5%AD%B8">计算机科学</a>的资料处理中，是指将<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%B3%87%E6%96%99%E7%B5%90%E6%A7%8B">数据结构</a>或对象状态转换成可取用格式（例如存成文件，存于缓冲，或经由网络中发送），以留待后续在相同或另一台计算机环境中，能恢复原先状态的过程。</li>
+</ul>
+<h1 id="2-0-RDD"><a href="#2-0-RDD" class="headerlink" title="2.0 RDD"></a>2.0 RDD</h1><p>RDD数据处理方式：类似IO流，包含装饰器设计模式。</p>
+<p>通过每一个操作方法的输入与输出来确定数据的格式。</p>
+<h2 id="2-1-RDD的创建"><a href="#2-1-RDD的创建" class="headerlink" title="2.1 RDD的创建"></a>2.1 RDD的创建</h2><pre><code class="hljs awk"><span class="hljs-regexp">//</span>TODO 通过内存中创建
+val ints: Seq[Int] = Seq(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>)
+<span class="hljs-regexp">//</span>val value: RDD[Int] = sc.parallelize(ints)
+<span class="hljs-regexp">//m</span>akeRdd方法就是parallelize方法的包装
+val value: RDD[Int] = sc.makeRDD(ints)
+
+<span class="hljs-regexp">//</span>TODO 通过文件创建rdd
+<span class="hljs-regexp">//</span><span class="hljs-number">1</span>. 通过文件路径创建
+val value: RDD[String] = sc.textFile(<span class="hljs-string">&quot;datas/1.txt&quot;</span>)
+<span class="hljs-regexp">//</span><span class="hljs-number">2</span>. 通过文件夹创建
+<span class="hljs-regexp">//</span>val value: RDD[String] = sc.textFile(<span class="hljs-string">&quot;datas.txt&quot;</span>)
+<span class="hljs-regexp">//</span><span class="hljs-number">3</span>. 通过文件路径通配符创建
+<span class="hljs-regexp">//</span>val value: RDD[String] = sc.textFile(<span class="hljs-string">&quot;datas/1*.txt&quot;</span>)
+<span class="hljs-regexp">//</span><span class="hljs-number">4</span>. 通过hdfs文件系统路径创建
+<span class="hljs-regexp">//</span>val value: RDD[String] = sc.textFile(<span class="hljs-string">&quot;hdfs://linux1:8080/tmp/file.txt&quot;</span>)</code></pre>
+
+<h2 id="2-1-RDD方法-gt-RDD算子"><a href="#2-1-RDD方法-gt-RDD算子" class="headerlink" title="2.1 RDD方法=&gt;RDD算子"></a>2.1 RDD方法=&gt;RDD算子</h2><ul>
+<li>转换方法</li>
+</ul>
+<p>功能的转换和封装，将旧的RDD包装成新的RDD(flatMap,map)</p>
+<ul>
+<li>行动方法（操作方法）</li>
+</ul>
+<p>触发任务的调度和作业的执行(collect)</p>
+<p>惰性执行方法</p>
+<h3 id="2-1-1-RDD转换算子"><a href="#2-1-1-RDD转换算子" class="headerlink" title="2.1.1 RDD转换算子"></a>2.1.1 RDD转换算子</h3><h4 id="2-1-1-1-Map"><a href="#2-1-1-1-Map" class="headerlink" title="2.1.1.1 Map"></a>2.1.1.1 Map</h4><ul>
+<li>Map方法</li>
+</ul>
+<pre><code class="hljs maxima">scala&gt; val rdd = sc.makeRDD(List(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>))
+rdd: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[<span class="hljs-number">0</span>] <span class="hljs-built_in">at</span> makeRDD <span class="hljs-built_in">at</span> &lt;console&gt;:<span class="hljs-number">24</span>
+scala&gt; rdd.<span class="hljs-built_in">map</span>&#123;(v)=&gt;(v*<span class="hljs-number">2</span>)&#125;.collect()
+scala&gt; rdd.<span class="hljs-built_in">map</span>((<span class="hljs-built_in">num</span>:Int)=&gt;&#123;<span class="hljs-built_in">num</span>*<span class="hljs-number">2</span>&#125;).collect()
+scala&gt; rdd.<span class="hljs-built_in">map</span>((<span class="hljs-built_in">num</span>:Int)=&gt;(<span class="hljs-built_in">num</span>*<span class="hljs-number">2</span>)).collect()
+scala&gt; rdd.<span class="hljs-built_in">map</span>((<span class="hljs-built_in">num</span>:Int)=&gt;<span class="hljs-built_in">num</span>*<span class="hljs-number">2</span>).collect()
+# 最简单的方法
+scala&gt; rdd.<span class="hljs-built_in">map</span>&#123;<span class="hljs-symbol">_</span>*<span class="hljs-number">2</span>&#125;.collect()
+scala&gt; rdd.<span class="hljs-built_in">map</span>(<span class="hljs-symbol">_</span>*<span class="hljs-number">2</span>).collect()
+res: Array[Int] = Array(<span class="hljs-number">2</span>, <span class="hljs-number">4</span>, <span class="hljs-number">6</span>)</code></pre>
+
+<ul>
+<li>Map的并行计算顺序</li>
+<li><ul>
+<li>单个分区内的数据是一个一个执行的，只有前面一个数据的所有逻辑都执行完才能进行下一个数据的执行逻辑，分区内数据的执行是有序的</li>
+<li>而多个分区的数据计算是无序的</li>
+</ul>
 </li>
-<li><p>安装libssl-dev<br><code>$ yum install openssl openssl-devel</code></p>
-</li>
-<li><p>安装C++编译器<br><code>$ yum install gcc-c++</code></p>
-</li>
-<li><p>解压</p>
-<p><code>$ tar -xzvf slowhttptest-x.x.tar.gz</code> </p>
-</li>
-<li><p>编译安装</p>
-<pre><code class="hljs powershell"><span class="hljs-variable">$</span> <span class="hljs-built_in">cd</span> slowhttp<span class="hljs-built_in">test-x</span>.x
-<span class="hljs-variable">$</span> ./configure -<span class="hljs-literal">-prefix</span>=PREFIX
-<span class="hljs-variable">$</span> make
-<span class="hljs-variable">$</span> sudo make install</code></pre>
+</ul>
+<pre><code class="hljs gauss"><span class="hljs-meta"># 单个分区</span>
+val value: RDD[Int] = sc.makeRDD(<span class="hljs-built_in">List</span>(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>),**<span class="hljs-number">1</span>**)
+  val mapRDD: RDD[Int] = value.map(
+    num =&gt; &#123;
+      <span class="hljs-built_in">println</span>(<span class="hljs-string">&quot;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&quot;</span> + num)
+      num
+    &#125;
+  )
+  val mapRDD1: RDD[Int] = mapRDD.map(
+    num =&gt; &#123;
+      <span class="hljs-built_in">println</span>(<span class="hljs-string">&quot;@@@@@@@@&quot;</span> + num)
+      num
+    &#125;
+  )
+  mapRDD1.collect()
+  <span class="hljs-meta"># 输出结果</span>
+  &gt;&gt;&gt;&gt;&gt;&gt;&gt;<span class="hljs-number">1</span>
+  <span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-number">1</span>
+  &gt;&gt;&gt;&gt;&gt;&gt;&gt;<span class="hljs-number">2</span>
+  <span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-number">2</span>
+  &gt;&gt;&gt;&gt;&gt;&gt;&gt;<span class="hljs-number">3</span>
+  <span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-number">3</span>
+  &gt;&gt;&gt;&gt;&gt;&gt;&gt;<span class="hljs-number">4</span>
+  <span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-number">4</span>
+  <span class="hljs-meta"># 多个分区</span>
+  val value: RDD[Int] = sc.makeRDD(<span class="hljs-built_in">List</span>(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>),<span class="hljs-number">2</span>)
+  。。。。。。。
+  &gt;&gt;&gt;&gt;&gt;&gt;&gt;<span class="hljs-number">3</span>
+  <span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-number">3</span>
+  &gt;&gt;&gt;&gt;&gt;&gt;&gt;<span class="hljs-number">4</span>
+  <span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-number">4</span>
+  &gt;&gt;&gt;&gt;&gt;&gt;&gt;<span class="hljs-number">1</span>
+  <span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-number">1</span>
+  &gt;&gt;&gt;&gt;&gt;&gt;&gt;<span class="hljs-number">2</span>
+  <span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-number">2</span></code></pre>
 
-</li>
-</ol>
-<h2 id="3-2-参数说明及使用测试"><a href="#3-2-参数说明及使用测试" class="headerlink" title="3.2 参数说明及使用测试"></a>3.2 参数说明及使用测试</h2><pre><code class="hljs diff"><span class="hljs-deletion">-g      在测试完成后，以时间戳为名生成一个CVS和HTML文件的统计数据</span>
-<span class="hljs-deletion">-H      SlowLoris模式</span>
-<span class="hljs-deletion">-B      Slow POST模式</span>
-<span class="hljs-deletion">-R      Range Header模式</span>
-<span class="hljs-deletion">-X      Slow Read模式</span>
-<span class="hljs-deletion">-c      number of connections 测试时建立的连接数</span>
-<span class="hljs-deletion">-d      HTTP proxy host:port  为所有连接指定代理</span>
-<span class="hljs-deletion">-e      HTTP proxy host:port  为探测连接指定代理</span>
-<span class="hljs-deletion">-i      seconds 在slowrois和Slow POST模式中，指定发送数据间的间隔。</span>
-<span class="hljs-deletion">-l      seconds 测试维持时间</span>
-<span class="hljs-deletion">-n      seconds 在Slow Read模式下，指定每次操作的时间间隔。</span>
-<span class="hljs-deletion">-o      file name 使用-g参数时，可以使用此参数指定输出文件名</span>
-<span class="hljs-deletion">-p      seconds 指定等待时间来确认DoS攻击已经成功</span>
-<span class="hljs-deletion">-r      connections per second 每秒连接个数</span>
-<span class="hljs-deletion">-s      bytes 声明Content-Length header的值</span>
-<span class="hljs-deletion">-t      HTTP verb 在请求时使用什么操作，默认GET</span>
-<span class="hljs-deletion">-u      URL  指定目标url</span>
-<span class="hljs-deletion">-v      level 日志等级（详细度）</span>
-<span class="hljs-deletion">-w      bytes slow read模式中指定tcp窗口范围下限</span>
-<span class="hljs-deletion">-x      bytes 在slowloris and Slow POST tests模式中，指定发送的最大数据长度</span>
-<span class="hljs-deletion">-y      bytes slow read模式中指定tcp窗口范围上限</span>
-<span class="hljs-deletion">-z      bytes 在每次的read()中，从buffer中读取数据量</span></code></pre>
+<h4 id="2-1-1-2-MapPratitions"><a href="#2-1-1-2-MapPratitions" class="headerlink" title="2.1.1.2 MapPratitions"></a>2.1.1.2 MapPratitions</h4><p>MapPratitions是对分区的数据进行操作</p>
+<pre><code class="hljs php"><span class="hljs-comment"># 求分区的最大值</span>
+val value: RDD[<span class="hljs-keyword">Int</span>] = sc.makeRDD(<span class="hljs-keyword">List</span>(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>),<span class="hljs-number">2</span>)
+<span class="hljs-comment"># mapPartitions传入的是迭代器，传出的也是迭代器</span>
+   val value1: RDD[<span class="hljs-keyword">Int</span>] = value.mapPartitions (
+     iter =&gt; <span class="hljs-keyword">List</span>(iter.max).<span class="hljs-built_in">iterator</span>
+   )
+   value1.collect().<span class="hljs-keyword">foreach</span>(println)
+   <span class="hljs-comment"># 输出</span>
+   <span class="hljs-number">2</span>
+   <span class="hljs-number">4</span></code></pre>
 
-<h2 id="3-2-1参考实例："><a href="#3-2-1参考实例：" class="headerlink" title="3.2.1参考实例："></a>3.2.1参考实例：</h2><p>slowloris模式：</p>
-<pre><code class="hljs apache"><span class="hljs-attribute">slowhttptest</span> -c <span class="hljs-number">1000</span> -H -g -o my_header_stats -i <span class="hljs-number">10</span> -r <span class="hljs-number">200</span> -t GET -u https://xxxxxx.xxxxx.xx -x <span class="hljs-number">24</span> -p <span class="hljs-number">3</span></code></pre>
-
-<p>slow post模式：</p>
-<pre><code class="hljs yaml"><span class="hljs-string">$</span> <span class="hljs-string">slowhttptest</span> <span class="hljs-string">-c</span> <span class="hljs-number">3000</span> <span class="hljs-string">-B</span> <span class="hljs-string">-g</span> <span class="hljs-string">-o</span> <span class="hljs-string">my_body_stats</span> <span class="hljs-string">-i</span> <span class="hljs-number">110</span> <span class="hljs-string">-r</span> <span class="hljs-number">200</span> <span class="hljs-string">-s</span> <span class="hljs-number">8192</span> <span class="hljs-string">-t</span> <span class="hljs-string">FAKEVERB</span> <span class="hljs-string">-u</span> <span class="hljs-string">http://xxx.xxx.xxx</span> <span class="hljs-string">-x</span> <span class="hljs-number">10</span> <span class="hljs-string">-p</span> <span class="hljs-number">3</span></code></pre>
-
-<p>slow read模式：</p>
-<pre><code class="hljs angelscript">$ slowhttptest -c <span class="hljs-number">8000</span> -X -r <span class="hljs-number">200</span> -w <span class="hljs-number">512</span> -y <span class="hljs-number">1024</span> -n <span class="hljs-number">5</span> -z <span class="hljs-number">32</span> -k <span class="hljs-number">3</span> -u https:<span class="hljs-comment">//xxx.xxx.xxx -p 3</span></code></pre>
-
-<h1 id="4-使用说明"><a href="#4-使用说明" class="headerlink" title="4.使用说明"></a>4.使用说明</h1><p>以下是分别使用四种方式对自己的服务进行测试的结果，先开始不太懂每个曲线图的意义。这里说明一下，上面的参数可以设置连接数量以及持续请求时间等参数。然后下面展现的是曲线图，主要看在测试程序运行时间内Connected的数量是否被释放，是否通过服务的设置不符合条件的请求被服务端关闭，Service是否正常运行（服务是否存在被漏洞攻击程序给冲宕机了）。</p>
-<p>##4.1 RANGE HEADERS</p>
-<img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115151719480.png" srcset="/img/loading.gif" alt="rangeHeader" style="zoom:67%;" />
-
-<p>##4.2 SLOW HEADERS(SlowLoris)</p>
-<img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115151939829.png" srcset="/img/loading.gif" alt="image-20201115151939829" style="zoom: 67%;" />
-
-<p>##4.3 SLOW BODY(SLOW POST)</p>
-<img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115154404536.png" srcset="/img/loading.gif" alt="image-20201115154404536" style="zoom:67%;" />
-
-<h2 id="4-4-SLOW-READ"><a href="#4-4-SLOW-READ" class="headerlink" title="4.4  SLOW READ"></a>4.4  SLOW READ</h2><img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115152038635.png" srcset="/img/loading.gif" style="zoom:67%;" />
-
+<h4 id="2-1-1-3-Map和Mappartitions的对比"><a href="#2-1-1-3-Map和Mappartitions的对比" class="headerlink" title="2.1.1.3 Map和Mappartitions的对比"></a>2.1.1.3 Map和Mappartitions的对比</h4><p>map是对所有的数据串行进行操作，输入与输出个数相同</p>
+<p>而mappartitions是分块对分区内的数据进行操作，输入与输出数据个书可以不同。</p>
+<p>map速度慢，占用内存较少</p>
+<p>mappartitions速度快，会长时间占用内存。</p>
+<h4 id="2-1-1-4-glom-方法"><a href="#2-1-1-4-glom-方法" class="headerlink" title="2.1.1.4 glom()方法"></a>2.1.1.4 glom()方法</h4><p>将同一个分区的数据直接转换为相同类型的内存数组进行处理，分区不变</p>
+<h4 id="2-1-1-5-groupby"><a href="#2-1-1-5-groupby" class="headerlink" title="2.1.1.5 groupby()"></a>2.1.1.5 groupby()</h4><p>groupby方法会将数据打乱并重新组合，也称之为shuffle</p>
+<p>分区数不变</p>
+<h4 id="2-1-1-6-coalsce-numPartitions-num；shuffle-boolen"><a href="#2-1-1-6-coalsce-numPartitions-num；shuffle-boolen" class="headerlink" title="2.1.1.6 coalsce(numPartitions=num；shuffle=boolen)"></a>2.1.1.6 coalsce(numPartitions=num；shuffle=boolen)</h4><p>当大批量数据经过处理之后，需要<strong>缩小</strong>分区数可以使用coalsce()方法修改分区数。分区数修改后，分区内的数据不会被coalsce方法打散重新组合（并且同一个分区的数据也不会被分开）。</p>
+<p>随意使用coalsce方法可能会产生数据倾斜，如果希望使数据均衡，可以使用shuffle（使shuffle=True）。</p>
+<p>如果需要<strong>扩大分区</strong>的话使用repartition，它是coalsce的上层实现（coalsce(numPartitions=bignum；shuffle=True)）</p>
+<h4 id="2-1-1-7-groupByKey和reduceByKey的区别"><a href="#2-1-1-7-groupByKey和reduceByKey的区别" class="headerlink" title="2.1.1.7 groupByKey和reduceByKey的区别"></a>2.1.1.7 groupByKey和reduceByKey的区别</h4><ul>
+<li>groupByKey只分组，如果需要聚合需使用map</li>
+<li>reduceByKey包含分组和聚合两个功能</li>
+<li>如果只需要分组则只能使用groupByKey</li>
+</ul>
+<p><strong>groupByKey</strong>导致数据打乱重组，数据处理的时候存在shuffle操作，数据量大的话可能会导致数据倾斜然后内存溢出。</p>
+<p>所以在spark中shuffle操作必须落盘处理（保存在硬盘中），不能在内存中进行等待。所以shuffle操作的性能十分低。</p>
+<p><strong>reduceByKey</strong>可以预先在分区内将相同key的数据进行聚合，然后进行落盘再shuffle。<strong>提升了很大的性能</strong></p>
+<p>而groupByKey只能先打乱所有的数据再落盘聚合。</p>
 
             </div>
             <hr>
             <div>
               <div class="post-metas mb-3">
                 
-                  <div class="post-meta mr-3">
-                    <i class="iconfont icon-category"></i>
-                    
-                      <a class="hover-with-bg" href="/categories/%E5%B7%A5%E4%BD%9C%E7%9B%B8%E5%85%B3/">工作相关</a>
-                    
-                  </div>
-                
-                
-                  <div class="post-meta">
-                    <i class="iconfont icon-tags"></i>
-                    
-                      <a class="hover-with-bg" href="/tags/python/">python</a>
-                    
-                      <a class="hover-with-bg" href="/tags/Flask/">Flask</a>
-                    
-                  </div>
                 
               </div>
               
@@ -359,9 +421,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/12/17/%E5%89%91%E6%8C%87offer/">
+                      <a href="/2021/03/26/python/%E5%A6%82%E4%BD%95%E7%90%86%E8%A7%A3%E5%92%8C%E4%BD%BF%E7%94%A8%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E5%88%86%E6%9E%90%EF%BC%9F/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">剑指offer</span>
+                        <span class="hidden-mobile"></span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -369,8 +431,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/11/06/%E7%94%9F%E6%B4%BB%E5%85%B6%E4%BB%96/%E7%BE%8E%E5%9B%A2%E5%90%83%E5%88%B0%E8%99%AB%E5%AD%90%E8%A6%81%E6%B1%82%E8%B5%94%E5%81%BF%E8%AE%B0%E5%BD%95/">
-                        <span class="hidden-mobile">美团吃到虫子并维权成功全记录</span>
+                      <a href="/2021/03/01/python/pyspark%E8%AF%BB%E5%8F%96hbase%E8%B7%91%E6%A8%A1%E5%9E%8B%E5%B0%9D%E8%AF%95/">
+                        <span class="hidden-mobile">'pyspark读取hbase跑模型尝试'</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -571,7 +633,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "Flask之缓慢的http拒绝服务攻击漏洞解决&nbsp;",
+        "spark学习&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,

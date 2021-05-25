@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="zhousan">
   <meta name="keywords" content="">
-  <title>Flask之缓慢的http拒绝服务攻击漏洞解决 - 周三</title>
+  <title>美团吃到虫子并维权成功全记录 - 周三</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -189,7 +189,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      961 字
+      1.1k 字
     </span>
   
 
@@ -199,7 +199,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      12
+      11
        分钟
     </span>
   
@@ -237,97 +237,80 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto" id="post">
             <!-- SEO header -->
-            <h1 style="display: none">Flask之缓慢的http拒绝服务攻击漏洞解决</h1>
+            <h1 style="display: none">美团吃到虫子并维权成功全记录</h1>
             
             <div class="markdown-body" id="post-body">
-              <h1 id="1-什么是缓慢的http拒绝服务攻击漏洞"><a href="#1-什么是缓慢的http拒绝服务攻击漏洞" class="headerlink" title="1.什么是缓慢的http拒绝服务攻击漏洞"></a>1.什么是缓慢的http拒绝服务攻击漏洞</h1><p>缓慢的http拒绝服务攻击是一种专门针对于Web的应用层拒绝服务攻击，攻击者操纵网络上的肉鸡，对目标Web服务器进行海量http request攻击，直到服务器带宽被打满，造成了拒绝服务。</p>
-<p>慢速HTTP拒绝服务攻击经过不断的演变和发展，主要有三种攻击类型，分别是Slow headers、Slow body、Slow read。</p>
-<ul>
-<li><p><code>slowloris</code>：完整的http请求是以 <code>\r\n\r\n</code> 结尾，攻击时仅发送 <code>\r\n</code>，少发送一个 <code>\r\n</code>，服务器认为请求还未发完，就会一直等待直至超时</p>
+              <h1 id="美团吃到虫子并维权成功全记录"><a href="#美团吃到虫子并维权成功全记录" class="headerlink" title="美团吃到虫子并维权成功全记录"></a>美团吃到虫子并维权成功全记录</h1><h2 id="赔偿依据法律"><a href="#赔偿依据法律" class="headerlink" title="赔偿依据法律"></a>赔偿依据法律</h2><p>“根据《食品安全法》第一百四十八条第二款的规定，“生产不符合食品安全标准的食品或者经营明知是不符合食品安全标准的食品，消费者除要求赔偿损失外，还可以向生产者或者经营者要求支付价款十倍或者损失三倍的赔偿金；增加赔偿的金额不足一千元的，为一千元。”</p>
+<h2 id="2021-5-23-17-47-事情发生"><a href="#2021-5-23-17-47-事情发生" class="headerlink" title="2021/5/23 17:47 事情发生"></a>2021/5/23 17:47 事情发生</h2><ul>
+<li><p>美团点外卖吃到虫子</p>
 </li>
-<li><p><code>slow post</code>：通过声明一个较大的content-length后，body缓慢发送，导致服务器一直等待</p>
-<ul>
-<li><code>slow read</code>：向服务器发送一个正常合法的read请求，请求一个很大的文件，但把TCP滑动窗口设置得很小，服务器就会以滑动窗口的大小切割文件，然后发送，这时文件会长期存放在内存中，消耗资源</li>
+<li><p>发生时间： 约2021年5月23日18点</p>
+</li>
+<li><p>店铺商家名称及地址：</p>
+</li>
+<li><ul>
+<li>（美团）XXX大食堂</li>
 </ul>
 </li>
+<li><ul>
+<li>略</li>
 </ul>
-<h1 id="2-Flask应对措施"><a href="#2-Flask应对措施" class="headerlink" title="2. Flask应对措施"></a>2. Flask应对措施</h1><ul>
-<li><p>限制每次请求数据的大小</p>
 </li>
-<li><p>限制单个HTTP请求头的最大许可时间</p>
-</li>
-<li><p>限制单个ip请求数量</p>
-</li>
-<li><p>。。。。。。</p>
+<li><p>食品已拍照并已留存</p>
+<img src="D:\学习\myBlog\source\_posts\生活其他\赔偿记录\异物3.jpg" srcset="/img/loading.gif" alt="1" style="zoom:25%;" />
+
+<img src="D:\学习\myBlog\source\_posts\生活其他\赔偿记录\异物2.jpg" srcset="/img/loading.gif" style="zoom:25%;" />
+
+<img src="D:\学习\myBlog\source\_posts\生活其他\赔偿记录\异物1.jpg" srcset="/img/loading.gif" style="zoom:25%;" />
+
+<img src="D:\学习\myBlog\source\_posts\生活其他\赔偿记录\异物4.jpg" srcset="/img/loading.gif" style="zoom:25%;" />
+
 </li>
 </ul>
-<p>#3. 使用slowhttptest测试漏洞</p>
-<h2 id="3-1-slowhttptest的安装"><a href="#3-1-slowhttptest的安装" class="headerlink" title="3.1 slowhttptest的安装"></a>3.1 slowhttptest的安装</h2><blockquote>
-<p> 安装说明:<a target="_blank" rel="noopener" href="https://github.com/shekyan/slowhttptest/wiki/InstallationAndUsage1">https://github.com/shekyan/slowhttptest/wiki/InstallationAndUsage1</a></p>
+<p>##2021/5/23 17:56 尝试初步解决未果</p>
+<blockquote>
+<p>和商家协商希望<strong>五倍</strong>赔偿，商家表示对索要赔偿表示吃惊，说只退款。关于赔偿的事情<strong>很轻蔑的表示</strong>让我去申请美团索赔。</p>
 </blockquote>
-<ol>
-<li><p>下载压缩包：<a target="_blank" rel="noopener" href="https://github.com/shekyan/slowhttptest/releases">https://github.com/shekyan/slowhttptest/releases</a></p>
+<p>但是在知乎上看了一些朋友和我遇到相同的问题但是在美团上申请了“放心吃”索赔，结果都是不太理想，为了避免不必要的麻烦遂决定绕过美团直接上12315，准备今晚先在12315app上提交投诉，然后明天打电话在投诉一遍。</p>
+<h2 id="网友推荐解决方法（当无法和商家协商赔偿时）"><a href="#网友推荐解决方法（当无法和商家协商赔偿时）" class="headerlink" title="网友推荐解决方法（当无法和商家协商赔偿时）"></a>网友推荐解决方法（当无法和商家协商赔偿时）</h2><ul>
+<li><p>联系当地工商局一起去找商家。</p>
 </li>
-<li><p>安装libssl-dev<br><code>$ yum install openssl openssl-devel</code></p>
+<li><p>拨打+当地区号拨打12315，或者下载12315APP进行投诉，个人觉得打电话可能会快点，周末好像打不通，需要工作日拨打</p>
 </li>
-<li><p>安装C++编译器<br><code>$ yum install gcc-c++</code></p>
-</li>
-<li><p>解压</p>
-<p><code>$ tar -xzvf slowhttptest-x.x.tar.gz</code> </p>
-</li>
-<li><p>编译安装</p>
-<pre><code class="hljs powershell"><span class="hljs-variable">$</span> <span class="hljs-built_in">cd</span> slowhttp<span class="hljs-built_in">test-x</span>.x
-<span class="hljs-variable">$</span> ./configure -<span class="hljs-literal">-prefix</span>=PREFIX
-<span class="hljs-variable">$</span> make
-<span class="hljs-variable">$</span> sudo make install</code></pre>
-
-</li>
-</ol>
-<h2 id="3-2-参数说明及使用测试"><a href="#3-2-参数说明及使用测试" class="headerlink" title="3.2 参数说明及使用测试"></a>3.2 参数说明及使用测试</h2><pre><code class="hljs diff"><span class="hljs-deletion">-g      在测试完成后，以时间戳为名生成一个CVS和HTML文件的统计数据</span>
-<span class="hljs-deletion">-H      SlowLoris模式</span>
-<span class="hljs-deletion">-B      Slow POST模式</span>
-<span class="hljs-deletion">-R      Range Header模式</span>
-<span class="hljs-deletion">-X      Slow Read模式</span>
-<span class="hljs-deletion">-c      number of connections 测试时建立的连接数</span>
-<span class="hljs-deletion">-d      HTTP proxy host:port  为所有连接指定代理</span>
-<span class="hljs-deletion">-e      HTTP proxy host:port  为探测连接指定代理</span>
-<span class="hljs-deletion">-i      seconds 在slowrois和Slow POST模式中，指定发送数据间的间隔。</span>
-<span class="hljs-deletion">-l      seconds 测试维持时间</span>
-<span class="hljs-deletion">-n      seconds 在Slow Read模式下，指定每次操作的时间间隔。</span>
-<span class="hljs-deletion">-o      file name 使用-g参数时，可以使用此参数指定输出文件名</span>
-<span class="hljs-deletion">-p      seconds 指定等待时间来确认DoS攻击已经成功</span>
-<span class="hljs-deletion">-r      connections per second 每秒连接个数</span>
-<span class="hljs-deletion">-s      bytes 声明Content-Length header的值</span>
-<span class="hljs-deletion">-t      HTTP verb 在请求时使用什么操作，默认GET</span>
-<span class="hljs-deletion">-u      URL  指定目标url</span>
-<span class="hljs-deletion">-v      level 日志等级（详细度）</span>
-<span class="hljs-deletion">-w      bytes slow read模式中指定tcp窗口范围下限</span>
-<span class="hljs-deletion">-x      bytes 在slowloris and Slow POST tests模式中，指定发送的最大数据长度</span>
-<span class="hljs-deletion">-y      bytes slow read模式中指定tcp窗口范围上限</span>
-<span class="hljs-deletion">-z      bytes 在每次的read()中，从buffer中读取数据量</span></code></pre>
-
-<h2 id="3-2-1参考实例："><a href="#3-2-1参考实例：" class="headerlink" title="3.2.1参考实例："></a>3.2.1参考实例：</h2><p>slowloris模式：</p>
-<pre><code class="hljs apache"><span class="hljs-attribute">slowhttptest</span> -c <span class="hljs-number">1000</span> -H -g -o my_header_stats -i <span class="hljs-number">10</span> -r <span class="hljs-number">200</span> -t GET -u https://xxxxxx.xxxxx.xx -x <span class="hljs-number">24</span> -p <span class="hljs-number">3</span></code></pre>
-
-<p>slow post模式：</p>
-<pre><code class="hljs yaml"><span class="hljs-string">$</span> <span class="hljs-string">slowhttptest</span> <span class="hljs-string">-c</span> <span class="hljs-number">3000</span> <span class="hljs-string">-B</span> <span class="hljs-string">-g</span> <span class="hljs-string">-o</span> <span class="hljs-string">my_body_stats</span> <span class="hljs-string">-i</span> <span class="hljs-number">110</span> <span class="hljs-string">-r</span> <span class="hljs-number">200</span> <span class="hljs-string">-s</span> <span class="hljs-number">8192</span> <span class="hljs-string">-t</span> <span class="hljs-string">FAKEVERB</span> <span class="hljs-string">-u</span> <span class="hljs-string">http://xxx.xxx.xxx</span> <span class="hljs-string">-x</span> <span class="hljs-number">10</span> <span class="hljs-string">-p</span> <span class="hljs-number">3</span></code></pre>
-
-<p>slow read模式：</p>
-<pre><code class="hljs angelscript">$ slowhttptest -c <span class="hljs-number">8000</span> -X -r <span class="hljs-number">200</span> -w <span class="hljs-number">512</span> -y <span class="hljs-number">1024</span> -n <span class="hljs-number">5</span> -z <span class="hljs-number">32</span> -k <span class="hljs-number">3</span> -u https:<span class="hljs-comment">//xxx.xxx.xxx -p 3</span></code></pre>
-
-<h1 id="4-使用说明"><a href="#4-使用说明" class="headerlink" title="4.使用说明"></a>4.使用说明</h1><p>以下是分别使用四种方式对自己的服务进行测试的结果，先开始不太懂每个曲线图的意义。这里说明一下，上面的参数可以设置连接数量以及持续请求时间等参数。然后下面展现的是曲线图，主要看在测试程序运行时间内Connected的数量是否被释放，是否通过服务的设置不符合条件的请求被服务端关闭，Service是否正常运行（服务是否存在被漏洞攻击程序给冲宕机了）。</p>
-<p>##4.1 RANGE HEADERS</p>
-<img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115151719480.png" srcset="/img/loading.gif" alt="rangeHeader" style="zoom:67%;" />
-
-<p>##4.2 SLOW HEADERS(SlowLoris)</p>
-<img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115151939829.png" srcset="/img/loading.gif" alt="image-20201115151939829" style="zoom: 67%;" />
-
-<p>##4.3 SLOW BODY(SLOW POST)</p>
-<img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115154404536.png" srcset="/img/loading.gif" alt="image-20201115154404536" style="zoom:67%;" />
-
-<h2 id="4-4-SLOW-READ"><a href="#4-4-SLOW-READ" class="headerlink" title="4.4  SLOW READ"></a>4.4  SLOW READ</h2><img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115152038635.png" srcset="/img/loading.gif" style="zoom:67%;" />
+</ul>
+<h2 id="2021-5-23-19-04-因为明天要上班所以想今天解决于是尝试联系美团客服"><a href="#2021-5-23-19-04-因为明天要上班所以想今天解决于是尝试联系美团客服" class="headerlink" title="2021/5/23 19:04 因为明天要上班所以想今天解决于是尝试联系美团客服"></a>2021/5/23 19:04 因为明天要上班所以想今天解决于是尝试联系美团客服</h2><p>网络人工客服排队99+，电话人工客服打了两次未接通人工客服。</p>
+<p>于是选择等待app端的人工客服，大概等了十分钟终于有客服开始和我沟通了。</p>
+<h2 id="2021-5-23-19-33-和app端人工客服开始沟通"><a href="#2021-5-23-19-33-和app端人工客服开始沟通" class="headerlink" title="2021/5/23 19:33 和app端人工客服开始沟通"></a>2021/5/23 19:33 和app端人工客服开始沟通</h2><img src="D:\学习\myBlog\source\_posts\生活其他\赔偿记录\联系客服-1.jpg" srcset="/img/loading.gif" alt="联系客服-1" style="zoom: 50%;" />
 
 
+
+<h2 id="2021-5-23-19-40-客服沟通完表示退款并返10元红包，表示不接受。"><a href="#2021-5-23-19-40-客服沟通完表示退款并返10元红包，表示不接受。" class="headerlink" title="2021/5/23 19:40 客服沟通完表示退款并返10元红包，表示不接受。"></a>2021/5/23 19:40 客服沟通完表示退款并返10元红包，表示不接受。</h2><img src="D:\学习\myBlog\source\_posts\生活其他\赔偿记录\10元.jpg" srcset="/img/loading.gif" alt="10元" style="zoom: 50%;" />
+
+<ul>
+<li>客服让我稍等并咨询管理解决。</li>
+</ul>
+<h2 id="2021-5-23-19-44-客服表示给我一张30并且可提现的充值卡，表示拒绝"><a href="#2021-5-23-19-44-客服表示给我一张30并且可提现的充值卡，表示拒绝" class="headerlink" title="2021/5/23 19:44 客服表示给我一张30并且可提现的充值卡，表示拒绝"></a>2021/5/23 19:44 客服表示给我一张30并且可提现的充值卡，表示拒绝</h2><ul>
+<li>表示30也拒绝后客服提升到了50元，搁着给我钓鱼呢</li>
+</ul>
+<img src="D:\学习\myBlog\source\_posts\生活其他\赔偿记录\30元.jpg" srcset="/img/loading.gif" alt="30元" style="zoom: 50%;" />
+
+<h2 id="2021-5-23-19-46-客服表示给我一张50并且可提现的充值卡，表示拒绝。将转交专员客服处理，预计24小时解决"><a href="#2021-5-23-19-46-客服表示给我一张50并且可提现的充值卡，表示拒绝。将转交专员客服处理，预计24小时解决" class="headerlink" title="2021/5/23 19:46 客服表示给我一张50并且可提现的充值卡，表示拒绝。将转交专员客服处理，预计24小时解决"></a>2021/5/23 19:46 客服表示给我一张50并且可提现的充值卡，表示拒绝。将转交专员客服处理，预计24小时解决</h2><img src="D:\学习\myBlog\source\_posts\生活其他\赔偿记录\50元.jpg" srcset="/img/loading.gif" alt="50元" style="zoom:50%;" />
+
+<p>客服说我的问题需要提交到专员处理并一个工作日内回电，我表示明天如果不解决周二直接提到12315上。等待明天的解决方案。</p>
+<img src="D:\学习\myBlog\source\_posts\生活其他\赔偿记录\申请专员处理.jpg" srcset="/img/loading.gif" alt="申请专员处理" style="zoom: 50%;" />
+
+<h2 id="2021-5-24-一天无事发生，未得到美团专员客服联系"><a href="#2021-5-24-一天无事发生，未得到美团专员客服联系" class="headerlink" title="2021/5/24 一天无事发生，未得到美团专员客服联系"></a>2021/5/24 一天无事发生，未得到美团专员客服联系</h2><h2 id="2021-5-24-22-20-12315-APP进行投诉"><a href="#2021-5-24-22-20-12315-APP进行投诉" class="headerlink" title="2021/5/24 22:20 12315 APP进行投诉"></a>2021/5/24 22:20 12315 APP进行投诉</h2><ul>
+<li>投诉内容（详细时间，地点，事情经过，基本诉求）</li>
+</ul>
+<p>本人于2021年5月23日17:12分在尚食客大食堂定了一份外卖（包含一份炒豆芽，一份鸡块和一份米饭），外卖于17:50分左右送达并打开准备食用，发现鸡块上粘着异物（初步判断为苍蝇），个人认为改商家“生产了不符合食品安全标准的食品”遂进行投诉：个人诉求为：希望商家对我的商品进行退款并对我支付价款十倍的赔偿金，商品订单实付价格为12.76元，但是由于使用了5元的会员红包且该红包为本人花钱购买，即总共实际付款为17.76，商家应退款17.76元并应赔偿177.6元。</p>
+<p><img src="D:\学习\myBlog\source_posts\生活其他\赔偿记录\投诉.png" srcset="/img/loading.gif"></p>
+<p><img src="D:\学习\myBlog\source_posts\生活其他\赔偿记录\投诉2.png" srcset="/img/loading.gif" alt="投诉2"></p>
+<h2 id="2021-5-25-13-44-美团客服处理状态更新显示未打通我的电话，但是并未接到电话"><a href="#2021-5-25-13-44-美团客服处理状态更新显示未打通我的电话，但是并未接到电话" class="headerlink" title="2021/5/25 13:44 美团客服处理状态更新显示未打通我的电话，但是并未接到电话"></a>2021/5/25 13:44 美团客服处理状态更新显示未打通我的电话，但是并未接到电话</h2><p><img src="D:\学习\myBlog\source_posts\生活其他\赔偿记录\专员电话未呼通.jpg" srcset="/img/loading.gif"></p>
+<h2 id="2021-5-25-14-54-接到专员客服电话，客服表示已对该店铺进行监管并对我退款进行十倍支付款赔偿"><a href="#2021-5-25-14-54-接到专员客服电话，客服表示已对该店铺进行监管并对我退款进行十倍支付款赔偿" class="headerlink" title="2021/5/25 14:54 接到专员客服电话，客服表示已对该店铺进行监管并对我退款进行十倍支付款赔偿"></a>2021/5/25 14:54 接到专员客服电话，客服表示已对该店铺进行监管并对我退款进行十倍支付款赔偿</h2><ul>
+<li>本来算的实付款应该为17.76的，其中包含一张会员红包，但是这个会员红包是我花了3.3开的，所以一张会员券并不值什么钱，所以实付就算12.76算了。赔偿金额为127.6元。</li>
+</ul>
+<p><img src="D:\学习\myBlog\source_posts\生活其他\赔偿记录\赔偿记录.jpg" srcset="/img/loading.gif"></p>
+<h2 id="2021-5-25-14-55-问题解决"><a href="#2021-5-25-14-55-问题解决" class="headerlink" title="2021/5/25 14:55 问题解决"></a>2021/5/25 14:55 问题解决</h2><h2 id="2021-5-25-14-56-撤销12315投诉"><a href="#2021-5-25-14-56-撤销12315投诉" class="headerlink" title="2021/5/25 14:56 撤销12315投诉"></a>2021/5/25 14:56 撤销12315投诉</h2>
             </div>
             <hr>
             <div>
@@ -336,7 +319,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E5%B7%A5%E4%BD%9C%E7%9B%B8%E5%85%B3/">工作相关</a>
+                      <a class="hover-with-bg" href="/categories/%E7%94%9F%E6%B4%BB%E5%85%B6%E4%BB%96/">生活其他</a>
                     
                   </div>
                 
@@ -344,9 +327,9 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/python/">python</a>
+                      <a class="hover-with-bg" href="/tags/%E7%94%9F%E6%B4%BB/">生活</a>
                     
-                      <a class="hover-with-bg" href="/tags/Flask/">Flask</a>
+                      <a class="hover-with-bg" href="/tags/%E7%BB%B4%E6%9D%83/">维权</a>
                     
                   </div>
                 
@@ -359,9 +342,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/12/17/%E5%89%91%E6%8C%87offer/">
+                      <a href="/2020/11/06/python/Flask%E4%B9%8B%E7%BC%93%E6%85%A2%E7%9A%84http%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB%E6%BC%8F%E6%B4%9E%E8%A7%A3%E5%86%B3/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">剑指offer</span>
+                        <span class="hidden-mobile">Flask之缓慢的http拒绝服务攻击漏洞解决</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -369,8 +352,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/11/06/%E7%94%9F%E6%B4%BB%E5%85%B6%E4%BB%96/%E7%BE%8E%E5%9B%A2%E5%90%83%E5%88%B0%E8%99%AB%E5%AD%90%E8%A6%81%E6%B1%82%E8%B5%94%E5%81%BF%E8%AE%B0%E5%BD%95/">
-                        <span class="hidden-mobile">美团吃到虫子并维权成功全记录</span>
+                      <a href="/2020/10/15/%E7%86%B5%E6%9D%83%E6%B3%95%E8%AE%A1%E7%AE%97%E6%9D%83%E9%87%8D/">
+                        <span class="hidden-mobile">熵权法计算权重</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -571,7 +554,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "Flask之缓慢的http拒绝服务攻击漏洞解决&nbsp;",
+        "美团吃到虫子并维权成功全记录&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,
