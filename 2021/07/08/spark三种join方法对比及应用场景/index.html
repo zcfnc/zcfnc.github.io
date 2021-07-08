@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="zhousan">
   <meta name="keywords" content="">
-  <title>保险 - 周三</title>
+  <title>spark三种join方法对比及应用场景 - 周三</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -177,8 +177,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-06-29 10:58" pubdate>
-        2021年6月29日 上午
+      <time datetime="2021-07-08 09:52" pubdate>
+        2021年7月8日 上午
       </time>
     </span>
   
@@ -189,7 +189,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      12 字
+      2k 字
     </span>
   
 
@@ -199,7 +199,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      1
+      26
        分钟
     </span>
   
@@ -237,21 +237,144 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto" id="post">
             <!-- SEO header -->
-            <h1 style="display: none">保险</h1>
+            <h1 style="display: none">spark三种join方法对比及应用场景</h1>
             
             <div class="markdown-body" id="post-body">
-              <h1 id="保险"><a href="#保险" class="headerlink" title="保险"></a>保险</h1><ul>
-<li><p>风险对抗</p>
-</li>
-<li><p>风险只能转移</p>
-</li>
+              <h1 id="1-问题描述"><a href="#1-问题描述" class="headerlink" title="1 问题描述"></a>1 问题描述</h1><p>前几天在跑一个程序的时候遇到了一个很诡异的事情，在dolphinSchedule上面上线了几天的一个程序突然挂掉了，查看问题原因总是报连接超时。无从下手，然后查看代码发现是同事写的代码有一个分区的bug，改掉了但是运行到程序的一个关联操作的地方还是连接超时，然后直接就死掉了。感觉很诡异，因为程序运行了几天没问题，说明代码可能是没问题的，然后计算的数据是一年的数据，猜想可能是数据量的变化出现的问题。</p>
+<h1 id="2-问题详情"><a href="#2-问题详情" class="headerlink" title="2 问题详情"></a>2 问题详情</h1><h2 id="2-1-报错信息"><a href="#2-1-报错信息" class="headerlink" title="2.1 报错信息"></a>2.1 报错信息</h2><ul>
+<li>具体信息</li>
 </ul>
+<pre><code class="hljs stylus">Traceback (most recent call last):
+  File <span class="hljs-string">&quot;LineLossRate.py&quot;</span>, line <span class="hljs-number">237</span>, <span class="hljs-keyword">in</span> &lt;module&gt;
+    dfjoin.show(<span class="hljs-number">5</span>)
+  File <span class="hljs-string">&quot;/opt/cloudera/parcels/SPARK2-2.4.0.cloudera2-1.cdh5.13.3.p0.1041012/lib/spark2/python/lib/pyspark.zip/pyspark/sql/dataframe.py&quot;</span>, line <span class="hljs-number">378</span>, <span class="hljs-keyword">in</span> show
+  File <span class="hljs-string">&quot;/opt/cloudera/parcels/SPARK2-2.4.0.cloudera2-1.cdh5.13.3.p0.1041012/lib/spark2/python/lib/py4j-0.10.7-src.zip/py4j/java_gateway.py&quot;</span>, line <span class="hljs-number">1257</span>, <span class="hljs-keyword">in</span> __call__
+  File <span class="hljs-string">&quot;/opt/cloudera/parcels/SPARK2-2.4.0.cloudera2-1.cdh5.13.3.p0.1041012/lib/spark2/python/lib/pyspark.zip/pyspark/sql/utils.py&quot;</span>, line <span class="hljs-number">63</span>, <span class="hljs-keyword">in</span> deco
+  File <span class="hljs-string">&quot;/opt/cloudera/parcels/SPARK2-2.4.0.cloudera2-1.cdh5.13.3.p0.1041012/lib/spark2/python/lib/py4j-0.10.7-src.zip/py4j/protocol.py&quot;</span>, line <span class="hljs-number">328</span>, <span class="hljs-keyword">in</span> get_return_value
+py4j<span class="hljs-selector-class">.protocol</span><span class="hljs-selector-class">.Py4JJavaError</span>: An error occurred while calling o409<span class="hljs-selector-class">.showString</span>.
+: org<span class="hljs-selector-class">.apache</span><span class="hljs-selector-class">.spark</span><span class="hljs-selector-class">.SparkException</span>: Could not execute broadcast <span class="hljs-keyword">in</span> <span class="hljs-number">1800</span> secs. You can increase the timeout <span class="hljs-keyword">for</span> broadcasts via spark<span class="hljs-selector-class">.sql</span><span class="hljs-selector-class">.broadcastTimeout</span> or disable broadcast join by setting spark<span class="hljs-selector-class">.sql</span><span class="hljs-selector-class">.autoBroadcastJoinThreshold</span> to -<span class="hljs-number">1</span>
+at org<span class="hljs-selector-class">.apache</span><span class="hljs-selector-class">.spark</span><span class="hljs-selector-class">.sql</span><span class="hljs-selector-class">.execution</span><span class="hljs-selector-class">.exchange</span><span class="hljs-selector-class">.BroadcastExchangeExec</span>.doExecuteBroadcast(BroadcastExchangeExec<span class="hljs-selector-class">.scala</span>:<span class="hljs-number">150</span>)
+	at org<span class="hljs-selector-class">.apache</span><span class="hljs-selector-class">.spark</span><span class="hljs-selector-class">.sql</span><span class="hljs-selector-class">.execution</span><span class="hljs-selector-class">.InputAdapter</span>.doExecuteBroadcast(WholeStageCodegenExec<span class="hljs-selector-class">.scala</span>:<span class="hljs-number">387</span>)
+	at org<span class="hljs-selector-class">.apache</span><span class="hljs-selector-class">.spark</span><span class="hljs-selector-class">.sql</span><span class="hljs-selector-class">.execution</span>.SparkPlan$<span class="hljs-variable">$anonfun</span><span class="hljs-variable">$executeBroadcast</span>$<span class="hljs-number">1</span>.apply(SparkPlan<span class="hljs-selector-class">.scala</span>:<span class="hljs-number">144</span>)</code></pre>
+
+<p>在其他节点上显示有一些重复连接超时的警告：</p>
+<pre><code class="hljs stylus"><span class="hljs-number">21</span>/<span class="hljs-number">07</span>/<span class="hljs-number">02</span> <span class="hljs-number">19</span>:<span class="hljs-number">13</span>:<span class="hljs-number">42</span> WARN scheduler<span class="hljs-selector-class">.TaskSetManager</span>: Lost task <span class="hljs-number">9.0</span> <span class="hljs-keyword">in</span> stage <span class="hljs-number">70.0</span> (TID <span class="hljs-number">5771</span>, cdh06<span class="hljs-selector-class">.nari</span><span class="hljs-selector-class">.com</span>, executor <span class="hljs-number">12</span>): java<span class="hljs-selector-class">.net</span><span class="hljs-selector-class">.ConnectException</span>: Connection timed out (Connection timed out)
+	at java<span class="hljs-selector-class">.net</span><span class="hljs-selector-class">.PlainSocketImpl</span>.socketConnect(Native Method)
+	at java<span class="hljs-selector-class">.net</span><span class="hljs-selector-class">.AbstractPlainSocketImpl</span>.doConnect(AbstractPlainSocketImpl<span class="hljs-selector-class">.java</span>:<span class="hljs-number">350</span>)
+	at java<span class="hljs-selector-class">.net</span><span class="hljs-selector-class">.AbstractPlainSocketImpl</span>.connectToAddress(AbstractPlainSocketImpl<span class="hljs-selector-class">.java</span>:<span class="hljs-number">206</span>)
+	at java<span class="hljs-selector-class">.net</span><span class="hljs-selector-class">.AbstractPlainSocketImpl</span>.connect(AbstractPlainSocketImpl<span class="hljs-selector-class">.java</span>:<span class="hljs-number">188</span>)
+	at java<span class="hljs-selector-class">.net</span><span class="hljs-selector-class">.SocksSocketImpl</span>.connect(SocksSocketImpl<span class="hljs-selector-class">.java</span>:<span class="hljs-number">392</span>)
+	at java<span class="hljs-selector-class">.net</span><span class="hljs-selector-class">.Socket</span>.connect(Socket<span class="hljs-selector-class">.java</span>:<span class="hljs-number">589</span>)
+	at java<span class="hljs-selector-class">.net</span><span class="hljs-selector-class">.Socket</span>.connect(Socket<span class="hljs-selector-class">.java</span>:<span class="hljs-number">538</span>)
+	at java<span class="hljs-selector-class">.net</span><span class="hljs-selector-class">.Socket</span>.&lt;init&gt;(Socket<span class="hljs-selector-class">.java</span>:<span class="hljs-number">434</span>)
+	at java<span class="hljs-selector-class">.net</span><span class="hljs-selector-class">.Socket</span>.&lt;init&gt;(Socket<span class="hljs-selector-class">.java</span>:<span class="hljs-number">244</span>)
+	at org<span class="hljs-selector-class">.apache</span><span class="hljs-selector-class">.spark</span><span class="hljs-selector-class">.api</span><span class="hljs-selector-class">.python</span>.PythonWorkerFact</code></pre>
+
+<h2 id="2-2-报错代码"><a href="#2-2-报错代码" class="headerlink" title="2.2 报错代码"></a>2.2 报错代码</h2><pre><code class="hljs pgsql">dfjoin=df365.<span class="hljs-keyword">join</span>(resDf3,<span class="hljs-keyword">on</span>=[&quot;xx&quot;]).\
+    withColumn(&quot;xx&quot;,F.lit(dateMyes)). \
+    withColumn(&quot;xx&quot;, F.expr(&quot;cast(`xx` as string)&quot;)).<span class="hljs-keyword">join</span>(tg_id,<span class="hljs-keyword">on</span>=[&quot;xx&quot;]).\
+    withColumnRenamed(&quot;xx&quot;,&quot;xx&quot;).\
+    <span class="hljs-keyword">select</span>(&quot;xx&quot;,&quot;xx&quot;,&quot;xx&quot;&quot;xx&quot;&quot;xx&quot;&quot;xx&quot;&quot;xx&quot;).persist()
+
+dfjoin.<span class="hljs-keyword">show</span>(<span class="hljs-number">5</span>)
+dfjoin.coalesce(<span class="hljs-number">128</span>).<span class="hljs-keyword">write</span>.mode(&quot;append&quot;).partitionBy(&quot;XXX&quot;).format(&quot;parquet&quot;).saveAsTable(&quot;tableName&quot;)</code></pre>
+
+<h1 id="3-问题刨析"><a href="#3-问题刨析" class="headerlink" title="3 问题刨析"></a>3 问题刨析</h1><p>从报错的信息中基本可以定位问题出现在数据join的位置，但是其中的两个dataframe，resDf3和df365数据量都在十几万也并不是很大。但是从这句话中可以看出也是join的问题，建议我们关闭BroadcastJoin。然后大致可以清楚了，BroadcastJoin是关联一个大表和一个小表的方法，但是这里关联的两个表数据量基本相同，如果使用BroadcastJoin的话就可能导致广播时间过长而连接超时，初步猜想问题的原因就在于此。</p>
+<pre><code class="hljs mipsasm">You can increase the timeout for <span class="hljs-keyword">broadcasts </span>via spark.sql.<span class="hljs-keyword">broadcastTimeout </span><span class="hljs-keyword">or </span><span class="hljs-keyword">disable </span><span class="hljs-keyword">broadcast </span><span class="hljs-keyword">join </span><span class="hljs-keyword">by </span>setting spark.sql.autoBroadcastJoinThreshold to -<span class="hljs-number">1</span></code></pre>
+
+<p>于是添加了spark.sql.autoBroadcastJoinThreshold参数为-1，程序正常运行，问题解决。</p>
+<h1 id="4-扩展延伸：spark的三种join方式"><a href="#4-扩展延伸：spark的三种join方式" class="headerlink" title="4  扩展延伸：spark的三种join方式"></a>4  扩展延伸：spark的三种join方式</h1><p>文章参考链接：<a target="_blank" rel="noopener" href="http://hbasefly.com/2017/03/19/sparksql-basic-join/">SparkSQL – 有必要坐下来聊聊Join – 有态度的HBase/Spark/BigData (hbasefly.com)</a></p>
+<p>这里是对该文章内的信息转载并做一个简要的摘录：</p>
+<p>当前SparkSQL支持三种Join算法－shuffle hash join、broadcast hash join以及sort merge join。其中前两者归根到底都属于hash join，只不过在hash join之前需要先shuffle还是先broadcast。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>所属类别</th>
+<th>使用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>shuffle hash join</td>
+<td>hash join</td>
+<td>一张大表join一张小表</td>
+</tr>
+<tr>
+<td>broadcast hash join</td>
+<td>hash join</td>
+<td>一张大表join一张极小表</td>
+</tr>
+<tr>
+<td>sort merge join</td>
+<td>merge join</td>
+<td>两张大表join</td>
+</tr>
+</tbody></table>
+<h2 id="4-1-Hash-Join"><a href="#4-1-Hash-Join" class="headerlink" title="4.1 Hash Join"></a>4.1 <strong>Hash Join</strong></h2><p>先来看看这样一条SQL语句：select * from order,item where item.id = order.i_id，很简单一个Join节点，参与join的两张表是item和order，join key分别是item.id以及order.i_id。现在假设这个Join采用的是hash join算法，整个过程会经历三步：</p>
+<ol>
+<li><p>确定Build Table以及Probe Table：这个概念比较重要，Build Table使用join key构建Hash Table，而Probe Table使用join key进行探测，探测成功就可以join在一起。通常情况下，小表会作为Build Table，大表作为Probe Table。此事例中item为Build Table，order为Probe Table。</p>
+</li>
+<li><p>构建Hash Table：依次读取Build Table（item）的数据，对于每一行数据根据join key（item.id）进行hash，hash到对应的Bucket，生成hash table中的一条记录。数据缓存在内存中，如果内存放不下需要dump到外存。</p>
+</li>
+<li><p>探测：再依次扫描Probe Table（order）的数据，使用相同的hash函数映射Hash Table中的记录，映射成功之后再检查join条件（item.id = order.i_id），如果匹配成功就可以将两者join在一起 </p>
+</li>
+</ol>
+<blockquote>
+<p> 这里可能存在的疑问：</p>
+<ol>
+<li><p>hash join性能如何？hash join基本都只扫描两表一次，可以认为o(a+b)</p>
+</li>
+<li><p>为什么Build Table选择小表？因为构建的Hash Table最好能全部加载在内存，效率最高；这也决定了<strong>hash join算法只适合至少一个小表的join场景，对于两个大表的join场景并不适用</strong>；</p>
+</li>
+</ol>
+</blockquote>
+<h2 id="4-1-1-Broadcast-Hash-Join"><a href="#4-1-1-Broadcast-Hash-Join" class="headerlink" title="4.1.1 Broadcast Hash Join"></a>4.1.1 <strong>Broadcast Hash Join</strong></h2><p>Broadcast Hash Join一般分为两步：</p>
+<ol>
+<li><p>broadcast阶段：将小表广播分发到大表所在的所有主机。广播算法可以有很多，最简单的是先发给driver，driver再统一分发给所有executor；要不就是基于bittorrete的p2p思路；</p>
+</li>
+<li><p>hash join阶段：在每个executor上执行单机版hash join，小表映射，大表试探</p>
+</li>
+</ol>
+<blockquote>
+<p>SparkSQL规定broadcast hash join执行的基本条件为被广播小表必须小于参数spark.sql.autoBroadcastJoinThreshold，默认为10M</p>
+</blockquote>
+<h2 id="4-1-2-Shuffle-Hash-Join"><a href="#4-1-2-Shuffle-Hash-Join" class="headerlink" title="4.1.2 Shuffle Hash Join"></a>4.1.2 <strong>Shuffle Hash Join</strong></h2><p>在大数据条件下如果一张表很小，执行join操作最优的选择无疑是broadcast hash join，效率最高。但是一旦小表数据量增大，广播所需内存、带宽等资源必然就会太大，broadcast hash join就不再是最优方案。此时可以按照join key进行分区，根据key相同必然分区相同的原理，就可以将大表join分而治之，划分为很多小表的join，充分利用集群资源并行化。如下图所示，shuffle hash join也可以分为两步：</p>
+<ol>
+<li><p>shuffle阶段：分别将两个表按照join key进行分区，将相同join key的记录重分布到同一节点，两张表的数据会被重分布到集群中所有节点。这个过程称为shuffle</p>
+</li>
+<li><p>hash join阶段：每个分区节点上的数据单独执行单机hash join算法。</p>
+</li>
+</ol>
+<h1 id="4-2-Sort-Merge-Join"><a href="#4-2-Sort-Merge-Join" class="headerlink" title="4.2 Sort-Merge Join"></a>4.2 <strong>Sort-Merge Join</strong></h1><p>sort merge join 一般分为三个步骤：</p>
+<ol>
+<li><p>shuffle阶段：将两张大表根据join key进行重新分区，两张表数据会分布到整个集群，以便分布式并行处理</p>
+</li>
+<li><p>sort阶段：对单个分区节点的两表数据，分别进行排序</p>
+</li>
+<li><p>merge阶段：对排好序的两张分区表数据执行join操作。join操作很简单，分别遍历两个有序序列，碰到相同join key就merge输出，否则取更小一边</p>
+</li>
+</ol>
+<h1 id="5-再次回到问题"><a href="#5-再次回到问题" class="headerlink" title="5. 再次回到问题"></a>5. 再次回到问题</h1><p>从上面介绍的三种join的原理可以基本确定各自所对应的应用场景，这次遇到的问题就是由于spark默认使用了broadcast join方法，然后两个join的表的数据量基本相似，所以遇到了broadcast join乱广播导致程序超时的现象。所以手动禁止该方法解决了问题。</p>
 
             </div>
             <hr>
             <div>
               <div class="post-metas mb-3">
                 
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/spark%E5%AD%A6%E4%B9%A0/">spark学习</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/spark/">spark</a>
+                    
+                  </div>
                 
               </div>
               
@@ -262,18 +385,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/07/08/spark%E4%B8%89%E7%A7%8Djoin%E6%96%B9%E6%B3%95%E5%AF%B9%E6%AF%94%E5%8F%8A%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">spark三种join方法对比及应用场景</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/05/25/%E7%94%9F%E6%B4%BB%E5%85%B6%E4%BB%96/%E7%BE%8E%E5%9B%A2%E5%90%83%E5%88%B0%E8%99%AB%E5%AD%90%E5%B9%B6%E7%BB%B4%E6%9D%83%E6%88%90%E5%8A%9F%E5%85%A8%E8%AE%B0%E5%BD%95/">
-                        <span class="hidden-mobile">美团吃到虫子并维权成功全记录</span>
+                      <a href="/2021/06/29/%E7%94%9F%E6%B4%BB%E5%85%B6%E4%BB%96/%E4%BF%9D%E9%99%A9/">
+                        <span class="hidden-mobile">保险</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -474,7 +591,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "保险&nbsp;",
+        "spark三种join方法对比及应用场景&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,
