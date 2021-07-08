@@ -1775,215 +1775,6 @@ https:<span class="hljs-regexp">//</span>docs.docker.com<span class="hljs-regexp
       </tags>
   </entry>
   <entry>
-    <title>通过scala调用python的两种方式</title>
-    <url>/2019/10/18/%E9%80%9A%E8%BF%87scala%E8%B0%83%E7%94%A8python%E7%9A%84%E4%B8%A4%E7%A7%8D%E6%96%B9%E5%BC%8F/</url>
-    <content><![CDATA[<h1 id="1-模仿cmd命令方式"><a href="#1-模仿cmd命令方式" class="headerlink" title="1. 模仿cmd命令方式"></a>1. 模仿cmd命令方式</h1><p>使用“Runtime.getRuntime.exec(exeStr)”方法，传入要执行的cmd命令就可以了。</p>
-<pre><code class="hljs stata">def TestCmdExec(<span class="hljs-keyword">args</span>: Array[String]) &#123;
-  <span class="hljs-keyword">var</span> exeStr = <span class="hljs-string">&quot;python D:/ckk_software/BDZbiandianzhan_py/scalaExcute.py &quot;</span>
-  exeStr += <span class="hljs-string">&quot; 李庄10 &quot;</span> + <span class="hljs-string">&quot; 0130343451706 &quot;</span>
-  <span class="hljs-keyword">var</span> proc = Runtime.getRuntime.exec(exeStr)
-  <span class="hljs-keyword">var</span> <span class="hljs-keyword">ir</span> = new InputStreamReader(proc.getInputStream, <span class="hljs-string">&quot;GBK&quot;</span>)
-  <span class="hljs-keyword">var</span> <span class="hljs-keyword">input</span> = new LineNumberReader(<span class="hljs-keyword">ir</span>)
-  <span class="hljs-keyword">var</span> result = <span class="hljs-keyword">input</span>.readLine()
-  <span class="hljs-keyword">while</span> (result != <span class="hljs-string">&quot;match fail&quot;</span> &amp;&amp; result != null) &#123;
-    println(result)
-    result = <span class="hljs-keyword">input</span>.readLine()
-  &#125;
-  <span class="hljs-keyword">input</span>.<span class="hljs-keyword">close</span>()
-  <span class="hljs-keyword">ir</span>.<span class="hljs-keyword">close</span>()
-  println(proc.waitFor())
-  proc.waitFor()
-&#125;</code></pre>
-<ul>
-<li>优点：操作简单，对于简单的命令什么的可以直接使用</li>
-<li>缺点：对于批量调用python程序比较复杂，也比较愚蠢，关于路径什么的都需要修改，不建议使用。</li>
-</ul>
-<h2 id="2-编写restful接口，在scala内部发送http请求来调用"><a href="#2-编写restful接口，在scala内部发送http请求来调用" class="headerlink" title="2. 编写restful接口，在scala内部发送http请求来调用"></a>2. 编写restful接口，在scala内部发送http请求来调用</h2><p>restful服务：URL定位资源，用HTTP动词（GET,POST,DELETE,DETC）描述操作。</p>
-<h3 id="1-编写接口"><a href="#1-编写接口" class="headerlink" title="1. 编写接口"></a>1. 编写接口</h3><blockquote>
-<p>因为要调用的程序是python程序，所以要使用python的flask来编写接口。</p>
-</blockquote>
-<pre><code class="hljs python"><span class="hljs-keyword">from</span> function <span class="hljs-keyword">import</span> *
-<span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
-<span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask,url_for,request
-<span class="hljs-keyword">import</span> json
-
-data = pd.ExcelFile(<span class="hljs-string">&quot;cidain2.xlsx&quot;</span>)
-data = data.parse(<span class="hljs-string">&quot;Sheet1&quot;</span>)
-cidian = data[<span class="hljs-string">&#x27;PMS_LINE_NAME&#x27;</span>].values.tolist()
-org_no = data[<span class="hljs-string">&#x27;PI_ORG_NO&#x27;</span>].values.tolist()
-id = data[<span class="hljs-string">&#x27;PMS_LINE_ID&#x27;</span>].values.tolist()
-<span class="hljs-comment"># go方法为需要scala端调用的程序</span>
-<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">go</span>(<span class="hljs-params">text,org_id,cidian,org_no,id</span>):</span>
-    <span class="hljs-string">&#x27;&#x27;&#x27;</span>
-<span class="hljs-string">    :param text: &quot;高庄10&quot;</span>
-<span class="hljs-string">    :param org: 130343451706</span>
-<span class="hljs-string">    :return:</span>
-<span class="hljs-string">    &#x27;&#x27;&#x27;</span>
-    org_type = <span class="hljs-string">&quot;04&quot;</span>
-    <span class="hljs-keyword">if</span> org_type == <span class="hljs-number">3</span>:
-        org = str(org_id)[:<span class="hljs-number">-2</span>]
-    <span class="hljs-keyword">else</span>:
-        org = str(org_id)
-    label, cidian, id = fun(org, text, cidian, org_no, id)
-    label, id = filt(label, cidian, id)
-    <span class="hljs-keyword">if</span> len(label) &gt; <span class="hljs-number">0</span> :
-        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(<span class="hljs-number">0</span>,len(label)):    
-            print(label[i]+<span class="hljs-string">&quot;\t&quot;</span>+id[i])
-    <span class="hljs-keyword">else</span> :
-        print(<span class="hljs-string">&quot;match fail&quot;</span>)
-    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;\t&quot;</span>.join(label)+<span class="hljs-string">&quot;\t&quot;</span>+<span class="hljs-string">&quot;\t&quot;</span>.join (id)
-<span class="hljs-comment"># 注册flaskapp,接收get请求进行处理</span>
-app = Flask(__name__)
-<span class="hljs-comment"># get请求参数在url中，访问“http：//127.0.0.1：5000/reason/orgId”</span>
-<span class="hljs-meta">@app.route(&quot;/&lt;reason&gt;/&lt;orgId&gt;&quot;)</span>
-<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">exeFlask</span>(<span class="hljs-params">reason,orgId</span>):</span> 
-    preResult = go(reason,orgId)
-    <span class="hljs-keyword">return</span> str(preResult)
-<span class="hljs-comment"># 接收post请求，请求参数封装在客户端的request中请求中</span>
-<span class="hljs-comment"># 访问“http：//127.0.0.1：5000/”</span>
-<span class="hljs-meta">@app.route(&#x27;/&#x27;,methods=[&#x27;POST&#x27;])</span>
-<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">postRestful</span>():</span>
-    data = json.loads(str(request.data,<span class="hljs-string">&#x27;utf-8&#x27;</span>))
-    reason = data[<span class="hljs-string">&#x27;reason&#x27;</span>]
-    orgId =data[<span class="hljs-string">&#x27;orgId&#x27;</span>] 
-    print(<span class="hljs-string">&quot;reason: &quot;</span> + reason + <span class="hljs-string">&quot;\torgId:\t&quot;</span> + orgId)
-    preResult = go(reason,orgId,cidian,org_no,id)
-    <span class="hljs-keyword">return</span> str(preResult)
-<span class="hljs-comment"># 启动接口，run方法内可以不设参数，默认本地的5000端口</span>
-<span class="hljs-comment"># 如果要允许同内网访问的话要把host设置为“0.0.0.0”</span>
-app.run(host=<span class="hljs-string">&quot;0.0.0.0&quot;</span>,port=<span class="hljs-string">&quot;5000&quot;</span>)</code></pre>
-<h3 id="2-scala端发送请求（httpclient4-5-5和httpclient3-0-1两种版本）"><a href="#2-scala端发送请求（httpclient4-5-5和httpclient3-0-1两种版本）" class="headerlink" title="2. scala端发送请求（httpclient4.5.5和httpclient3.0.1两种版本）"></a>2. scala端发送请求（httpclient4.5.5和httpclient3.0.1两种版本）</h3><ul>
-<li>前言：httpclient4和httpclient3的差别还是蛮大的，所以使用需要注意版本的问题，而且就网上查阅的资料来看httpclient和httpcore的版本冲突还是蛮多的，还有和spark的版本兼容性问题也是。<h4 id="1-httpclient4-5-5"><a href="#1-httpclient4-5-5" class="headerlink" title="1. httpclient4.5.5"></a>1. httpclient4.5.5</h4></li>
-<li>httpclient4.5.5是用在spark2.3上面的，maven添加依赖方法略<blockquote>
-<p>get请求示例</p>
-</blockquote>
-</li>
-</ul>
-<pre><code class="hljs properties"><span class="hljs-attr">def</span> <span class="hljs-string">TestHttpGet(url: String): String = &#123;</span>
-   <span class="hljs-attr">import</span> <span class="hljs-string">org.apache.http.client.methods.&#123; HttpGet &#125;</span>
-   <span class="hljs-attr">import</span> <span class="hljs-string">org.apache.http.impl.client.HttpClients</span>
-   <span class="hljs-attr">import</span> <span class="hljs-string">org.apache.http.util.EntityUtils</span>
-
-   <span class="hljs-attr">var</span> <span class="hljs-string">host = &quot;http://10.138.72.199:5000/&quot;</span>
-   <span class="hljs-attr">var</span> <span class="hljs-string">orgId = &quot;/0130343451006&quot;</span>
-   <span class="hljs-attr">var</span> <span class="hljs-string">rawText = &quot;_霍邱县开发区杭庙村石船 </span>
-   <span class="hljs-attr">var</span> <span class="hljs-string">url = host + rawText + orgId</span>
-   <span class="hljs-attr">var</span> <span class="hljs-string">HttpClient = HttpClients.createDefault()</span>
-   <span class="hljs-attr">val</span> <span class="hljs-string">get = new HttpGet(url)</span>
-   <span class="hljs-attr">var</span> <span class="hljs-string">response = HttpClient.execute(get)</span>
-   <span class="hljs-attr">EntityUtils.toString(response.getEntity)</span>
- <span class="hljs-attr">&#125;</span></code></pre>
-<blockquote>
-<p>post请求示例</p>
-</blockquote>
-<pre><code class="hljs scala"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">restful</span></span>()&#123;
-    <span class="hljs-keyword">import</span> org.apache.http.&#123; <span class="hljs-type">HttpEntity</span>, <span class="hljs-type">HttpResponse</span> &#125;
-    <span class="hljs-keyword">import</span> org.apache.http.client.methods.<span class="hljs-type">HttpPost</span>
-    <span class="hljs-keyword">import</span> org.apache.http.entity.<span class="hljs-type">StringEntity</span>
-    <span class="hljs-keyword">import</span> org.apache.http.impl.client.<span class="hljs-type">DefaultHttpClient</span>
-    <span class="hljs-keyword">import</span> org.apache.http.protocol.<span class="hljs-type">HTTP</span>
-    <span class="hljs-keyword">import</span> org.apache.http.util.<span class="hljs-type">EntityUtils</span>
-    <span class="hljs-keyword">val</span> httpclient = <span class="hljs-keyword">new</span> <span class="hljs-type">DefaultHttpClient</span>
-    <span class="hljs-keyword">try</span> &#123;
-      <span class="hljs-keyword">val</span> url = <span class="hljs-string">&quot;http://10.138.72.199:5000&quot;</span>
-      <span class="hljs-keyword">val</span> reason = <span class="hljs-string">&quot;_池河大道交警队处_交警队外台区新架设低压电缆释放&quot;</span>
-      <span class="hljs-keyword">val</span> orgId = <span class="hljs-string">&quot;0130343451304&quot;</span> <span class="hljs-comment">//经度</span>
-      <span class="hljs-keyword">val</span> dtype = <span class="hljs-string">&quot;json&quot;</span> <span class="hljs-comment">//返回数据的格式,xml或json，默认json</span>
-      <span class="hljs-keyword">val</span> jsonParams = <span class="hljs-string">&quot;&#123;\&quot;reason\&quot;:\&quot;&quot;</span> + reason + <span class="hljs-string">&quot;\&quot;,\&quot;orgId\&quot;: \&quot;&quot;</span> +orgId + <span class="hljs-string">&quot;\&quot;,\&quot;dtype\&quot;:\&quot;&quot;</span> + dtype + <span class="hljs-string">&quot;\&quot;&#125;&quot;</span>
-     
-      <span class="hljs-comment">//创建</span>
-      <span class="hljs-keyword">val</span> httpost = <span class="hljs-keyword">new</span> <span class="hljs-type">HttpPost</span>(url)
-      println(<span class="hljs-string">&quot;参数：&quot;</span> + jsonParams)
-      <span class="hljs-comment">//json字符串,准备发送</span>
-
-      <span class="hljs-keyword">try</span> &#123;
-        <span class="hljs-keyword">val</span> stringEntity = <span class="hljs-keyword">new</span> <span class="hljs-type">StringEntity</span>(jsonParams, <span class="hljs-type">HTTP</span>.<span class="hljs-type">UTF_8</span>)
-        stringEntity.setContentType(<span class="hljs-string">&quot;application/json;charset=utf-8&quot;</span>)
-        httpost.setEntity(stringEntity)
-        <span class="hljs-keyword">var</span> response: <span class="hljs-type">HttpResponse</span> = <span class="hljs-literal">null</span>
-        response = httpclient.execute(httpost)
-        <span class="hljs-keyword">val</span> entity: <span class="hljs-type">HttpEntity</span> = response.getEntity
-        <span class="hljs-keyword">try</span> &#123;
-          <span class="hljs-comment">//必需触发</span>
-          println(<span class="hljs-type">EntityUtils</span>.toString(entity))
-        &#125; <span class="hljs-keyword">catch</span> &#123;
-          <span class="hljs-keyword">case</span> appleException: <span class="hljs-type">Exception</span> =&gt; println(appleException.toString)
-        &#125;
-      &#125; <span class="hljs-keyword">catch</span> &#123;
-        <span class="hljs-keyword">case</span> e: <span class="hljs-type">Exception</span> =&gt; &#123;
-          println(<span class="hljs-string">&quot;Exception is &quot;</span> + e.toString)
-        &#125;
-      &#125;
-    &#125; <span class="hljs-keyword">catch</span> &#123;
-      <span class="hljs-keyword">case</span> sendE: <span class="hljs-type">Exception</span> =&gt; &#123; <span class="hljs-keyword">throw</span> sendE &#125;
-    &#125; <span class="hljs-keyword">finally</span> &#123;
-      <span class="hljs-comment">//关闭</span>
-      httpclient.getConnectionManager.shutdown
-    &#125;
-  &#125;</code></pre>
-<h4 id="2-httpclient3-0-1"><a href="#2-httpclient3-0-1" class="headerlink" title="2.httpclient3.0.1"></a>2.httpclient3.0.1</h4><ul>
-<li>httpclient3主要是支持spark1.6使用的，但是在spark2.3上面也同样兼容，但是httpclient4不支持spark1.6，因为手上的项目是spark1.6的，所以需要使用httpclient3。而且httpclient3的版本也比较古老，所以网上很少可以用的参考资料。这里是参考java版本写的scala版本的调用接口。<blockquote>
-<p>依赖</p>
-</blockquote>
-<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
-		<span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>commons-httpclient<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
-		<span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>commons-httpclient<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-		<span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>3.0.1<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
-	<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
-<blockquote>
-<p>post客户请求方法（这里因为只需要用到post方法就只写了这个版本的）</p>
-</blockquote>
-<pre><code class="hljs reasonml">def <span class="hljs-constructor">TestHttpClient3()</span>&#123;
-      import org.apache.commons.httpclient._
-      import org.apache.commons.httpclient.methods._
-   
-      <span class="hljs-keyword">val</span> client = <span class="hljs-keyword">new</span> HttpClient
-<span class="hljs-comment">//      val method = new PostMethod(&quot;http://10.138.72.199:5000&quot;)</span>
-      <span class="hljs-keyword">val</span> <span class="hljs-keyword">method</span> = <span class="hljs-keyword">new</span> <span class="hljs-constructor">PostMethod(<span class="hljs-string">&quot;http://127.0.0.1:5000&quot;</span>)</span>
-      <span class="hljs-keyword">val</span> reason = <span class="hljs-string">&quot;_徽州区富溪乡_田里3817台区改造：横担金具安装、拉线制作，低压导线展放等。&quot;</span>
-      <span class="hljs-keyword">val</span> orgId = <span class="hljs-string">&quot;01303434512&quot;</span> <span class="hljs-comment">//orgId</span>
-      <span class="hljs-keyword">val</span> dtype = <span class="hljs-string">&quot;json&quot;</span> <span class="hljs-comment">//返回数据的格式,xml或json，默认json</span>
-      <span class="hljs-keyword">val</span> jsonParams = <span class="hljs-string">&quot;&#123;\&quot;reason\&quot;:\&quot;&quot;</span> + reason + <span class="hljs-string">&quot;\&quot;,\&quot;orgId\&quot;: \&quot;&quot;</span> + orgId + <span class="hljs-string">&quot;\&quot;,\&quot;dtype\&quot;:\&quot;&quot;</span> + dtype + <span class="hljs-string">&quot;\&quot;&#125;&quot;</span>
-      <span class="hljs-comment">//设置传输头文件和json参数</span>
-      println(jsonParams)
-      <span class="hljs-keyword">method</span>.set<span class="hljs-constructor">RequestHeader(<span class="hljs-string">&quot;Content-Type&quot;</span>,<span class="hljs-string">&quot;application/json&quot;</span>)</span>
-      <span class="hljs-keyword">method</span>.set<span class="hljs-constructor">Parameter(<span class="hljs-string">&quot;requestdata&quot;</span>, <span class="hljs-params">jsonParams</span>)</span>
-      <span class="hljs-keyword">val</span> se = <span class="hljs-keyword">new</span> <span class="hljs-constructor">StringRequestEntity(<span class="hljs-params">jsonParams</span>,<span class="hljs-string">&quot;application/json&quot;</span>,<span class="hljs-string">&quot;UTF-8&quot;</span>)</span>
-      <span class="hljs-keyword">method</span>.set<span class="hljs-constructor">RequestEntity(<span class="hljs-params">se</span>)</span>
-      <span class="hljs-comment">//执行请求</span>
-      <span class="hljs-keyword">val</span> statusCode = client.execute<span class="hljs-constructor">Method(<span class="hljs-params">method</span>)</span>
-      print(statusCode)
-      <span class="hljs-comment">//获取返回的结果</span>
-      <span class="hljs-keyword">val</span> responseBody = <span class="hljs-keyword">method</span>.get<span class="hljs-constructor">ResponseBodyAsStream()</span>
-      <span class="hljs-keyword">val</span> resp = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">IOUtils</span>.</span></span><span class="hljs-keyword">to</span><span class="hljs-constructor">String(<span class="hljs-params">responseBody</span>,<span class="hljs-string">&quot;utf8&quot;</span>)</span>
-      println(resp)
-      <span class="hljs-comment">//关闭连接</span>
-      <span class="hljs-keyword">method</span>.release<span class="hljs-constructor">Connection()</span>
-    &#125;</code></pre>
-<blockquote>
-<p>python服务器端</p>
-</blockquote>
-<pre><code class="hljs vala"><span class="hljs-comment">//创建连接</span>
-<span class="hljs-meta">#app = Flask(__name__)</span>
-<span class="hljs-meta">#@app.route(&#x27;/&#x27;,methods=[&#x27;POST&#x27;])</span>
-<span class="hljs-meta">#def postRestful():</span>
-<span class="hljs-meta">#   。。。。。。</span>
-<span class="hljs-meta">#  此处为要执行的python程序体</span>
-<span class="hljs-meta">#</span>
-<span class="hljs-comment">//开启服务，0.0.0.0表示允许局域网访问，5000是端口</span>
-<span class="hljs-meta">#app.run(host=&quot;0.0.0.0&quot;,port=&quot;5000&quot;)</span></code></pre></li>
-</ul>
-]]></content>
-      <categories>
-        <category>大数据</category>
-      </categories>
-      <tags>
-        <tag>python</tag>
-        <tag>scala</tag>
-        <tag>flask</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>随机森林和梯度决策树（GBDT）</title>
     <url>/2020/03/27/%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97%E5%92%8C%E6%A2%AF%E5%BA%A6%E5%86%B3%E7%AD%96%E6%A0%91%EF%BC%88GBDT%EF%BC%89/</url>
     <content><![CDATA[<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>随机森林和GBDT部分对比</p>
@@ -3927,5 +3718,214 @@ val value: RDD[<span class="hljs-keyword">Int</span>] = sc.makeRDD(<span class="
 </li>
 </ul>
 ]]></content>
+  </entry>
+  <entry>
+    <title>通过scala调用python的两种方式</title>
+    <url>/2019/10/18/spark/%E9%80%9A%E8%BF%87scala%E8%B0%83%E7%94%A8python%E7%9A%84%E4%B8%A4%E7%A7%8D%E6%96%B9%E5%BC%8F/</url>
+    <content><![CDATA[<h1 id="1-模仿cmd命令方式"><a href="#1-模仿cmd命令方式" class="headerlink" title="1. 模仿cmd命令方式"></a>1. 模仿cmd命令方式</h1><p>使用“Runtime.getRuntime.exec(exeStr)”方法，传入要执行的cmd命令就可以了。</p>
+<pre><code class="hljs stata">def TestCmdExec(<span class="hljs-keyword">args</span>: Array[String]) &#123;
+  <span class="hljs-keyword">var</span> exeStr = <span class="hljs-string">&quot;python D:/ckk_software/BDZbiandianzhan_py/scalaExcute.py &quot;</span>
+  exeStr += <span class="hljs-string">&quot; 李庄10 &quot;</span> + <span class="hljs-string">&quot; 0130343451706 &quot;</span>
+  <span class="hljs-keyword">var</span> proc = Runtime.getRuntime.exec(exeStr)
+  <span class="hljs-keyword">var</span> <span class="hljs-keyword">ir</span> = new InputStreamReader(proc.getInputStream, <span class="hljs-string">&quot;GBK&quot;</span>)
+  <span class="hljs-keyword">var</span> <span class="hljs-keyword">input</span> = new LineNumberReader(<span class="hljs-keyword">ir</span>)
+  <span class="hljs-keyword">var</span> result = <span class="hljs-keyword">input</span>.readLine()
+  <span class="hljs-keyword">while</span> (result != <span class="hljs-string">&quot;match fail&quot;</span> &amp;&amp; result != null) &#123;
+    println(result)
+    result = <span class="hljs-keyword">input</span>.readLine()
+  &#125;
+  <span class="hljs-keyword">input</span>.<span class="hljs-keyword">close</span>()
+  <span class="hljs-keyword">ir</span>.<span class="hljs-keyword">close</span>()
+  println(proc.waitFor())
+  proc.waitFor()
+&#125;</code></pre>
+<ul>
+<li>优点：操作简单，对于简单的命令什么的可以直接使用</li>
+<li>缺点：对于批量调用python程序比较复杂，也比较愚蠢，关于路径什么的都需要修改，不建议使用。</li>
+</ul>
+<h2 id="2-编写restful接口，在scala内部发送http请求来调用"><a href="#2-编写restful接口，在scala内部发送http请求来调用" class="headerlink" title="2. 编写restful接口，在scala内部发送http请求来调用"></a>2. 编写restful接口，在scala内部发送http请求来调用</h2><p>restful服务：URL定位资源，用HTTP动词（GET,POST,DELETE,DETC）描述操作。</p>
+<h3 id="1-编写接口"><a href="#1-编写接口" class="headerlink" title="1. 编写接口"></a>1. 编写接口</h3><blockquote>
+<p>因为要调用的程序是python程序，所以要使用python的flask来编写接口。</p>
+</blockquote>
+<pre><code class="hljs python"><span class="hljs-keyword">from</span> function <span class="hljs-keyword">import</span> *
+<span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
+<span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask,url_for,request
+<span class="hljs-keyword">import</span> json
+
+data = pd.ExcelFile(<span class="hljs-string">&quot;cidain2.xlsx&quot;</span>)
+data = data.parse(<span class="hljs-string">&quot;Sheet1&quot;</span>)
+cidian = data[<span class="hljs-string">&#x27;PMS_LINE_NAME&#x27;</span>].values.tolist()
+org_no = data[<span class="hljs-string">&#x27;PI_ORG_NO&#x27;</span>].values.tolist()
+id = data[<span class="hljs-string">&#x27;PMS_LINE_ID&#x27;</span>].values.tolist()
+<span class="hljs-comment"># go方法为需要scala端调用的程序</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">go</span>(<span class="hljs-params">text,org_id,cidian,org_no,id</span>):</span>
+    <span class="hljs-string">&#x27;&#x27;&#x27;</span>
+<span class="hljs-string">    :param text: &quot;高庄10&quot;</span>
+<span class="hljs-string">    :param org: 130343451706</span>
+<span class="hljs-string">    :return:</span>
+<span class="hljs-string">    &#x27;&#x27;&#x27;</span>
+    org_type = <span class="hljs-string">&quot;04&quot;</span>
+    <span class="hljs-keyword">if</span> org_type == <span class="hljs-number">3</span>:
+        org = str(org_id)[:<span class="hljs-number">-2</span>]
+    <span class="hljs-keyword">else</span>:
+        org = str(org_id)
+    label, cidian, id = fun(org, text, cidian, org_no, id)
+    label, id = filt(label, cidian, id)
+    <span class="hljs-keyword">if</span> len(label) &gt; <span class="hljs-number">0</span> :
+        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(<span class="hljs-number">0</span>,len(label)):    
+            print(label[i]+<span class="hljs-string">&quot;\t&quot;</span>+id[i])
+    <span class="hljs-keyword">else</span> :
+        print(<span class="hljs-string">&quot;match fail&quot;</span>)
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;\t&quot;</span>.join(label)+<span class="hljs-string">&quot;\t&quot;</span>+<span class="hljs-string">&quot;\t&quot;</span>.join (id)
+<span class="hljs-comment"># 注册flaskapp,接收get请求进行处理</span>
+app = Flask(__name__)
+<span class="hljs-comment"># get请求参数在url中，访问“http：//127.0.0.1：5000/reason/orgId”</span>
+<span class="hljs-meta">@app.route(&quot;/&lt;reason&gt;/&lt;orgId&gt;&quot;)</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">exeFlask</span>(<span class="hljs-params">reason,orgId</span>):</span> 
+    preResult = go(reason,orgId)
+    <span class="hljs-keyword">return</span> str(preResult)
+<span class="hljs-comment"># 接收post请求，请求参数封装在客户端的request中请求中</span>
+<span class="hljs-comment"># 访问“http：//127.0.0.1：5000/”</span>
+<span class="hljs-meta">@app.route(&#x27;/&#x27;,methods=[&#x27;POST&#x27;])</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">postRestful</span>():</span>
+    data = json.loads(str(request.data,<span class="hljs-string">&#x27;utf-8&#x27;</span>))
+    reason = data[<span class="hljs-string">&#x27;reason&#x27;</span>]
+    orgId =data[<span class="hljs-string">&#x27;orgId&#x27;</span>] 
+    print(<span class="hljs-string">&quot;reason: &quot;</span> + reason + <span class="hljs-string">&quot;\torgId:\t&quot;</span> + orgId)
+    preResult = go(reason,orgId,cidian,org_no,id)
+    <span class="hljs-keyword">return</span> str(preResult)
+<span class="hljs-comment"># 启动接口，run方法内可以不设参数，默认本地的5000端口</span>
+<span class="hljs-comment"># 如果要允许同内网访问的话要把host设置为“0.0.0.0”</span>
+app.run(host=<span class="hljs-string">&quot;0.0.0.0&quot;</span>,port=<span class="hljs-string">&quot;5000&quot;</span>)</code></pre>
+<h3 id="2-scala端发送请求（httpclient4-5-5和httpclient3-0-1两种版本）"><a href="#2-scala端发送请求（httpclient4-5-5和httpclient3-0-1两种版本）" class="headerlink" title="2. scala端发送请求（httpclient4.5.5和httpclient3.0.1两种版本）"></a>2. scala端发送请求（httpclient4.5.5和httpclient3.0.1两种版本）</h3><ul>
+<li>前言：httpclient4和httpclient3的差别还是蛮大的，所以使用需要注意版本的问题，而且就网上查阅的资料来看httpclient和httpcore的版本冲突还是蛮多的，还有和spark的版本兼容性问题也是。<h4 id="1-httpclient4-5-5"><a href="#1-httpclient4-5-5" class="headerlink" title="1. httpclient4.5.5"></a>1. httpclient4.5.5</h4></li>
+<li>httpclient4.5.5是用在spark2.3上面的，maven添加依赖方法略<blockquote>
+<p>get请求示例</p>
+</blockquote>
+</li>
+</ul>
+<pre><code class="hljs properties"><span class="hljs-attr">def</span> <span class="hljs-string">TestHttpGet(url: String): String = &#123;</span>
+   <span class="hljs-attr">import</span> <span class="hljs-string">org.apache.http.client.methods.&#123; HttpGet &#125;</span>
+   <span class="hljs-attr">import</span> <span class="hljs-string">org.apache.http.impl.client.HttpClients</span>
+   <span class="hljs-attr">import</span> <span class="hljs-string">org.apache.http.util.EntityUtils</span>
+
+   <span class="hljs-attr">var</span> <span class="hljs-string">host = &quot;http://10.138.72.199:5000/&quot;</span>
+   <span class="hljs-attr">var</span> <span class="hljs-string">orgId = &quot;/0130343451006&quot;</span>
+   <span class="hljs-attr">var</span> <span class="hljs-string">rawText = &quot;_霍邱县开发区杭庙村石船 </span>
+   <span class="hljs-attr">var</span> <span class="hljs-string">url = host + rawText + orgId</span>
+   <span class="hljs-attr">var</span> <span class="hljs-string">HttpClient = HttpClients.createDefault()</span>
+   <span class="hljs-attr">val</span> <span class="hljs-string">get = new HttpGet(url)</span>
+   <span class="hljs-attr">var</span> <span class="hljs-string">response = HttpClient.execute(get)</span>
+   <span class="hljs-attr">EntityUtils.toString(response.getEntity)</span>
+ <span class="hljs-attr">&#125;</span></code></pre>
+<blockquote>
+<p>post请求示例</p>
+</blockquote>
+<pre><code class="hljs scala"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">restful</span></span>()&#123;
+    <span class="hljs-keyword">import</span> org.apache.http.&#123; <span class="hljs-type">HttpEntity</span>, <span class="hljs-type">HttpResponse</span> &#125;
+    <span class="hljs-keyword">import</span> org.apache.http.client.methods.<span class="hljs-type">HttpPost</span>
+    <span class="hljs-keyword">import</span> org.apache.http.entity.<span class="hljs-type">StringEntity</span>
+    <span class="hljs-keyword">import</span> org.apache.http.impl.client.<span class="hljs-type">DefaultHttpClient</span>
+    <span class="hljs-keyword">import</span> org.apache.http.protocol.<span class="hljs-type">HTTP</span>
+    <span class="hljs-keyword">import</span> org.apache.http.util.<span class="hljs-type">EntityUtils</span>
+    <span class="hljs-keyword">val</span> httpclient = <span class="hljs-keyword">new</span> <span class="hljs-type">DefaultHttpClient</span>
+    <span class="hljs-keyword">try</span> &#123;
+      <span class="hljs-keyword">val</span> url = <span class="hljs-string">&quot;http://10.138.72.199:5000&quot;</span>
+      <span class="hljs-keyword">val</span> reason = <span class="hljs-string">&quot;_池河大道交警队处_交警队外台区新架设低压电缆释放&quot;</span>
+      <span class="hljs-keyword">val</span> orgId = <span class="hljs-string">&quot;0130343451304&quot;</span> <span class="hljs-comment">//经度</span>
+      <span class="hljs-keyword">val</span> dtype = <span class="hljs-string">&quot;json&quot;</span> <span class="hljs-comment">//返回数据的格式,xml或json，默认json</span>
+      <span class="hljs-keyword">val</span> jsonParams = <span class="hljs-string">&quot;&#123;\&quot;reason\&quot;:\&quot;&quot;</span> + reason + <span class="hljs-string">&quot;\&quot;,\&quot;orgId\&quot;: \&quot;&quot;</span> +orgId + <span class="hljs-string">&quot;\&quot;,\&quot;dtype\&quot;:\&quot;&quot;</span> + dtype + <span class="hljs-string">&quot;\&quot;&#125;&quot;</span>
+     
+      <span class="hljs-comment">//创建</span>
+      <span class="hljs-keyword">val</span> httpost = <span class="hljs-keyword">new</span> <span class="hljs-type">HttpPost</span>(url)
+      println(<span class="hljs-string">&quot;参数：&quot;</span> + jsonParams)
+      <span class="hljs-comment">//json字符串,准备发送</span>
+
+      <span class="hljs-keyword">try</span> &#123;
+        <span class="hljs-keyword">val</span> stringEntity = <span class="hljs-keyword">new</span> <span class="hljs-type">StringEntity</span>(jsonParams, <span class="hljs-type">HTTP</span>.<span class="hljs-type">UTF_8</span>)
+        stringEntity.setContentType(<span class="hljs-string">&quot;application/json;charset=utf-8&quot;</span>)
+        httpost.setEntity(stringEntity)
+        <span class="hljs-keyword">var</span> response: <span class="hljs-type">HttpResponse</span> = <span class="hljs-literal">null</span>
+        response = httpclient.execute(httpost)
+        <span class="hljs-keyword">val</span> entity: <span class="hljs-type">HttpEntity</span> = response.getEntity
+        <span class="hljs-keyword">try</span> &#123;
+          <span class="hljs-comment">//必需触发</span>
+          println(<span class="hljs-type">EntityUtils</span>.toString(entity))
+        &#125; <span class="hljs-keyword">catch</span> &#123;
+          <span class="hljs-keyword">case</span> appleException: <span class="hljs-type">Exception</span> =&gt; println(appleException.toString)
+        &#125;
+      &#125; <span class="hljs-keyword">catch</span> &#123;
+        <span class="hljs-keyword">case</span> e: <span class="hljs-type">Exception</span> =&gt; &#123;
+          println(<span class="hljs-string">&quot;Exception is &quot;</span> + e.toString)
+        &#125;
+      &#125;
+    &#125; <span class="hljs-keyword">catch</span> &#123;
+      <span class="hljs-keyword">case</span> sendE: <span class="hljs-type">Exception</span> =&gt; &#123; <span class="hljs-keyword">throw</span> sendE &#125;
+    &#125; <span class="hljs-keyword">finally</span> &#123;
+      <span class="hljs-comment">//关闭</span>
+      httpclient.getConnectionManager.shutdown
+    &#125;
+  &#125;</code></pre>
+<h4 id="2-httpclient3-0-1"><a href="#2-httpclient3-0-1" class="headerlink" title="2.httpclient3.0.1"></a>2.httpclient3.0.1</h4><ul>
+<li>httpclient3主要是支持spark1.6使用的，但是在spark2.3上面也同样兼容，但是httpclient4不支持spark1.6，因为手上的项目是spark1.6的，所以需要使用httpclient3。而且httpclient3的版本也比较古老，所以网上很少可以用的参考资料。这里是参考java版本写的scala版本的调用接口。<blockquote>
+<p>依赖</p>
+</blockquote>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+		<span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>commons-httpclient<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+		<span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>commons-httpclient<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+		<span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>3.0.1<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+	<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
+<blockquote>
+<p>post客户请求方法（这里因为只需要用到post方法就只写了这个版本的）</p>
+</blockquote>
+<pre><code class="hljs reasonml">def <span class="hljs-constructor">TestHttpClient3()</span>&#123;
+      import org.apache.commons.httpclient._
+      import org.apache.commons.httpclient.methods._
+   
+      <span class="hljs-keyword">val</span> client = <span class="hljs-keyword">new</span> HttpClient
+<span class="hljs-comment">//      val method = new PostMethod(&quot;http://10.138.72.199:5000&quot;)</span>
+      <span class="hljs-keyword">val</span> <span class="hljs-keyword">method</span> = <span class="hljs-keyword">new</span> <span class="hljs-constructor">PostMethod(<span class="hljs-string">&quot;http://127.0.0.1:5000&quot;</span>)</span>
+      <span class="hljs-keyword">val</span> reason = <span class="hljs-string">&quot;_徽州区富溪乡_田里3817台区改造：横担金具安装、拉线制作，低压导线展放等。&quot;</span>
+      <span class="hljs-keyword">val</span> orgId = <span class="hljs-string">&quot;01303434512&quot;</span> <span class="hljs-comment">//orgId</span>
+      <span class="hljs-keyword">val</span> dtype = <span class="hljs-string">&quot;json&quot;</span> <span class="hljs-comment">//返回数据的格式,xml或json，默认json</span>
+      <span class="hljs-keyword">val</span> jsonParams = <span class="hljs-string">&quot;&#123;\&quot;reason\&quot;:\&quot;&quot;</span> + reason + <span class="hljs-string">&quot;\&quot;,\&quot;orgId\&quot;: \&quot;&quot;</span> + orgId + <span class="hljs-string">&quot;\&quot;,\&quot;dtype\&quot;:\&quot;&quot;</span> + dtype + <span class="hljs-string">&quot;\&quot;&#125;&quot;</span>
+      <span class="hljs-comment">//设置传输头文件和json参数</span>
+      println(jsonParams)
+      <span class="hljs-keyword">method</span>.set<span class="hljs-constructor">RequestHeader(<span class="hljs-string">&quot;Content-Type&quot;</span>,<span class="hljs-string">&quot;application/json&quot;</span>)</span>
+      <span class="hljs-keyword">method</span>.set<span class="hljs-constructor">Parameter(<span class="hljs-string">&quot;requestdata&quot;</span>, <span class="hljs-params">jsonParams</span>)</span>
+      <span class="hljs-keyword">val</span> se = <span class="hljs-keyword">new</span> <span class="hljs-constructor">StringRequestEntity(<span class="hljs-params">jsonParams</span>,<span class="hljs-string">&quot;application/json&quot;</span>,<span class="hljs-string">&quot;UTF-8&quot;</span>)</span>
+      <span class="hljs-keyword">method</span>.set<span class="hljs-constructor">RequestEntity(<span class="hljs-params">se</span>)</span>
+      <span class="hljs-comment">//执行请求</span>
+      <span class="hljs-keyword">val</span> statusCode = client.execute<span class="hljs-constructor">Method(<span class="hljs-params">method</span>)</span>
+      print(statusCode)
+      <span class="hljs-comment">//获取返回的结果</span>
+      <span class="hljs-keyword">val</span> responseBody = <span class="hljs-keyword">method</span>.get<span class="hljs-constructor">ResponseBodyAsStream()</span>
+      <span class="hljs-keyword">val</span> resp = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">IOUtils</span>.</span></span><span class="hljs-keyword">to</span><span class="hljs-constructor">String(<span class="hljs-params">responseBody</span>,<span class="hljs-string">&quot;utf8&quot;</span>)</span>
+      println(resp)
+      <span class="hljs-comment">//关闭连接</span>
+      <span class="hljs-keyword">method</span>.release<span class="hljs-constructor">Connection()</span>
+    &#125;</code></pre>
+<blockquote>
+<p>python服务器端</p>
+</blockquote>
+<pre><code class="hljs vala"><span class="hljs-comment">//创建连接</span>
+<span class="hljs-meta">#app = Flask(__name__)</span>
+<span class="hljs-meta">#@app.route(&#x27;/&#x27;,methods=[&#x27;POST&#x27;])</span>
+<span class="hljs-meta">#def postRestful():</span>
+<span class="hljs-meta">#   。。。。。。</span>
+<span class="hljs-meta">#  此处为要执行的python程序体</span>
+<span class="hljs-meta">#</span>
+<span class="hljs-comment">//开启服务，0.0.0.0表示允许局域网访问，5000是端口</span>
+<span class="hljs-meta">#app.run(host=&quot;0.0.0.0&quot;,port=&quot;5000&quot;)</span></code></pre></li>
+</ul>
+]]></content>
+      <categories>
+        <category>大数据</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+        <tag>scala</tag>
+        <tag>flask</tag>
+      </tags>
   </entry>
 </search>
