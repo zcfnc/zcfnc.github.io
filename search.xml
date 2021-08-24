@@ -3425,30 +3425,6 @@ deque([<span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <
       </tags>
   </entry>
   <entry>
-    <title>&#39;捕蛇者说&#39;</title>
-    <url>/2021/02/23/python/%E6%8D%95%E8%9B%87%E8%80%85%E8%AF%B4/</url>
-    <content><![CDATA[<h2 id="第一节："><a href="#第一节：" class="headerlink" title="第一节："></a>第一节：</h2><ul>
-<li><p>Python’s super() considered super! <a href="https://rhettinger.wordpress.com/2011/05/26/super-considered-super/">Python’s super() considered super! | Deep Thoughts by Raymond Hettinger (wordpress.com)</a></p>
-</li>
-<li><p>提问的智慧（<a href="https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/main/README-zh_CN.md#%E5%A3%B0%E6%98%8E%EF%BC%89">https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/main/README-zh_CN.md#%E5%A3%B0%E6%98%8E）</a></p>
-</li>
-<li><p>XY program <a href="https://xyproblem.info/">The XY Problem</a></p>
-</li>
-<li><p>APScheduler： 定時任務框架 </p>
-</li>
-<li><p><a href="https://www.youtube.com/watch?v=MCs5OvhV9S4">David Beazley - Python Concurrency From the Ground Up: LIVE! - PyCon 2015</a></p>
-</li>
-<li><p>书籍：ddia</p>
-</li>
-<li><p>播客：tgtalk</p>
-</li>
-</ul>
-]]></content>
-      <tags>
-        <tag>python</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>spark学习</title>
     <url>/2021/03/03/spark/spark%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h1 id="1-0-基础概念"><a href="#1-0-基础概念" class="headerlink" title="1.0 基础概念"></a>1.0 基础概念</h1><h2 id="1-1-核心组件"><a href="#1-1-核心组件" class="headerlink" title="1.1 核心组件"></a>1.1 核心组件</h2><ul>
@@ -3617,6 +3593,12 @@ val value: RDD[<span class="hljs-keyword">Int</span>] = sc.makeRDD(<span class="
 <p><strong>reduceByKey</strong>可以预先在分区内将相同key的数据进行聚合，然后进行落盘再shuffle。<strong>提升了很大的性能</strong></p>
 <p>而groupByKey只能先打乱所有的数据再落盘聚合。</p>
 ]]></content>
+      <categories>
+        <category>工作</category>
+      </categories>
+      <tags>
+        <tag>spark</tag>
+      </tags>
   </entry>
   <entry>
     <title>美团吃到虫子并维权成功全记录</title>
@@ -3709,15 +3691,149 @@ val value: RDD[<span class="hljs-keyword">Int</span>] = sc.makeRDD(<span class="
       </tags>
   </entry>
   <entry>
-    <title>保险</title>
+    <title>保险相关基础知识</title>
     <url>/2021/06/29/%E7%94%9F%E6%B4%BB%E5%85%B6%E4%BB%96/%E4%BF%9D%E9%99%A9/</url>
-    <content><![CDATA[<h1 id="保险"><a href="#保险" class="headerlink" title="保险"></a>保险</h1><ul>
-<li><p>风险对抗</p>
-</li>
-<li><p>风险只能转移</p>
-</li>
+    <content><![CDATA[<h1 id="1-保险"><a href="#1-保险" class="headerlink" title="1. 保险"></a>1. 保险</h1><p>##1.1. 保险初步说明</p>
+<p>###1.1.1 是什么</p>
+<blockquote>
+<p>一种对财务进行风险管理的工具</p>
+<p>对风险进行转移或者降低</p>
+</blockquote>
+<h3 id="1-1-2-基本作用"><a href="#1-1-2-基本作用" class="headerlink" title="1.1.2 基本作用"></a>1.1.2 基本作用</h3><ul>
+<li>风险来临时，帮助家庭度过难关，避免家庭陷入经济困境；</li>
+<li>明确资金归属权的问题，明确资金的流向；</li>
+<li>帮助我们做长期储蓄，实现养老和子女教育的问题。</li>
 </ul>
+<h2 id="1-2-医保"><a href="#1-2-医保" class="headerlink" title="1.2. 医保"></a>1.2. 医保</h2><p>社保，就是社会保险，<strong>属于社会福利性质的保险</strong>。它由政府主办，个人或单位负责交钱，政府承担保险公司的角色，财政给予补贴，并承担最终的保险责任。社保一共有 5 个项目，分别是<strong>养老保险、医疗保险、生育保险、工伤保险和失业保险</strong>，其中医疗保险就是我们常说的医保。而医保又分为职工医疗保险和城镇居民医疗保险两种。</p>
+<p>###1.2.1 医保的优点</p>
+<blockquote>
+<p>医保门槛很低</p>
+<p>广覆盖</p>
+<p>价格实惠</p>
+</blockquote>
+<h3 id="1-2-2-医保的缺点"><a href="#1-2-2-医保的缺点" class="headerlink" title="1.2.2 医保的缺点"></a>1.2.2 医保的缺点</h3><blockquote>
+<p>保障效果不足</p>
+<p>受地域影响较大</p>
+</blockquote>
+<h2 id="1-3-普通人常见的几种商业保险"><a href="#1-3-普通人常见的几种商业保险" class="headerlink" title="1.3. 普通人常见的几种商业保险"></a>1.3. 普通人常见的几种商业保险</h2><h3 id="1-3-1-医疗险"><a href="#1-3-1-医疗险" class="headerlink" title="1.3.1 医疗险"></a>1.3.1 医疗险</h3><blockquote>
+<p>弥补医保的不足，解决可能出现的高额医疗费用问题</p>
+</blockquote>
+<p>商业医疗险和社会医保之间的关系:<strong>两者关系的相互补充，而不是相互取代</strong></p>
+<h3 id="1-3-2-重疾险"><a href="#1-3-2-重疾险" class="headerlink" title="1.3.2 重疾险"></a>1.3.2 重疾险</h3><blockquote>
+<p>既能补充医疗费用，也能补偿因为大病导致的收入损失，贴补家用</p>
+</blockquote>
+<p>重疾险是「给付型」的保险，和当时购买时签订合同的保额有关，和生病花费多少无关。简单讲，保额是多少钱，生病了就赔多少钱。（打个比方生病花了10w，但是保额是20w，仍然是可以赔付20w）</p>
+<p><strong>医疗险和重疾险组合</strong>，降低了理赔门槛，保障也更加全面，可以帮我们更好的对抗疾病风险</p>
+<h3 id="1-3-3-意外险"><a href="#1-3-3-意外险" class="headerlink" title="1.3.3 意外险"></a>1.3.3 意外险</h3><blockquote>
+<p>报销由意外带来的医疗，对意外导致的残疾和身故进行补偿；</p>
+</blockquote>
+<p>意外风险是由外因导致的，比如交通事故、磕伤碰伤、摔伤烫伤等等。不同的事故，导致的结果也不一样，有的可能只是皮外伤，也有可能出现骨折、留下残疾，甚至失去生命。</p>
+<p>与之对应，意外险的主要保障内容有三类：<strong>意外医疗、意外身故和意外伤残</strong></p>
+<h3 id="1-3-4-寿险"><a href="#1-3-4-寿险" class="headerlink" title="1.3.4 寿险"></a>1.3.4 寿险</h3><blockquote>
+<p>补偿因身故导致的收入损失，避免家庭因经济支柱去世而陷入经济困难之中。</p>
+</blockquote>
+<p>它是一种以「身故」为赔付标准的保险，既包括疾病身故，也包括意外身故。</p>
+<p>寿险可以让我们活着的时候是一台印钞机，倒下也是一堆人民币</p>
+<h1 id="2-商业保险具体介绍"><a href="#2-商业保险具体介绍" class="headerlink" title="2. 商业保险具体介绍"></a>2. 商业保险具体介绍</h1><p>从省保费的角度看，应该先买重疾险，因为越早买便宜得越多；从决策难度的角度看，应该先买意外险，因为保费最便宜。如果一定要排个顺序，那我会建议大家先买医疗险中的<strong>百万医疗险</strong>。</p>
+<p>##2.1 百万医疗险</p>
+<h3 id="2-1-1-优点"><a href="#2-1-1-优点" class="headerlink" title="2.1.1 优点"></a>2.1.1 优点</h3><blockquote>
+<p> 用到可能性大，保额高，价格便宜，决策简单。</p>
+</blockquote>
+<h3 id="2-1-2-缺点"><a href="#2-1-2-缺点" class="headerlink" title="2.1.2 缺点"></a>2.1.2 缺点</h3><blockquote>
+<p>管大不管小（针对大病作用很大，但小病作用却很小）</p>
+<p>续保不确定性大</p>
+<p>无法补偿医疗费用之外的财务损失</p>
+</blockquote>
+<h3 id="2-1-3-总结"><a href="#2-1-3-总结" class="headerlink" title="2.1.3 总结"></a>2.1.3 总结</h3><ul>
+<li>普通人选择医疗险的三个关键点：保额高、不限社保范围、价格能负担得起。 </li>
+<li>百万医疗险的优点：高保额，都在 100 万以上；不限社保，100% 赔付，自费药进口药都能报销；价格便宜，年轻人只要两三百元一年，性价比很高。 </li>
+<li>百万医疗险的不足：免赔额比较高；无法提供终身保障；无法补偿医疗费用意外的开销。 </li>
+<li>购买医疗险时，注意仔细阅读健康告知和免责条款。</li>
+</ul>
+<h2 id="2-2-重疾险"><a href="#2-2-重疾险" class="headerlink" title="2.2 重疾险"></a>2.2 重疾险</h2><p>重疾险是给付型保险，而医疗险是补偿型保险。</p>
+<p><strong>给付型，满足条件就给钱。</strong>只跟当初<strong>「保多少」</strong>有关，跟<strong>「治病花多少」</strong>没关系</p>
+<p><strong>补偿型，</strong>要看<strong>实际的花销，</strong>跟<strong>「保多少，花多少，花在哪儿了」</strong>都有关系</p>
+<h3 id="2-2-1-优点"><a href="#2-2-1-优点" class="headerlink" title="2.2.1 优点"></a>2.2.1 优点</h3><blockquote>
+<p>产品较稳定</p>
+<p>达到理赔标准，一次性赔付一笔钱，不限制用途；</p>
+<p> 能够提供终身保障，不用担心保障中断；</p>
+</blockquote>
+<h3 id="2-2-2-缺点"><a href="#2-2-2-缺点" class="headerlink" title="2.2.2 缺点"></a>2.2.2 缺点</h3><blockquote>
+<p>相比百万医疗险，理赔门槛较高。 </p>
+<p>配置产品时，最好把百万医疗险和重疾险搭配起来，既能降低理赔门槛，也能加强特定高发重疾的保障。</p>
+</blockquote>
+<h2 id="2-3-重疾险的分类"><a href="#2-3-重疾险的分类" class="headerlink" title="2.3 重疾险的分类"></a>2.3 重疾险的分类</h2><ul>
+<li>按保障时间长短，分定期重疾和终身重疾； </li>
+<li>按赔付次数，分为单次重疾和多次重疾； </li>
+<li>按疾病，分为分组重疾和不分组重疾.</li>
+</ul>
+<p>价格上： </p>
+<ol>
+<li>不分组的多次重疾要比分组的多次重疾更贵； </li>
+<li>多次重疾比单次重疾更贵； </li>
+<li>终身的重疾险也要比定期的重疾险更贵。</li>
+</ol>
+<h3 id="2-3-1-如何选择适合自己的重疾险"><a href="#2-3-1-如何选择适合自己的重疾险" class="headerlink" title="2.3.1 如何选择适合自己的重疾险"></a>2.3.1 如何选择适合自己的重疾险</h3><h4 id="2-3-1-1-第一步：确定预算"><a href="#2-3-1-1-第一步：确定预算" class="headerlink" title="2.3.1.1 第一步：确定预算"></a>2.3.1.1 第一步：确定预算</h4><blockquote>
+<p>相对具有普适性的建议是：一个家庭，配置保障类产品的费用，也就是「重疾险 + 寿险 + 意外险 + 医疗险」这几类产品，每年的总保费占年收入的 5% 到 10% 是比较合理的，如果超过 10%，可能会影响日常生活的质量，缴费压力大一些；但如果低于 5%，保额、保障的全面性就势必受到影响。</p>
+<p>而所有预算中，重疾险的保费会占到总预算的 70%-80%。</p>
+</blockquote>
+<h4 id="2-3-1-2-第二步：确定保额"><a href="#2-3-1-2-第二步：确定保额" class="headerlink" title="2.3.1.2 第二步：确定保额"></a>2.3.1.2 第二步：确定保额</h4><blockquote>
+<p>考虑到目前的生活水平和医疗成本，重疾保额要达到 <strong>30-50 万</strong>，才会有明显的意义。如果是经济发达地区，收入和支出都较高、医疗费用水平也较高，保额目标做到 <strong>100 万以上</strong>也是合理的。</p>
+<p>但是保额未必是一步到位的，可以后续根据自己能力逐渐补充提高。</p>
+</blockquote>
+<p>####2.3.1.3 第三步：选择产品类型</p>
+<blockquote>
+<p>在预算和保额的约束下，选择产品类型，实际上就是在保障责任的长度与深度之间做出取舍。长度也就是<strong>保障期限</strong>的长短，深度则是<strong>保障责任</strong>的多少，需要考虑的选择包含以下几项：</p>
+<ul>
+<li>多次重疾还是单次重疾？</li>
+<li>如果是多次重疾，分组还是不分组？</li>
+<li>终身重疾还是定期重疾？</li>
+<li>是否要包含身故责任？</li>
+</ul>
+</blockquote>
+<h4 id="2-3-1-4-第四步：选择具体产品"><a href="#2-3-1-4-第四步：选择具体产品" class="headerlink" title="2.3.1.4 第四步：选择具体产品"></a>2.3.1.4 第四步：选择具体产品</h4><blockquote>
+<p>先把符合条件的产品的健康告知都认真地看一遍，需要智能核保的也都做一下得出核保结论，看哪些能保得上，哪些保不上，进一步缩小选择范围。</p>
+<p>其次，看一些细节的区别，比如等待期的长短、中症和轻症的赔付比例、免责条款的范围、等等</p>
+</blockquote>
+<p>两个细节地方：</p>
+<blockquote>
+<p><strong>第一是，轻症和中症</strong>。在大多数重疾险中，轻症、中症都是和重疾绑定在一起的，不需要额外选择；个别产品是分开的，需要自己选择。我个人的建议是，<strong>尽量把轻症、中症都加上</strong>，毕竟它们能降低重疾险的理赔门槛，从保障的角度来说，是相当实用的。</p>
+<p><strong>另一个是保费豁免。</strong>在规定的缴费期内，如果达到某些特定情况，比如轻症、中症、重疾、全残或者身故，后续保费就不用再交了，保险合同依然有效，这相当于给自己要交的保费又买了一份保险。如果豁免的对象是被保险人，就叫做被保人豁免；如果针对的是投保人，那就叫投保人豁免。</p>
+</blockquote>
+<h4 id="2-3-1-5-可选：自己做产品组合"><a href="#2-3-1-5-可选：自己做产品组合" class="headerlink" title="2.3.1.5 可选：自己做产品组合"></a>2.3.1.5 可选：自己做产品组合</h4><blockquote>
+<p>如果单一产品满足不了我们的需求，或者在不同产品之间过于纠结难以选择，也可以做组合。</p>
+</blockquote>
+<h2 id="2-4-低价格高保障的意外险"><a href="#2-4-低价格高保障的意外险" class="headerlink" title="2.4 低价格高保障的意外险"></a>2.4 低价格高保障的意外险</h2><h3 id="2-4-0-是什么"><a href="#2-4-0-是什么" class="headerlink" title="2.4.0 是什么"></a>2.4.0 是什么</h3><p>在意外险中，「意外」二字有专门的定义，它指的是外来的、突发的、非本意的、非疾病的使身体受到伤害的客观事件，并且这个客观事件是导致被保险人受伤或身故的直接原因、以及单独原因</p>
+<h3 id="2-4-1-意外险的常见保障有哪些？"><a href="#2-4-1-意外险的常见保障有哪些？" class="headerlink" title="2.4.1 意外险的常见保障有哪些？"></a>2.4.1 意外险的常见保障有哪些？</h3><p>生活中的意外，按照严重程度的不同，导致的结果一般有 3 种：</p>
+<ol>
+<li>直接身故；</li>
+<li>造成伤残，比如失明、肢体缺失；</li>
+<li>身体损伤，需要进行治疗。</li>
+</ol>
+<p>与这 3 种情况相对应，意外险中最常见的保障责任也是3种，分别是意外身故责任、意外伤残责任和意外医疗责任。</p>
+<h4 id="2-4-1-1-意外身故责任"><a href="#2-4-1-1-意外身故责任" class="headerlink" title="2.4.1.1 意外身故责任"></a>2.4.1.1 <strong>意外身故责任</strong></h4><p>这是意外险中最基础、最常见的保障，比较简单，如果被保险人因意外身故，意外险就会一次性赔付保额。和重疾险一样，意外身故也是给付型的，如果有多款意外险，意外身故责任可以叠加理赔。</p>
+<h4 id="2-4-1-2-意外伤残责任"><a href="#2-4-1-2-意外伤残责任" class="headerlink" title="2.4.1.2 意外伤残责任"></a>2.4.1.2 意外伤残责任</h4><p>可以能提供完整分级的伤残保障，其他保险，要么不含伤残，要么只含比较严重的全残，覆盖范围都不如意外险。</p>
+<p>根据《人身保险伤残评定标准》，意外伤残分为十级，以意外身故责任保额为基准，其中一级最重，可以赔付 100% 的保额，十级最轻，可以赔付 10% 的保额，中间每隔一级，赔付比例就相差 10%。</p>
+<h4 id="2-4-1-3-意外医疗责任"><a href="#2-4-1-3-意外医疗责任" class="headerlink" title="2.4.1.3 意外医疗责任"></a>2.4.1.3 意外医疗责任</h4><p>意外医疗，也是一种医疗险，报销就医产生的费用，只不过相比普通的医疗险，它<strong>只保意外伤害带来的费用</strong>，疾病引起的医疗是不理赔的。</p>
+<h3 id="2-4-2-意外险的常见分类"><a href="#2-4-2-意外险的常见分类" class="headerlink" title="2.4.2 意外险的常见分类"></a>2.4.2 意外险的常见分类</h3><p>根据事故原因的不同，意外险又可以分为综合意外险和专项意外险，并且两者可以叠加理赔，并不冲突。</p>
+<h4 id="2-4-2-1-综合意外险"><a href="#2-4-2-1-综合意外险" class="headerlink" title="2.4.2.1 综合意外险"></a>2.4.2.1 综合意外险</h4><p>什么意外都能保的意外险，除了免责条款里的内容，不会特别限制意外的原因。</p>
+<h4 id="2-4-2-2-专项意外险"><a href="#2-4-2-2-专项意外险" class="headerlink" title="2.4.2.2 专项意外险"></a>2.4.2.2 专项意外险</h4><p>只针对某种特定类型的意外提供保障。</p>
+<p>比如普通的综合意外险，自驾发生事故是在理赔范围内的。但公共交通意外险，只有乘坐飞机、轮船、汽车、火车等公共交通工具，才能享受意外保障；范围再窄些，航空意外险，只有乘坐民营航班，才能享受意外保障。</p>
+<h3 id="2-4-3-意外险的特点"><a href="#2-4-3-意外险的特点" class="headerlink" title="2.4.3 意外险的特点"></a>2.4.3 意外险的特点</h3><ol>
+<li>保费低</li>
+<li>杠杆高（低保费高赔付）</li>
+<li>无等待期，即投即生效</li>
+<li>无健康告知或少健康告知，相对十分宽松</li>
+<li>根据职业存在风险分类，不同的职业选择不同的保险种类</li>
+</ol>
 ]]></content>
+      <categories>
+        <category>生活其他</category>
+      </categories>
+      <tags>
+        <tag>生活</tag>
+        <tag>保险</tag>
+      </tags>
   </entry>
   <entry>
     <title>通过scala调用python的两种方式</title>
@@ -3929,6 +4045,206 @@ app.run(host=<span class="hljs-string">&quot;0.0.0.0&quot;</span>,port=<span cla
       </tags>
   </entry>
   <entry>
+    <title>vim tutor</title>
+    <url>/2021/08/24/vim-tutor/</url>
+    <content><![CDATA[<pre><code class="hljs sql">========= basic ==========
+left : h
+right : l
+up : k
+down : j
+undo the previous motion: u
+undo the previous motion of the line : U
+undo undo : ctrl+R
+word : w
+<span class="hljs-keyword">end</span> : e
+<span class="hljs-keyword">insert</span> : i
+append : a
+paste : p
+<span class="hljs-keyword">replace</span> a <span class="hljs-built_in">char</span> ：r
+<span class="hljs-keyword">replace</span> a word : R
+copy a word: yw  (paste <span class="hljs-keyword">is</span> p!!)
+copy <span class="hljs-keyword">some</span> words : v+y
+<span class="hljs-keyword">show</span> the numbers <span class="hljs-keyword">of</span> line : <span class="hljs-keyword">set</span> <span class="hljs-built_in">number</span>
+<span class="hljs-keyword">to</span> the line <span class="hljs-keyword">end</span> : $
+command <span class="hljs-keyword">prompt</span> : ctrl + d  / tab
+($ <span class="hljs-keyword">is</span> means the <span class="hljs-keyword">end</span> <span class="hljs-keyword">of</span> the line)
+(w <span class="hljs-keyword">is</span> means word)
+(e <span class="hljs-keyword">is</span> means <span class="hljs-keyword">end</span>) 
+======== <span class="hljs-keyword">delete</span> ========== d+motion
+<span class="hljs-keyword">delete</span> a <span class="hljs-built_in">char</span>: x
+<span class="hljs-keyword">delete</span> <span class="hljs-keyword">to</span> word : dw
+<span class="hljs-keyword">delete</span> <span class="hljs-keyword">to</span> <span class="hljs-keyword">end</span> : de
+<span class="hljs-keyword">left</span> <span class="hljs-keyword">delete</span> : dj
+<span class="hljs-keyword">right</span> <span class="hljs-keyword">delete</span> : dl
+<span class="hljs-keyword">delete</span> <span class="hljs-keyword">to</span> line : d$
+<span class="hljs-keyword">delete</span> line : dd
+======= <span class="hljs-built_in">number</span> <span class="hljs-keyword">to</span> <span class="hljs-keyword">execute</span> =====
+<span class="hljs-keyword">move</span> <span class="hljs-keyword">to</span> <span class="hljs-keyword">second</span> word : <span class="hljs-number">2</span>w
+<span class="hljs-keyword">move</span> <span class="hljs-keyword">to</span> <span class="hljs-keyword">second</span> word <span class="hljs-keyword">end</span> : <span class="hljs-number">2</span>e
+<span class="hljs-keyword">to</span> the <span class="hljs-keyword">end</span> <span class="hljs-keyword">of</span> the line : <span class="hljs-number">0</span>
+<span class="hljs-keyword">delete</span> <span class="hljs-number">2</span> words : d2w
+<span class="hljs-keyword">delete</span> <span class="hljs-number">2</span> <span class="hljs-keyword">lines</span> : <span class="hljs-number">2</span>dd
+======= the command <span class="hljs-keyword">of</span> place =====
+<span class="hljs-keyword">delete</span> a line <span class="hljs-keyword">and</span> paste it below the <span class="hljs-keyword">current</span> line : dd + p
+<span class="hljs-keyword">replace</span> a word : r + word
+<span class="hljs-keyword">change</span> a word <span class="hljs-keyword">to</span> the <span class="hljs-keyword">end</span> <span class="hljs-keyword">of</span> the word : cw/ce
+<span class="hljs-keyword">change</span> <span class="hljs-keyword">to</span> the <span class="hljs-keyword">end</span> <span class="hljs-keyword">of</span> the <span class="hljs-keyword">row</span> : c$
+<span class="hljs-keyword">change</span> <span class="hljs-keyword">to</span> <span class="hljs-keyword">second</span> word : c2w
+======= location <span class="hljs-keyword">and</span> <span class="hljs-keyword">file</span> <span class="hljs-keyword">status</span> =====
+<span class="hljs-keyword">go</span> <span class="hljs-keyword">to</span> the <span class="hljs-keyword">first</span> line : gg
+<span class="hljs-keyword">go</span> <span class="hljs-keyword">to</span> the <span class="hljs-keyword">last</span> line : G
+<span class="hljs-keyword">show</span> <span class="hljs-keyword">file</span> <span class="hljs-keyword">status</span> : ctrl+g
+====== <span class="hljs-keyword">search</span> command ==========
+<span class="hljs-keyword">search</span> word <span class="hljs-keyword">in</span> <span class="hljs-keyword">order</span> :  /+word (n:<span class="hljs-keyword">next</span> one ;N:the previous one)
+search word in reverse : ?+word
+find matched brackets(查找匹配的括号) : %
+<span class="hljs-keyword">replace</span> word <span class="hljs-keyword">in</span> this line : :/s/oldword/newword
+<span class="hljs-keyword">replace</span> word <span class="hljs-keyword">all</span> : :/s/oldword/newword/g
+<span class="hljs-keyword">replace</span> word <span class="hljs-keyword">all</span> <span class="hljs-keyword">and</span> <span class="hljs-keyword">confirm</span> everyone :  :/s/oldword/newword/gc
+<span class="hljs-keyword">replace</span> word <span class="hljs-keyword">between</span> line1 <span class="hljs-keyword">and</span> line3 : :<span class="hljs-number">1</span>,<span class="hljs-number">3</span>/oldword/newword/g
+====== others =========
+<span class="hljs-keyword">use</span> <span class="hljs-keyword">external</span> instruction <span class="hljs-keyword">in</span> vim : :!+commad(eg: :!ls)
+<span class="hljs-keyword">save</span> <span class="hljs-keyword">file</span> <span class="hljs-keyword">in</span> another <span class="hljs-keyword">file</span> : :w+filename(eg: :w <span class="hljs-keyword">test</span>)
+<span class="hljs-keyword">merge</span> other <span class="hljs-keyword">file</span> <span class="hljs-keyword">in</span> this <span class="hljs-keyword">file</span> : :r + filename(<span class="hljs-keyword">insert</span> <span class="hljs-keyword">to</span> <span class="hljs-keyword">now</span> location)           
+<span class="hljs-keyword">insert</span> <span class="hljs-keyword">mode</span>
+<span class="hljs-keyword">insert</span> line <span class="hljs-keyword">under</span> the line : o
+<span class="hljs-keyword">insert</span> line upon the line : O</code></pre>
+
+]]></content>
+      <categories>
+        <category>coding</category>
+      </categories>
+      <tags>
+        <tag>编程</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>spark三种join方法对比及应用场景</title>
+    <url>/2021/07/08/spark/spark%E4%B8%89%E7%A7%8Djoin%E6%96%B9%E6%B3%95%E5%AF%B9%E6%AF%94%E5%8F%8A%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/</url>
+    <content><![CDATA[<h1 id="1-问题描述"><a href="#1-问题描述" class="headerlink" title="1 问题描述"></a>1 问题描述</h1><p>前几天在跑一个程序的时候遇到了一个很诡异的事情，在dolphinSchedule上面上线了几天的一个程序突然挂掉了，查看问题原因总是报连接超时。无从下手，然后查看代码发现是同事写的代码有一个分区的bug，改掉了但是运行到程序的一个关联操作的地方还是连接超时，然后直接就死掉了。感觉很诡异，因为程序运行了几天没问题，说明代码可能是没问题的，然后计算的数据是一年的数据，猜想可能是数据量的变化出现的问题。</p>
+<h1 id="2-问题详情"><a href="#2-问题详情" class="headerlink" title="2 问题详情"></a>2 问题详情</h1><h2 id="2-1-报错信息"><a href="#2-1-报错信息" class="headerlink" title="2.1 报错信息"></a>2.1 报错信息</h2><ul>
+<li>具体信息</li>
+</ul>
+<pre><code class="hljs stylus">Traceback (most recent call last):
+  File <span class="hljs-string">&quot;LineLossRate.py&quot;</span>, line <span class="hljs-number">237</span>, <span class="hljs-keyword">in</span> &lt;module&gt;
+    dfjoin.show(<span class="hljs-number">5</span>)
+  File <span class="hljs-string">&quot;/opt/cloudera/parcels/SPARK2-2.4.0.cloudera2-1.cdh5.13.3.p0.1041012/lib/spark2/python/lib/pyspark.zip/pyspark/sql/dataframe.py&quot;</span>, line <span class="hljs-number">378</span>, <span class="hljs-keyword">in</span> show
+  File <span class="hljs-string">&quot;/opt/cloudera/parcels/SPARK2-2.4.0.cloudera2-1.cdh5.13.3.p0.1041012/lib/spark2/python/lib/py4j-0.10.7-src.zip/py4j/java_gateway.py&quot;</span>, line <span class="hljs-number">1257</span>, <span class="hljs-keyword">in</span> __call__
+  File <span class="hljs-string">&quot;/opt/cloudera/parcels/SPARK2-2.4.0.cloudera2-1.cdh5.13.3.p0.1041012/lib/spark2/python/lib/pyspark.zip/pyspark/sql/utils.py&quot;</span>, line <span class="hljs-number">63</span>, <span class="hljs-keyword">in</span> deco
+  File <span class="hljs-string">&quot;/opt/cloudera/parcels/SPARK2-2.4.0.cloudera2-1.cdh5.13.3.p0.1041012/lib/spark2/python/lib/py4j-0.10.7-src.zip/py4j/protocol.py&quot;</span>, line <span class="hljs-number">328</span>, <span class="hljs-keyword">in</span> get_return_value
+py4j<span class="hljs-selector-class">.protocol</span><span class="hljs-selector-class">.Py4JJavaError</span>: An error occurred while calling o409<span class="hljs-selector-class">.showString</span>.
+: org<span class="hljs-selector-class">.apache</span><span class="hljs-selector-class">.spark</span><span class="hljs-selector-class">.SparkException</span>: Could not execute broadcast <span class="hljs-keyword">in</span> <span class="hljs-number">1800</span> secs. You can increase the timeout <span class="hljs-keyword">for</span> broadcasts via spark<span class="hljs-selector-class">.sql</span><span class="hljs-selector-class">.broadcastTimeout</span> or disable broadcast join by setting spark<span class="hljs-selector-class">.sql</span><span class="hljs-selector-class">.autoBroadcastJoinThreshold</span> to -<span class="hljs-number">1</span>
+at org<span class="hljs-selector-class">.apache</span><span class="hljs-selector-class">.spark</span><span class="hljs-selector-class">.sql</span><span class="hljs-selector-class">.execution</span><span class="hljs-selector-class">.exchange</span><span class="hljs-selector-class">.BroadcastExchangeExec</span>.doExecuteBroadcast(BroadcastExchangeExec<span class="hljs-selector-class">.scala</span>:<span class="hljs-number">150</span>)
+	at org<span class="hljs-selector-class">.apache</span><span class="hljs-selector-class">.spark</span><span class="hljs-selector-class">.sql</span><span class="hljs-selector-class">.execution</span><span class="hljs-selector-class">.InputAdapter</span>.doExecuteBroadcast(WholeStageCodegenExec<span class="hljs-selector-class">.scala</span>:<span class="hljs-number">387</span>)
+	at org<span class="hljs-selector-class">.apache</span><span class="hljs-selector-class">.spark</span><span class="hljs-selector-class">.sql</span><span class="hljs-selector-class">.execution</span>.SparkPlan$<span class="hljs-variable">$anonfun</span><span class="hljs-variable">$executeBroadcast</span>$<span class="hljs-number">1</span>.apply(SparkPlan<span class="hljs-selector-class">.scala</span>:<span class="hljs-number">144</span>)</code></pre>
+
+<p>在其他节点上显示有一些重复连接超时的警告：</p>
+<pre><code class="hljs stylus"><span class="hljs-number">21</span>/<span class="hljs-number">07</span>/<span class="hljs-number">02</span> <span class="hljs-number">19</span>:<span class="hljs-number">13</span>:<span class="hljs-number">42</span> WARN scheduler<span class="hljs-selector-class">.TaskSetManager</span>: Lost task <span class="hljs-number">9.0</span> <span class="hljs-keyword">in</span> stage <span class="hljs-number">70.0</span> (TID <span class="hljs-number">5771</span>, cdh06<span class="hljs-selector-class">.nari</span><span class="hljs-selector-class">.com</span>, executor <span class="hljs-number">12</span>): java<span class="hljs-selector-class">.net</span><span class="hljs-selector-class">.ConnectException</span>: Connection timed out (Connection timed out)
+	at java<span class="hljs-selector-class">.net</span><span class="hljs-selector-class">.PlainSocketImpl</span>.socketConnect(Native Method)
+	at java<span class="hljs-selector-class">.net</span><span class="hljs-selector-class">.AbstractPlainSocketImpl</span>.doConnect(AbstractPlainSocketImpl<span class="hljs-selector-class">.java</span>:<span class="hljs-number">350</span>)
+	at java<span class="hljs-selector-class">.net</span><span class="hljs-selector-class">.AbstractPlainSocketImpl</span>.connectToAddress(AbstractPlainSocketImpl<span class="hljs-selector-class">.java</span>:<span class="hljs-number">206</span>)
+	at java<span class="hljs-selector-class">.net</span><span class="hljs-selector-class">.AbstractPlainSocketImpl</span>.connect(AbstractPlainSocketImpl<span class="hljs-selector-class">.java</span>:<span class="hljs-number">188</span>)
+	at java<span class="hljs-selector-class">.net</span><span class="hljs-selector-class">.SocksSocketImpl</span>.connect(SocksSocketImpl<span class="hljs-selector-class">.java</span>:<span class="hljs-number">392</span>)
+	at java<span class="hljs-selector-class">.net</span><span class="hljs-selector-class">.Socket</span>.connect(Socket<span class="hljs-selector-class">.java</span>:<span class="hljs-number">589</span>)
+	at java<span class="hljs-selector-class">.net</span><span class="hljs-selector-class">.Socket</span>.connect(Socket<span class="hljs-selector-class">.java</span>:<span class="hljs-number">538</span>)
+	at java<span class="hljs-selector-class">.net</span><span class="hljs-selector-class">.Socket</span>.&lt;init&gt;(Socket<span class="hljs-selector-class">.java</span>:<span class="hljs-number">434</span>)
+	at java<span class="hljs-selector-class">.net</span><span class="hljs-selector-class">.Socket</span>.&lt;init&gt;(Socket<span class="hljs-selector-class">.java</span>:<span class="hljs-number">244</span>)
+	at org<span class="hljs-selector-class">.apache</span><span class="hljs-selector-class">.spark</span><span class="hljs-selector-class">.api</span><span class="hljs-selector-class">.python</span>.PythonWorkerFact</code></pre>
+
+<h2 id="2-2-报错代码"><a href="#2-2-报错代码" class="headerlink" title="2.2 报错代码"></a>2.2 报错代码</h2><pre><code class="hljs pgsql">dfjoin=df365.<span class="hljs-keyword">join</span>(resDf3,<span class="hljs-keyword">on</span>=[&quot;xx&quot;]).\
+    withColumn(&quot;xx&quot;,F.lit(dateMyes)). \
+    withColumn(&quot;xx&quot;, F.expr(&quot;cast(`xx` as string)&quot;)).<span class="hljs-keyword">join</span>(tg_id,<span class="hljs-keyword">on</span>=[&quot;xx&quot;]).\
+    withColumnRenamed(&quot;xx&quot;,&quot;xx&quot;).\
+    <span class="hljs-keyword">select</span>(&quot;xx&quot;,&quot;xx&quot;,&quot;xx&quot;&quot;xx&quot;&quot;xx&quot;&quot;xx&quot;&quot;xx&quot;).persist()
+
+dfjoin.<span class="hljs-keyword">show</span>(<span class="hljs-number">5</span>)
+dfjoin.coalesce(<span class="hljs-number">128</span>).<span class="hljs-keyword">write</span>.mode(&quot;append&quot;).partitionBy(&quot;XXX&quot;).format(&quot;parquet&quot;).saveAsTable(&quot;tableName&quot;)</code></pre>
+
+<h1 id="3-问题刨析"><a href="#3-问题刨析" class="headerlink" title="3 问题刨析"></a>3 问题刨析</h1><p>从报错的信息中基本可以定位问题出现在数据join的位置，但是其中的两个dataframe，resDf3和df365数据量都在十几万也并不是很大。但是从这句话中可以看出也是join的问题，建议我们关闭BroadcastJoin。然后大致可以清楚了，BroadcastJoin是关联一个大表和一个小表的方法，但是这里关联的两个表数据量基本相同，如果使用BroadcastJoin的话就可能导致广播时间过长而连接超时，初步猜想问题的原因就在于此。</p>
+<pre><code class="hljs mipsasm">You can increase the timeout for <span class="hljs-keyword">broadcasts </span>via spark.sql.<span class="hljs-keyword">broadcastTimeout </span><span class="hljs-keyword">or </span><span class="hljs-keyword">disable </span><span class="hljs-keyword">broadcast </span><span class="hljs-keyword">join </span><span class="hljs-keyword">by </span>setting spark.sql.autoBroadcastJoinThreshold to -<span class="hljs-number">1</span></code></pre>
+
+<p>于是添加了spark.sql.autoBroadcastJoinThreshold参数为-1，程序正常运行，问题解决。</p>
+<h1 id="4-扩展延伸：spark的三种join方式"><a href="#4-扩展延伸：spark的三种join方式" class="headerlink" title="4  扩展延伸：spark的三种join方式"></a>4  扩展延伸：spark的三种join方式</h1><p>文章参考链接：<a href="http://hbasefly.com/2017/03/19/sparksql-basic-join/">SparkSQL – 有必要坐下来聊聊Join – 有态度的HBase/Spark/BigData (hbasefly.com)</a></p>
+<p>这里是对该文章内的信息转载并做一个简要的摘录：</p>
+<p>当前SparkSQL支持三种Join算法－shuffle hash join、broadcast hash join以及sort merge join。其中前两者归根到底都属于hash join，只不过在hash join之前需要先shuffle还是先broadcast。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>所属类别</th>
+<th>使用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>shuffle hash join</td>
+<td>hash join</td>
+<td>一张大表join一张小表</td>
+</tr>
+<tr>
+<td>broadcast hash join</td>
+<td>hash join</td>
+<td>一张大表join一张极小表</td>
+</tr>
+<tr>
+<td>sort merge join</td>
+<td>merge join</td>
+<td>两张大表join</td>
+</tr>
+</tbody></table>
+<h2 id="4-1-Hash-Join"><a href="#4-1-Hash-Join" class="headerlink" title="4.1 Hash Join"></a>4.1 <strong>Hash Join</strong></h2><p>先来看看这样一条SQL语句：select * from order,item where item.id = order.i_id，很简单一个Join节点，参与join的两张表是item和order，join key分别是item.id以及order.i_id。现在假设这个Join采用的是hash join算法，整个过程会经历三步：</p>
+<ol>
+<li><p>确定Build Table以及Probe Table：这个概念比较重要，Build Table使用join key构建Hash Table，而Probe Table使用join key进行探测，探测成功就可以join在一起。通常情况下，小表会作为Build Table，大表作为Probe Table。此事例中item为Build Table，order为Probe Table。</p>
+</li>
+<li><p>构建Hash Table：依次读取Build Table（item）的数据，对于每一行数据根据join key（item.id）进行hash，hash到对应的Bucket，生成hash table中的一条记录。数据缓存在内存中，如果内存放不下需要dump到外存。</p>
+</li>
+<li><p>探测：再依次扫描Probe Table（order）的数据，使用相同的hash函数映射Hash Table中的记录，映射成功之后再检查join条件（item.id = order.i_id），如果匹配成功就可以将两者join在一起 </p>
+</li>
+</ol>
+<blockquote>
+<p> 这里可能存在的疑问：</p>
+<ol>
+<li><p>hash join性能如何？hash join基本都只扫描两表一次，可以认为o(a+b)</p>
+</li>
+<li><p>为什么Build Table选择小表？因为构建的Hash Table最好能全部加载在内存，效率最高；这也决定了<strong>hash join算法只适合至少一个小表的join场景，对于两个大表的join场景并不适用</strong>；</p>
+</li>
+</ol>
+</blockquote>
+<h2 id="4-1-1-Broadcast-Hash-Join"><a href="#4-1-1-Broadcast-Hash-Join" class="headerlink" title="4.1.1 Broadcast Hash Join"></a>4.1.1 <strong>Broadcast Hash Join</strong></h2><p>Broadcast Hash Join一般分为两步：</p>
+<ol>
+<li><p>broadcast阶段：将小表广播分发到大表所在的所有主机。广播算法可以有很多，最简单的是先发给driver，driver再统一分发给所有executor；要不就是基于bittorrete的p2p思路；</p>
+</li>
+<li><p>hash join阶段：在每个executor上执行单机版hash join，小表映射，大表试探</p>
+</li>
+</ol>
+<blockquote>
+<p>SparkSQL规定broadcast hash join执行的基本条件为被广播小表必须小于参数spark.sql.autoBroadcastJoinThreshold，默认为10M</p>
+</blockquote>
+<h2 id="4-1-2-Shuffle-Hash-Join"><a href="#4-1-2-Shuffle-Hash-Join" class="headerlink" title="4.1.2 Shuffle Hash Join"></a>4.1.2 <strong>Shuffle Hash Join</strong></h2><p>在大数据条件下如果一张表很小，执行join操作最优的选择无疑是broadcast hash join，效率最高。但是一旦小表数据量增大，广播所需内存、带宽等资源必然就会太大，broadcast hash join就不再是最优方案。此时可以按照join key进行分区，根据key相同必然分区相同的原理，就可以将大表join分而治之，划分为很多小表的join，充分利用集群资源并行化。如下图所示，shuffle hash join也可以分为两步：</p>
+<ol>
+<li><p>shuffle阶段：分别将两个表按照join key进行分区，将相同join key的记录重分布到同一节点，两张表的数据会被重分布到集群中所有节点。这个过程称为shuffle</p>
+</li>
+<li><p>hash join阶段：每个分区节点上的数据单独执行单机hash join算法。</p>
+</li>
+</ol>
+<h1 id="4-2-Sort-Merge-Join"><a href="#4-2-Sort-Merge-Join" class="headerlink" title="4.2 Sort-Merge Join"></a>4.2 <strong>Sort-Merge Join</strong></h1><p>sort merge join 一般分为三个步骤：</p>
+<ol>
+<li><p>shuffle阶段：将两张大表根据join key进行重新分区，两张表数据会分布到整个集群，以便分布式并行处理</p>
+</li>
+<li><p>sort阶段：对单个分区节点的两表数据，分别进行排序</p>
+</li>
+<li><p>merge阶段：对排好序的两张分区表数据执行join操作。join操作很简单，分别遍历两个有序序列，碰到相同join key就merge输出，否则取更小一边</p>
+</li>
+</ol>
+<h1 id="5-再次回到问题"><a href="#5-再次回到问题" class="headerlink" title="5. 再次回到问题"></a>5. 再次回到问题</h1><p>从上面介绍的三种join的原理可以基本确定各自所对应的应用场景，这次遇到的问题就是由于spark默认使用了broadcast join方法，然后两个join的表的数据量基本相似，所以遇到了broadcast join乱广播导致程序超时的现象。所以手动禁止该方法解决了问题。</p>
+]]></content>
+      <categories>
+        <category>大数据</category>
+      </categories>
+      <tags>
+        <tag>spark</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>spark三种join方法对比及应用场景</title>
     <url>/2021/07/08/spark%E4%B8%89%E7%A7%8Djoin%E6%96%B9%E6%B3%95%E5%AF%B9%E6%AF%94%E5%8F%8A%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/</url>
     <content><![CDATA[<h1 id="1-问题描述"><a href="#1-问题描述" class="headerlink" title="1 问题描述"></a>1 问题描述</h1><p>前几天在跑一个程序的时候遇到了一个很诡异的事情，在dolphinSchedule上面上线了几天的一个程序突然挂掉了，查看问题原因总是报连接超时。无从下手，然后查看代码发现是同事写的代码有一个分区的bug，改掉了但是运行到程序的一个关联操作的地方还是连接超时，然后直接就死掉了。感觉很诡异，因为程序运行了几天没问题，说明代码可能是没问题的，然后计算的数据是一年的数据，猜想可能是数据量的变化出现的问题。</p>
@@ -4048,7 +4364,7 @@ dfjoin.coalesce(<span class="hljs-number">128</span>).<span class="hljs-keyword"
 <h1 id="5-再次回到问题"><a href="#5-再次回到问题" class="headerlink" title="5. 再次回到问题"></a>5. 再次回到问题</h1><p>从上面介绍的三种join的原理可以基本确定各自所对应的应用场景，这次遇到的问题就是由于spark默认使用了broadcast join方法，然后两个join的表的数据量基本相似，所以遇到了broadcast join乱广播导致程序超时的现象。所以手动禁止该方法解决了问题。</p>
 ]]></content>
       <categories>
-        <category>spark学习</category>
+        <category>大数据</category>
       </categories>
       <tags>
         <tag>spark</tag>
