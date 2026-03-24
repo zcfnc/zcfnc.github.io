@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 8.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="随机森林和梯度决策树的比较">
+<meta property="og:type" content="article">
+<meta property="og:title" content="随机森林和梯度决策树（GBDT）">
+<meta property="og:url" content="http://example.com/2020/03/27/%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97%E5%92%8C%E6%A2%AF%E5%BA%A6%E5%86%B3%E7%AD%96%E6%A0%91%EF%BC%88GBDT%EF%BC%89/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="随机森林和梯度决策树的比较">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-03-27T05:43:24.000Z">
+<meta property="article:modified_time" content="2021-03-01T09:27:14.659Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="machine learning">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2020/03/27/%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97%E5%92%8C%E6%A2%AF%E5%BA%A6%E5%86%B3%E7%AD%96%E6%A0%91%EF%BC%88GBDT%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>随机森林和梯度决策树（GBDT） | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/03/27/%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97%E5%92%8C%E6%A2%AF%E5%BA%A6%E5%86%B3%E7%AD%96%E6%A0%91%EF%BC%88GBDT%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          随机森林和梯度决策树（GBDT）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-03-27 15:13:24" itemprop="dateCreated datePublished" datetime="2020-03-27T15:13:24+09:30">2020-03-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-03-01 18:57:14" itemprop="dateModified" datetime="2021-03-01T18:57:14+09:30">2021-03-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">机器学习笔记</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>随机森林和GBDT部分对比</p>
+<h2 id="一：随机森林-bagging思想"><a href="#一：随机森林-bagging思想" class="headerlink" title="一：随机森林(bagging思想)"></a>一：随机森林(bagging思想)</h2><ul>
+<li>通过构建决策树然后进行分类，最后选择种类比较多的类别</li>
+<li>随机：随机选取固定的样本和固定的特征</li>
+<li>集成学习：投票选举（民主集中制）</li>
+</ul>
+<h2 id="二：GBDT-boosting思想"><a href="#二：GBDT-boosting思想" class="headerlink" title="二：GBDT(boosting思想)"></a>二：GBDT(boosting思想)</h2><ul>
+<li>GBDT是回归树不是分类树</li>
+<li>核心在于累加所有树的结果最为最终结果</li>
+<li>利用损失函数的负梯度去模拟残差，使用残差构建决策树</li>
+<li><strong>为什么使用梯度决策树而不是回归算法</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; 回归算法寻找参数和目标值之间存在的某种曲线关系，但是当某些特征与目标值之间无线性关系可使用梯度决策树。</span><br><span class="line">&gt; 梯度决策树是讲特征拟化成数值分类回归最佳结果。</span><br></pre></td></tr></table></figure>
+
+<!-- more -->
+
+<h3 id="2-1-参数说明"><a href="#2-1-参数说明" class="headerlink" title="2.1 参数说明"></a>2.1 参数说明</h3><p><code>class sklearn.ensemble.GradientBoostingRegressor(loss=&#39;ls&#39;, learning_rate=0.1, n_estimators=100, subsample=1.0, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_depth=3, init=None, random_state=None, max_features=None, alpha=0.9, verbose=0, max_leaf_nodes=None, warm_start=False, presort=&#39;auto&#39;)</code></p>
+<ul>
+<li><p><strong>n_estimators</strong>：指GBR使用的学习算法的数量。通常，如果你的设备性能更好，可以把n_estimators设置的更大，效果也会更好。</p>
+</li>
+<li><p><strong>max_depth</strong>：应该在优化其他参数之前先调整max_depth参数。因为每个学习算法都是一颗决策树，max_depth决定了树生成的节点数。选择合适的节点数量可以更好的拟合数据，而更多的节点数可能造成拟合过度。</p>
+</li>
+<li><p><strong>loss</strong>:loss参数决定损失函数，也直接影响误差。默认值为ls，表示最小二乘法（least squares）。还有最小绝对值差值，Huber损失和分位数损失（quantiles）等等。</p>
+</li>
+<li><p><strong>learning_rate</strong>:学习率</p>
+</li>
+</ul>
+<h4 id="2-1-1-参数调整"><a href="#2-1-1-参数调整" class="headerlink" title="2.1.1 参数调整"></a>2.1.1 参数调整</h4><p><strong>Grid Search</strong>来选择性能表现最好的超参数</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/55524425">https://zhuanlan.zhihu.com/p/55524425</a></p>
+<p>在Gradient Boosting Regressor 模型中，有一些独立的参数最好是手动调整。</p>
+<p>超参数主要使用了：</p>
+<ul>
+<li>n_estimators&#x3D;2000,</li>
+<li>learning_rate&#x3D;0.01,</li>
+<li>max_depth&#x3D;15,</li>
+<li>max_features&#x3D;’sqrt’,</li>
+<li>min_samples_leaf&#x3D;10,</li>
+<li>min_samples_split&#x3D;10,</li>
+<li>loss&#x3D;’ls’,</li>
+<li>random_state &#x3D;42)</li>
+</ul>
+<h3 id="2-2-负荷预测程序说明记录"><a href="#2-2-负荷预测程序说明记录" class="headerlink" title="2.2 负荷预测程序说明记录"></a>2.2 负荷预测程序说明记录</h3><h4 id="1-误差偏大的处理方法"><a href="#1-误差偏大的处理方法" class="headerlink" title="1. 误差偏大的处理方法"></a>1. 误差偏大的处理方法</h4><h5 id="误差偏大的原因：缺失值处理不当-0或空值设置为均值"><a href="#误差偏大的原因：缺失值处理不当-0或空值设置为均值" class="headerlink" title="误差偏大的原因：缺失值处理不当(0或空值设置为均值)"></a>误差偏大的原因：缺失值处理不当(0或空值设置为均值)</h5><blockquote>
+<p>因为数据波动较大，设置为历史均值是否存在较大的参考价值。其次数据量教少直接删除也不太可取。尝试设置为近一年的均值进行测试。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/machine-learning/" rel="tag"># machine learning</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/25/%E4%BB%8E0%E5%BC%80%E5%A7%8B%E5%AD%A6%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AC%94%E8%AE%B0/" rel="prev" title="从0开始学大数据笔记">
+      <i class="fa fa-chevron-left"></i> 从0开始学大数据笔记
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/13/python/python%E6%89%93%E5%8C%85%E7%A8%8B%E5%BA%8F%E7%A7%BB%E6%A4%8D%E5%88%B0%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83redhat%E5%87%BA%E7%8E%B0%E7%9A%84%E9%97%AE%E9%A2%98/" rel="next" title="python打包程序移植到生产环境redhat出现的问题">
+      python打包程序移植到生产环境redhat出现的问题 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%EF%BC%9A%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97-bagging%E6%80%9D%E6%83%B3"><span class="nav-number">1.1.</span> <span class="nav-text">一：随机森林(bagging思想)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%EF%BC%9AGBDT-boosting%E6%80%9D%E6%83%B3"><span class="nav-number">1.2.</span> <span class="nav-text">二：GBDT(boosting思想)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 参数说明</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-1-%E5%8F%82%E6%95%B0%E8%B0%83%E6%95%B4"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">2.1.1 参数调整</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E8%B4%9F%E8%8D%B7%E9%A2%84%E6%B5%8B%E7%A8%8B%E5%BA%8F%E8%AF%B4%E6%98%8E%E8%AE%B0%E5%BD%95"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 负荷预测程序说明记录</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E8%AF%AF%E5%B7%AE%E5%81%8F%E5%A4%A7%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E6%B3%95"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">1. 误差偏大的处理方法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AF%AF%E5%B7%AE%E5%81%8F%E5%A4%A7%E7%9A%84%E5%8E%9F%E5%9B%A0%EF%BC%9A%E7%BC%BA%E5%A4%B1%E5%80%BC%E5%A4%84%E7%90%86%E4%B8%8D%E5%BD%93-0%E6%88%96%E7%A9%BA%E5%80%BC%E8%AE%BE%E7%BD%AE%E4%B8%BA%E5%9D%87%E5%80%BC"><span class="nav-number">1.2.2.1.1.</span> <span class="nav-text">误差偏大的原因：缺失值处理不当(0或空值设置为均值)</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 8.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本地安装使用是手动安装比较复杂，但是相比较而言使用google的colab更简单，但是不氪金的话不能保证稳定分配gpu资源。各有利弊">
+<meta property="og:type" content="article">
+<meta property="og:title" content="本地安装faceswap与一键使用google的colab搭建faceswap两种方式">
+<meta property="og:url" content="http://example.com/2020/09/23/faceswap%E5%AE%89%E8%A3%85%E4%B8%8E%E8%B8%A9%E5%9D%91/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="本地安装使用是手动安装比较复杂，但是相比较而言使用google的colab更简单，但是不氪金的话不能保证稳定分配gpu资源。各有利弊">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-09-23T05:04:43.000Z">
+<meta property="article:modified_time" content="2021-03-01T09:21:47.504Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="娱乐">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2020/09/23/faceswap%E5%AE%89%E8%A3%85%E4%B8%8E%E8%B8%A9%E5%9D%91/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>本地安装faceswap与一键使用google的colab搭建faceswap两种方式 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/09/23/faceswap%E5%AE%89%E8%A3%85%E4%B8%8E%E8%B8%A9%E5%9D%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          本地安装faceswap与一键使用google的colab搭建faceswap两种方式
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-09-23 14:34:43" itemprop="dateCreated datePublished" datetime="2020-09-23T14:34:43+09:30">2020-09-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-03-01 18:51:47" itemprop="dateModified" datetime="2021-03-01T18:51:47+09:30">2021-03-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A8%B1%E4%B9%90/" itemprop="url" rel="index"><span itemprop="name">娱乐</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="0-摘要"><a href="#0-摘要" class="headerlink" title="0. 摘要"></a>0. 摘要</h1><ul>
+<li><p>因为本机安装过anaconda，python，tensorflow等环境，所以直接按照版本安装部分依赖即可。</p>
+</li>
+<li><p>后来发现谷歌的colab有免费的gpu可以白嫖，并且colab内置了tensorflow和图形计算框架，所以省去了搭建环境的烦恼。可以直接使用，也很方便。弊端就是不氪金每天能分配的gpu资源不定并且容易断联，session断开需要重新配置，不过图一乐还是可以的。</p>
+</li>
+</ul>
+<h1 id="1-本地手动安装"><a href="#1-本地手动安装" class="headerlink" title="1. 本地手动安装"></a>1. 本地手动安装</h1><p>全程安装按照官方指南，见 <a target="_blank" rel="noopener" href="https://github.com/deepfakes/faceswap/blob/master/INSTALL.md%E3%80%82">https://github.com/deepfakes/faceswap/blob/master/INSTALL.md。</a></p>
+<h1 id="2-问题记录"><a href="#2-问题记录" class="headerlink" title="2. 问题记录"></a>2. 问题记录</h1><h2 id="2-1-问题1"><a href="#2-1-问题1" class="headerlink" title="2.1 问题1"></a>2.1 问题1</h2><ul>
+<li><p>问题：import win32console  # pylint: disable&#x3D;import-errorImportError: DLL load failed while importing win32console: 找不到指定的模块</p>
+</li>
+<li><p>解决：进入“Anaconda3\Scripts”下找到“pywin32_postinstall.py”文件，并执行“python3 pywin32_postinstall.py -install”</p>
+</li>
+</ul>
+<h2 id="2-2-问题2"><a href="#2-2-问题2" class="headerlink" title="2.2 问题2"></a>2.2 问题2</h2><ul>
+<li>问题：在使用pip一键安装requirements_base.txt及requirements_nvidia.txt中的依赖的时候速度慢，并且切换到anaconda的新建虚拟环境中windows下无法执行其中的git命令</li>
+<li>解决：速度慢修改anaconda的镜像。git无法访问：手动下载git包并将“requirements_base”中的git相关命令注释掉（git慢的话修改git的代理端口）</li>
+</ul>
+<h2 id="2-3-问题3"><a href="#2-3-问题3" class="headerlink" title="2.3 问题3"></a>2.3 问题3</h2><ul>
+<li>问题：File “D:\faceswap\lib\gui\menu.py”, line 302, in _get_branchesretcode, stdout.decode(‘utf-8’).strip().replace(“\n”, “ - “)) UnicodeDecodeError: ‘utf-8’ codec can’t decode byte 0xb2 in position 6: invalid start byte</li>
+<li>解决： 查看源码发现该句只是写入日志的内容，直接注掉，成功运行</li>
+</ul>
+<h2 id="2-4-问题4"><a href="#2-4-问题4" class="headerlink" title="2.4 问题4"></a>2.4 问题4</h2><ul>
+<li><p>问题：一直无法启动gpu进行运算，猜想是缺少插件CUDA toolkit（英伟达计算架构框架）和cudnn（英伟达架构算法）</p>
+</li>
+<li><p>证明猜想：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">#测试tfGPU是否能够使用：</span><br><span class="line">import tensorflow as tf</span><br><span class="line">import os</span><br><span class="line">os.environ[&#x27;TF_CPP_MIN_LOG_LEVEL&#x27;] = &#x27;2&#x27; </span><br><span class="line">print(&#x27;GPU&#x27;, tf.test.is_gpu_available())</span><br><span class="line">a = tf.constant(2.0)</span><br><span class="line">b = tf.constant(4.0)</span><br><span class="line">print(a + b)</span><br><span class="line"></span><br><span class="line">#结果为如下表示可以使用gpu</span><br><span class="line">GPU True</span><br><span class="line">tf.Tensor(6.0, shape=(), dtype=float32)</span><br><span class="line"></span><br><span class="line">#但是报错</span><br><span class="line">“Could not load dynamic library &#x27;cusparse64_10.dll&#x27;; dlerror: cusparse64_10.dll not found”等dll文件不存在</span><br><span class="line"></span><br><span class="line">#需要安装CUDA和cudnn</span><br><span class="line">CUDA：https://developer.nvidia.com/cuda-downloads </span><br><span class="line">CUDNN: https://developer.nvidia.com/cudnn</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="2-4-1-安装cuda和cudnn后查看gpu是否启动报错"><a href="#2-4-1-安装cuda和cudnn后查看gpu是否启动报错" class="headerlink" title="2.4.1 安装cuda和cudnn后查看gpu是否启动报错"></a>2.4.1 安装cuda和cudnn后查看gpu是否启动报错</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">问题：Could not load dynamic library &#x27;cudnn64_7.dll&#x27;; dlerror: cudnn64_7.dll not found</span><br><span class="line"></span><br><span class="line">解决方法：Copy &lt;installpath&gt;\cuda\bin\cudnn64_7.dll to C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.0\bin.</span><br><span class="line">Copy &lt;installpath&gt;\cuda\ include\cudnn.h to C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.0\include.</span><br><span class="line">Copy &lt;installpath&gt;\cuda\lib\x64\cudnn.lib to C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.0\lib\x64</span><br></pre></td></tr></table></figure>
+
+<h1 id="3-colab安装"><a href="#3-colab安装" class="headerlink" title="3. colab安装"></a>3. colab安装</h1><p>参考：<code>https://github.com/RakaMaru/Faceswap_Google_Colab_Master/blob/master/Faceswap_Google_Colab_Master.ipynb</code>，因为colab的python版本问题又不想修改python版本，进行了部分修改。以下均在colab的笔记本中按顺序执行(前置需要配置一些文件的目录参考上述链接)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">#@title Use this to check the assigned GPU</span><br><span class="line">!cat /etc/os-release</span><br><span class="line"></span><br><span class="line">def install_dependencies():</span><br><span class="line">  !ln -sf /opt/bin/nvidia-smi /usr/bin/nvidia-smi;</span><br><span class="line">  !pip install gputil;</span><br><span class="line">  !pip install psutil;</span><br><span class="line">  !pip install humanize;%%capture</span><br><span class="line"></span><br><span class="line">def printm():</span><br><span class="line"> GPUs = GPU.getGPUs()</span><br><span class="line"></span><br><span class="line"> if len(GPUs) == 0:</span><br><span class="line">  print(&quot;No GPU available.&quot;)</span><br><span class="line">  return</span><br><span class="line"></span><br><span class="line"> gpu = GPUs[0]</span><br><span class="line"> process = psutil.Process(os.getpid())</span><br><span class="line"> print(&quot;Gen RAM Free: &quot; + humanize.naturalsize( psutil.virtual_memory().available ), &quot; | Proc size: &quot; + humanize.naturalsize( process.memory_info().rss))</span><br><span class="line"> print(&quot;GPU RAM Free: &#123;0:.0f&#125;MB | Used: &#123;1:.0f&#125;MB | Util &#123;2:3.0f&#125;% | Total &#123;3:.0f&#125;MB&quot;.format(gpu.memoryFree, gpu.memoryUsed, gpu.memoryUtil*100, gpu.memoryTotal))</span><br><span class="line"></span><br><span class="line">from IPython.utils import io</span><br><span class="line">from google.colab import drive</span><br><span class="line">import psutil</span><br><span class="line">import humanize</span><br><span class="line">import os</span><br><span class="line"> </span><br><span class="line">with io.capture_output() as captured:</span><br><span class="line">  install_dependencies()</span><br><span class="line">print(&quot;Dependencies installed.&quot;)</span><br><span class="line"></span><br><span class="line">import GPUtil as GPU</span><br><span class="line">printm()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#@title Set Time Zone</span><br><span class="line">!rm /etc/localtime</span><br><span class="line">!ln -s /usr/share/zoneinfo/HST /etc/localtime</span><br><span class="line">!date</span><br><span class="line"></span><br><span class="line">#above is for HST, you can find yours in</span><br><span class="line">#/usr/share/zoneinfo</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">! rm -rf ./drive</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#@title Mount Google Drive</span><br><span class="line"></span><br><span class="line">from google.colab import drive</span><br><span class="line">drive.mount(&#x27;/content/drive&#x27;, force_remount=True)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#@title Cleanup folders if needed</span><br><span class="line"></span><br><span class="line">!rm -r face_a</span><br><span class="line">!rm -r face_b</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#@title Download training data</span><br><span class="line">!cp &quot;/content/drive/My Drive/colab_files/faceswap/faces/face_a.zip&quot; .</span><br><span class="line">!cp &quot;/content/drive/My Drive/colab_files/faceswap/faces/face_b.zip&quot; .</span><br><span class="line"></span><br><span class="line">!unzip face_a.zip -d face_a</span><br><span class="line">!unzip face_b.zip -d face_b</span><br><span class="line"></span><br><span class="line">!rm face_a.zip</span><br><span class="line">!rm face_b.zip</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#@title Grab the latest Faceswap</span><br><span class="line">!git clone --single-branch --branch r1.0 https://github.com/deepfakes/faceswap.git</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#@title Copy configuration files</span><br><span class="line">!cp &quot;/content/drive/My Drive/colab_files/faceswap/config/train.ini&quot; faceswap/config/</span><br><span class="line">!ls -lA faceswap/config/</span><br><span class="line">!cat faceswap/config/train.ini</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#@title 删除自带的tensorflow2.3安装1.15.0</span><br><span class="line">! pip install tensorflow==1.15.0</span><br><span class="line">! pip install gast==0.2.2</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#@title Install Tensorflow</span><br><span class="line">!pip install -r faceswap/requirements_nvidia.txt</span><br><span class="line">#@ 这里会报错“ERROR: albumentations 0.1.12 has requirement imgaug&lt;0.2.7,&gt;=0.2.5, but you&#x27;ll have imgaug 0.2.9 which is incompatible.”  但没关系</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">#@title 开始训练，参数根据需要修改</span><br><span class="line">num_iterations = &quot;100000&quot;</span><br><span class="line">save_every = &quot;360&quot;</span><br><span class="line">save_model_every = &quot;25000&quot;</span><br><span class="line">batch_num = &quot;8&quot;</span><br><span class="line">num_gpus = &quot;1&quot;</span><br><span class="line"></span><br><span class="line">trainer_type = &quot;dlight&quot;</span><br><span class="line"></span><br><span class="line">model_dir = &quot;/content/drive/My Drive/colab_files/faceswap/models/model&quot;</span><br><span class="line">alignments_file_a = &quot;face_a/alignments.fsa&quot;</span><br><span class="line">alignments_file_b = &quot;face_b/alignments.fsa&quot;</span><br><span class="line">timelapse_dir = &quot;/content/drive/My Drive/colab_files/faceswap/output/timelapse&quot;</span><br><span class="line">#@title set variables end</span><br><span class="line"></span><br><span class="line">!python3 faceswap/faceswap.py train \</span><br><span class="line">  -A &#x27;./face_a/faceA&#x27; -ala &#x27;&#123;alignments_file_a&#125;&#x27; \</span><br><span class="line">  -B &#x27;./face_b/faceB&#x27; -alb &#x27;&#123;alignments_file_b&#125;&#x27; \</span><br><span class="line">  -m &#x27;&#123;model_dir&#125;&#x27; \</span><br><span class="line">  -t &#x27;&#123;trainer_type&#125;&#x27; \</span><br><span class="line">  -bs &#x27;&#123;batch_num&#125;&#x27; \</span><br><span class="line">  -it &#x27;&#123;num_iterations&#125;&#x27; \</span><br><span class="line">  -g &#x27;&#123;num_gpus&#125;&#x27; \</span><br><span class="line">  -s &#x27;&#123;save_every&#125;&#x27; \</span><br><span class="line">  -ss &#x27;&#123;save_model_every&#125;&#x27; \</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">#@title 查看结果：</span><br><span class="line">Setting Faceswap backend to NVIDIA</span><br><span class="line">09/26/2020 16:14:02 INFO     Log level set to: INFO</span><br><span class="line">Using TensorFlow backend.</span><br><span class="line">09/26/2020 16:14:04 INFO     Model A Directory: /content/face_a/faceA</span><br><span class="line">09/26/2020 16:14:04 INFO     Model B Directory: /content/face_b/faceB</span><br><span class="line">09/26/2020 16:14:04 INFO     Training data directory: /content/drive/My Drive/colab_files/faceswap/models/model</span><br><span class="line">09/26/2020 16:14:04 INFO     ===================================================</span><br><span class="line">09/26/2020 16:14:04 INFO       Starting</span><br><span class="line">09/26/2020 16:14:04 INFO       Press &#x27;ENTER&#x27; to save and quit</span><br><span class="line">09/26/2020 16:14:04 INFO       Press &#x27;S&#x27; to save model weights immediately</span><br><span class="line">09/26/2020 16:14:04 INFO     ===================================================</span><br><span class="line">09/26/2020 16:14:05 INFO     Loading data, this may take a while...</span><br><span class="line">09/26/2020 16:14:05 INFO     Loading Model from Dlight plugin...</span><br><span class="line">09/26/2020 16:14:05 INFO     Using configuration saved in state file</span><br><span class="line">09/26/2020 16:14:10 INFO     Loaded model from disk: &#x27;/content/drive/My Drive/colab_files/faceswap/models/model&#x27;</span><br><span class="line">09/26/2020 16:14:10 INFO     Loading Trainer from Original plugin...</span><br><span class="line">09/26/2020 16:14:12 INFO     Enabled TensorBoard Logging</span><br><span class="line">[16:14:27] [#04386] Loss A: 0.05719, Loss B: 0.05088</span><br><span class="line">09/26/2020 16:14:32 INFO     [Saved models] - Average since last save: face_loss_A: 0.05719, face_loss_B: 0.05088</span><br><span class="line">[16:19:42] [#04746] Loss A: 0.04279, Loss B: 0.03795</span><br><span class="line">09/26/2020 16:19:46 INFO     [Saved models] - Average since last save: face_loss_A: 0.04535, face_loss_B: 0.04580</span><br><span class="line">[16:25:01] [#05106] Loss A: 0.04427, Loss B: 0.04492</span><br><span class="line">09/26/2020 16:25:06 INFO     [Saved models] - Average since last save: face_loss_A: 0.04406, face_loss_B: 0.04483</span><br><span class="line">[16:25:19] [#05120] Loss A: 0.04438, Loss B: 0.03987</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="3-1-总结"><a href="#3-1-总结" class="headerlink" title="3.1 总结"></a>3.1 总结</h2><p>根据官方指导上面的损失函数lossA和lossB分别训练到0.02和0.01就基本差不多了，最后把训练的模型下载到本地上，然后跑一下就行了。虽然是在云端训练的，但是本地似乎还是需要安装相关的环境，因为模型下载下来了本地使用还是需要环境。</p>
+<p>云端的好处就是不用占用本机的内存什么的，还有gpu用方便很多速度也蛮快的。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/%E5%A8%B1%E4%B9%90/" rel="tag"># 娱乐</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/09/17/python/pyqt5%E4%BD%BF%E7%94%A8%E5%8F%8A%E5%87%BA%E7%8E%B0%E9%97%AE%E9%A2%98/" rel="prev" title="差补计算器及使用pyqt5入门写一个简单的界面">
+      <i class="fa fa-chevron-left"></i> 差补计算器及使用pyqt5入门写一个简单的界面
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/15/%E7%86%B5%E6%9D%83%E6%B3%95%E8%AE%A1%E7%AE%97%E6%9D%83%E9%87%8D/" rel="next" title="熵权法计算权重">
+      熵权法计算权重 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0-%E6%91%98%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">0. 摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E6%9C%AC%E5%9C%B0%E6%89%8B%E5%8A%A8%E5%AE%89%E8%A3%85"><span class="nav-number">2.</span> <span class="nav-text">1. 本地手动安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95"><span class="nav-number">3.</span> <span class="nav-text">2. 问题记录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-%E9%97%AE%E9%A2%981"><span class="nav-number">3.1.</span> <span class="nav-text">2.1 问题1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E9%97%AE%E9%A2%982"><span class="nav-number">3.2.</span> <span class="nav-text">2.2 问题2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-%E9%97%AE%E9%A2%983"><span class="nav-number">3.3.</span> <span class="nav-text">2.3 问题3</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-%E9%97%AE%E9%A2%984"><span class="nav-number">3.4.</span> <span class="nav-text">2.4 问题4</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-1-%E5%AE%89%E8%A3%85cuda%E5%92%8Ccudnn%E5%90%8E%E6%9F%A5%E7%9C%8Bgpu%E6%98%AF%E5%90%A6%E5%90%AF%E5%8A%A8%E6%8A%A5%E9%94%99"><span class="nav-number">3.4.1.</span> <span class="nav-text">2.4.1 安装cuda和cudnn后查看gpu是否启动报错</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-colab%E5%AE%89%E8%A3%85"><span class="nav-number">4.</span> <span class="nav-text">3. colab安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-%E6%80%BB%E7%BB%93"><span class="nav-number">4.1.</span> <span class="nav-text">3.1 总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 8.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="python使用部分概念记录">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python相关">
+<meta property="og:url" content="http://example.com/2021/01/18/python/python%E7%9B%B8%E5%85%B3/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="python使用部分概念记录">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-01-18T05:27:47.000Z">
+<meta property="article:modified_time" content="2021-11-01T08:40:07.962Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2021/01/18/python/python%E7%9B%B8%E5%85%B3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>python相关 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/18/python/python%E7%9B%B8%E5%85%B3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          python相关
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-01-18 14:57:47" itemprop="dateCreated datePublished" datetime="2021-01-18T14:57:47+09:30">2021-01-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-11-01 18:10:07" itemprop="dateModified" datetime="2021-11-01T18:10:07+09:30">2021-11-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/" itemprop="url" rel="index"><span itemprop="name">编程语言特性相关</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="1-线程池ThreadPoolExecutor"><a href="#1-线程池ThreadPoolExecutor" class="headerlink" title="1.线程池ThreadPoolExecutor"></a>1.线程池ThreadPoolExecutor</h1><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/120b61aa4cee">https://www.jianshu.com/p/120b61aa4cee</a></p>
+<h1 id="2-装饰器"><a href="#2-装饰器" class="headerlink" title="2. 装饰器"></a>2. 装饰器</h1><p><strong>装饰器本质上是一个 Python 函数或类，它可以让其他函数或类在不需要做任何代码修改的前提下增加额外功能，装饰器的返回值也是一个函数&#x2F;类对象。它经常用于有切面需求的场景，比如：插入日志、性能测试、事务处理、缓存、权限校验等场景，装饰器是解决这类问题的绝佳设计。有了装饰器，我们就可以抽离出大量与函数功能本身无关的雷同代码到装饰器中并继续重用。概括的讲，装饰器的作用就是为已经存在的对象添加额外的功能</strong>。<br>先来看一个简单例子，如果你要对多个函数进行统计运行时间，不使用装饰器会是这样的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">from time import time, sleep</span><br><span class="line"></span><br><span class="line">def fun_one():</span><br><span class="line">    start = time()</span><br><span class="line">    sleep(1)</span><br><span class="line">    end = time()</span><br><span class="line">    cost_time = end - start</span><br><span class="line">    print(&quot;func one run time &#123;&#125;&quot;.format(cost_time))</span><br><span class="line">    </span><br><span class="line">def fun_two():</span><br><span class="line">    start = time()</span><br><span class="line">    sleep(1)</span><br><span class="line">    end = time()</span><br><span class="line">    cost_time = end - start</span><br><span class="line">    print(&quot;func two run time &#123;&#125;&quot;.format(cost_time))</span><br></pre></td></tr></table></figure>
+<p>在每个函数里都需要获取开始时间start、结束时间end、计算耗费时间cost_time、加上一个输出语句。<br>使用装饰器的方法是这样的</p>
+<p>简单装饰器</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">def run_time(func):</span><br><span class="line">    def wrapper():</span><br><span class="line">        start = time()</span><br><span class="line">        func()                  # **函数在这里运行**</span><br><span class="line">        end = time()</span><br><span class="line">        cost_time = end - start</span><br><span class="line">        print(&quot;func three run time &#123;&#125;&quot;.format(cost_time))</span><br><span class="line">    return wrapper</span><br><span class="line"></span><br><span class="line">@run_time</span><br><span class="line">def fun_one():</span><br><span class="line">    sleep(1)</span><br><span class="line">    </span><br><span class="line">@run_time</span><br><span class="line">def fun_two():</span><br><span class="line">    sleep(1)</span><br></pre></td></tr></table></figure>
+<h1 id="3-anconda升级python版本"><a href="#3-anconda升级python版本" class="headerlink" title="3.anconda升级python版本"></a>3.anconda升级python版本</h1><ul>
+<li>先查看本地镜像源，清华镜像源从2019年已经停用了，建议使用中科大的镜像源</li>
+<li>然后直接命令指定升级python版本即可，如果不升级镜像源的话可能报404或者下载速度慢</li>
+</ul>
+<h2 id="3-1-修改镜像源"><a href="#3-1-修改镜像源" class="headerlink" title="3.1 修改镜像源"></a>3.1 修改镜像源</h2><p>先查看已经安装过的镜像源，cmd窗口执行命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda config --show</span><br></pre></td></tr></table></figure>
+<p>查看配置项channels，如果显示带有tsinghua，则说明已安装过清华镜像。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">channels:</span><br><span class="line">- https://mirrors.tuna.tsinghua.edu.cn/tensorflow/linux/cpu/</span><br><span class="line">- https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/msys2/</span><br><span class="line">- https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/</span><br><span class="line">- https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/</span><br><span class="line">- https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/</span><br></pre></td></tr></table></figure>
+<p>下一步，使用<code>conda config --remove channels url地址</code>删除清华镜像，如下命令删除第一个。然后，依次删除所有镜像源</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda config --remove channels https://mirrors.tuna.tsinghua.edu.cn/tensorflow/linux/cpu/</span><br></pre></td></tr></table></figure>
+<p>添加目前可用的中科大镜像源：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/free/</span><br></pre></td></tr></table></figure>
+<p>并设置搜索时显示通道地址：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda config --set show_channel_urls yes</span><br></pre></td></tr></table></figure>
+<p>确认是否安装镜像源成功，执行<code>conda config --show</code>，找到<code>channels</code>值为如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">channels:</span><br><span class="line">  - https://mirrors.ustc.edu.cn/anaconda/pkgs/free/</span><br><span class="line">  - defaults</span><br></pre></td></tr></table></figure>
+<h2 id="3-2-升级python版本"><a href="#3-2-升级python版本" class="headerlink" title="3.2 升级python版本"></a>3.2 升级python版本</h2><p>打开Anaconda Prompt，<br>输入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda create -n python36 python=3.6 anaconda</span><br></pre></td></tr></table></figure>
+
+<h1 id="4-文件io"><a href="#4-文件io" class="headerlink" title="4.文件io"></a>4.文件io</h1><h2 id="4-1-文件打开方式，r-w-a-的说明"><a href="#4-1-文件打开方式，r-w-a-的说明" class="headerlink" title="4.1 文件打开方式，r&#x2F;w&#x2F;a&#x2F;+的说明"></a>4.1 文件打开方式，r&#x2F;w&#x2F;a&#x2F;+的说明</h2><ul>
+<li>r只读，r+读写(覆盖写)，不创建</li>
+<li>w新建只写，w+新建读写，二者都会将文件内容清零</li>
+<li>w+与r+区别：</li>
+<li><blockquote>
+<p>r+：可读可写，若文件不存在，报错；w+: 可读可写，若文件不存在，创建</p>
+</blockquote>
+</li>
+<li>a：附加写方式打开，不可读；</li>
+<li>a+: 附加读写方式打开</li>
+</ul>
+<p>#5. 代码规范性测试</p>
+<p>pylint代码规范测试</p>
+<h1 id="6-fileinput-懒惰行迭代"><a href="#6-fileinput-懒惰行迭代" class="headerlink" title="6. fileinput 懒惰行迭代"></a>6. fileinput 懒惰行迭代</h1><p>只读取实际需要的文件部分</p>
+<h1 id="7-编码规范"><a href="#7-编码规范" class="headerlink" title="7. 编码规范"></a>7. 编码规范</h1><ol>
+<li>多次使用的常量使用全大写命名，并考虑设置为全局变量</li>
+<li>创建单独的配置文件模块，保存一些配置的参数<blockquote>
+<p>简单配置或者使用configparser模块</p>
+</blockquote>
+</li>
+<li>在需要的时候使用日志记录（logging模块）</li>
+</ol>
+<h1 id="8-魔法方法理解"><a href="#8-魔法方法理解" class="headerlink" title="8.魔法方法理解"></a>8.魔法方法理解</h1><p>魔法方法是python内置方法，不需要主动调用，存在的目的是为了给python的解释器进行调用，几乎每个魔法方法都有一个对应的内置函数，或者运算符，当我们对这个对象使用这些函数或者运算符时就会调用类中的对应魔法方法，可以理解为重写内置函数</p>
+<p>实际上, 当我们调用x &#x3D; SomeClass()的时候调用,__init__并不是第一个执行的, __new__才是。所以准确来说,是__new__和__init__共同构成了”构造函数”.</p>
+<p><strong>new</strong>() 是一种负责创建类实例的静态方法，它无需使用 staticmethod 装饰器修饰，且该方法会优先 <strong>init</strong>() 初始化方法被调用</p>
+<h1 id="9-正则表达式"><a href="#9-正则表达式" class="headerlink" title="9.正则表达式"></a>9.正则表达式</h1><p>##9.1 match()和search()比较</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">m = re.match(&#x27;foo&#x27;, &#x27;seafood&#x27;) </span><br><span class="line">m.group()</span><br><span class="line">&gt;&gt;&gt; None    # 匹配失败</span><br><span class="line"></span><br><span class="line">m = re.search(&#x27;foo&#x27;, &#x27;seafood&#x27;) </span><br><span class="line">m.group()</span><br><span class="line">&gt;&gt;&gt; &#x27;foo&#x27; # 搜索成功， 但是之前匹配失败</span><br></pre></td></tr></table></figure>
+<p>match是从字符串的起始部分开始匹配模式，把字符串当作一个整体来匹配，而search表示字符串中任意位置出现符合匹配模式的字符串，都将其提取出来。<br>##9.2  中括号（[cr][23][dp][o2]）和或运算符（r2d2|c3po）的区别</p>
+<ul>
+<li>[cr][23][dp][o2]<blockquote>
+<p>上述表示匹配由四个字符组成的类似‘ABCD’字符串，每一个字符匹配一个中括号内的两个字符中的一个</p>
+</blockquote>
+</li>
+<li>r2d2|c3po<blockquote>
+<p>上述表示匹配“r2d2”或“c3po”</p>
+</blockquote>
+</li>
+</ul>
+<p>##9.3 使用group()或groups()访问匹配组</p>
+<p>pattern中每一个括号为一个匹配模式，返回的结果保存在group()中，而groups()可以查看所有的子组匹配结果（如果pattern中无括号分组模式则groups为空）。</p>
+<blockquote>
+<blockquote>
+<p>m &#x3D; re.match(‘(\w\w\w)-(\d\d\d)’, ‘abc-123’)<br>m.group() # 完整匹配<br>‘abc-123’<br>m.group(1) # 子组 1<br>‘abc’<br>m.group(2) # 子组 2<br>‘123’<br>m.groups() # 全部子组<br>(‘abc’, ‘123’)</p>
+</blockquote>
+</blockquote>
+<h2 id="9-4-findall和search方法的区别"><a href="#9-4-findall和search方法的区别" class="headerlink" title="9.4 findall和search方法的区别"></a>9.4 findall和search方法的区别</h2><p>findall()查询字符串中某个正则表达式模式全部的非重复出现情况，和search类似，但是findall总是返回一个列表，<strong>当匹配失败时列表为空；当匹配成功时返回所有成功的匹配部分</strong>。</p>
+<h2 id="9-5-sub-和subn-，表示替换"><a href="#9-5-sub-和subn-，表示替换" class="headerlink" title="9.5 sub()和subn()，表示替换"></a>9.5 sub()和subn()，表示替换</h2><p>sub和subn基本一样，但是subn还返回了替换的次数。</p>
+<h1 id="10-python多线程与多进程"><a href="#10-python多线程与多进程" class="headerlink" title="10 python多线程与多进程"></a>10 python多线程与多进程</h1><p>参考<a target="_blank" rel="noopener" href="https://www.cnblogs.com/kaituorensheng/p/4465768.html">python进程池：multiprocessing.pool - jihite - 博客园 (cnblogs.com)</a></p>
+<h2 id="10-1-总结"><a href="#10-1-总结" class="headerlink" title="10.1 总结"></a>10.1 总结</h2><p><strong>i&#x2F;o密集型任务用多线程，多任务计算使用多进程</strong></p>
+<h2 id="10-2-使用进程池"><a href="#10-2-使用进程池" class="headerlink" title="10.2 使用进程池"></a>10.2 使用进程池</h2><h3 id="10-2-1-样例"><a href="#10-2-1-样例" class="headerlink" title="10.2.1 样例"></a>10.2.1 样例</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">#coding: utf-8</span><br><span class="line">import multiprocessing</span><br><span class="line">import time</span><br><span class="line"></span><br><span class="line">def func(msg):</span><br><span class="line">    print &quot;msg:&quot;, msg</span><br><span class="line">    time.sleep(3)</span><br><span class="line">    print &quot;end&quot;</span><br><span class="line"></span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    pool = multiprocessing.Pool(processes = 3)</span><br><span class="line">    for i in xrange(4):</span><br><span class="line">        msg = &quot;hello %d&quot; %(i)</span><br><span class="line">        pool.apply_async(func, (msg, ))   #维持**同时**执行的进程总数为processes，当一个进程执行完毕后会添加新的进程进去（多通道）</span><br><span class="line">   		#pool.apply(func, (msg, )) # 而使用apply方法的时候是通道阻塞的，一次只有一个进程在运行，当一个进程执行完毕后再添加新的进程（单通道）</span><br><span class="line">    print &quot;Mark~ Mark~ Mark~~~~~~~~~~~~~~~~~~~~~~&quot;</span><br><span class="line">    pool.close()</span><br><span class="line">    pool.join()   #调用join之前，先调用close函数，否则会出错。执行完close后不会有新的进程加入到pool,join函数等待所有子进程结束</span><br><span class="line">    print &quot;Sub-process(es) done.&quot;</span><br></pre></td></tr></table></figure>
+
+<h3 id="10-2-2-结果："><a href="#10-2-2-结果：" class="headerlink" title="10.2.2 结果："></a>10.2.2 结果：</h3><p>apply_async方法，多通道</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mMsg: hark~ Mark~ Mark~~~~~~~~~~~~~~~~~~~~~~ello 0</span><br><span class="line"> </span><br><span class="line">msg: hello 1</span><br><span class="line">msg: hello 2</span><br><span class="line">end</span><br><span class="line">msg: hello 3</span><br><span class="line">end</span><br><span class="line">end</span><br><span class="line">end</span><br><span class="line">Sub-process(es) done.</span><br></pre></td></tr></table></figure>
+
+<p>apply方法，单通道</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">msg: hello 0</span><br><span class="line">end</span><br><span class="line">msg: hello 1</span><br><span class="line">end</span><br><span class="line">msg: hello 2</span><br><span class="line">end</span><br><span class="line">msg: hello 3</span><br><span class="line">end</span><br><span class="line">Mark~ Mark~ Mark~~~~~~~~~~~~~~~~~~~~~~</span><br><span class="line">Sub-process(es) done.　</span><br></pre></td></tr></table></figure>
+
+<h1 id="11-python-集合set中-add与update的区别"><a href="#11-python-集合set中-add与update的区别" class="headerlink" title="11 python 集合set中 add与update的区别"></a>11 python 集合set中 add与update的区别</h1><p>集合set是一个无序不重复元素的集</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span>([<span class="string">&#x27;hello&#x27;</span>,<span class="string">&#x27;hello&#x27;</span>,<span class="string">&#x27;hi&#x27;</span>])</span><br><span class="line"><span class="comment"># &#123;&#x27;hello&#x27;, &#x27;hi&#x27;&#125;</span></span><br><span class="line"><span class="built_in">set</span>(<span class="string">&#x27;hello hello hi&#x27;</span>)</span><br><span class="line"><span class="comment"># &#123;&#x27; &#x27;, &#x27;e&#x27;, &#x27;h&#x27;, &#x27;i&#x27;, &#x27;l&#x27;, &#x27;o&#x27;&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>set.add()</code> 与<code>set.update()</code>的区别</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">myset1 = <span class="built_in">set</span>()</span><br><span class="line">myset1.add(<span class="string">&#x27;hello&#x27;</span>)</span><br><span class="line"><span class="comment">#&#123;&#x27;hello&#x27;&#125;</span></span><br><span class="line">myset1.update(<span class="string">&#x27;world&#x27;</span>)</span><br><span class="line"><span class="comment">#&#123;&#x27;d&#x27;, &#x27;hello&#x27;, &#x27;l&#x27;, &#x27;o&#x27;, &#x27;r&#x27;, &#x27;w&#x27;&#125;</span></span><br><span class="line"></span><br><span class="line">myset2 = <span class="built_in">set</span>()</span><br><span class="line">myset2.add(<span class="string">&#x27;123&#x27;</span>)</span><br><span class="line">myset2.update(<span class="string">&#x27;123&#x27;</span>)</span><br><span class="line"><span class="comment">#&#123;&#x27;1&#x27;, &#x27;123&#x27;, &#x27;2&#x27;, &#x27;3&#x27;&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="12-python离线环境迁移"><a href="#12-python离线环境迁移" class="headerlink" title="12. python离线环境迁移"></a>12. python离线环境迁移</h1><h2 id="12-1-依赖文件requirement-txt生成"><a href="#12-1-依赖文件requirement-txt生成" class="headerlink" title="12.1 依赖文件requirement.txt生成"></a>12.1 依赖文件requirement.txt生成</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 在当前目录生成该目录下项目所需的所有依赖文件：注意生成包之后需要手动核对一下版本最好，会有部分版本生成错误的问题</span><br><span class="line">pipreqs ./ --encoding=utf8</span><br><span class="line"># 与pip freeze的区别</span><br><span class="line"># freeze 是生成当前python环境的所有包</span><br></pre></td></tr></table></figure>
+
+<h2 id="12-2-然后根据requirement-txt批量下载包文件"><a href="#12-2-然后根据requirement-txt批量下载包文件" class="headerlink" title="12.2 然后根据requirement.txt批量下载包文件"></a>12.2 然后根据requirement.txt批量下载包文件</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pip wheel --wheel-dir=.pip wheel --wheel-dir=./packages -r requirements.txt</span><br><span class="line"># 最后一起迁移到离线环境中并进行安装</span><br><span class="line">#在新服务器的site-packages目录下执行：</span><br><span class="line">pip install --no-index --find-links=/xxx/xxx/packages -r /xxx/xxx/packages/requirements.txt</span><br></pre></td></tr></table></figure>
+
+<h2 id="12-3-出现问题"><a href="#12-3-出现问题" class="headerlink" title="12.3 出现问题"></a>12.3 出现问题</h2><p>使用pipreqs生成的requirement.txt无法完整安装所有的包</p>
+<p>使用<code>python -m pip freeze &gt; req.txt</code>生成依赖文件然后替换用该文件安装</p>
+<h1 id="13-collection方法详解"><a href="#13-collection方法详解" class="headerlink" title="13. collection方法详解"></a>13. collection方法详解</h1><h2 id="13-1-命名元组-namedtuple"><a href="#13-1-命名元组-namedtuple" class="headerlink" title="13.1 命名元组 namedtuple"></a>13.1 命名元组 namedtuple</h2><p>使用namedtuple可以对元组中的每一个值进行命名</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 使用命名元组解析csv</span><br><span class="line">from collections import *</span><br><span class="line">import csv</span><br><span class="line"></span><br><span class="line">EmployeeRecord = namedtuple(&#x27;EmployeeRecord&#x27;,&#x27;name, age, title, department, paygrade&#x27;)</span><br><span class="line">for emp in map(EmployeeRecord._make,csv.reader(open(&quot;employee.csv&quot;,&quot;rb&quot;))):</span><br><span class="line">    print (emp.name,emp.title)</span><br></pre></td></tr></table></figure>
+
+<h2 id="13-2-defaultdict"><a href="#13-2-defaultdict" class="headerlink" title="13.2 defaultdict"></a>13.2 defaultdict</h2><p>功能和dict差不多，区别是会对未存在的key值赋予一个默认值而不报异常</p>
+<p>并且 defaultdict()的default_factory参数可以传入list，int，tuple等类型</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; from collections import *</span><br><span class="line">&gt;&gt;&gt; &gt;&gt;&gt; s = [(&#x27;yellow&#x27;,1),(&#x27;blue&#x27;,2),(&#x27;yellow&#x27;,3),(&#x27;blue&#x27;,4),(&#x27;red&#x27;,5)]</span><br><span class="line">&gt;&gt;&gt; d = defaultdict(list)</span><br><span class="line">&gt;&gt;&gt; for k,v in s: </span><br><span class="line">... 	d[k].append(v)</span><br><span class="line">&gt;&gt;&gt; d.items()</span><br><span class="line">[(&#x27;blue&#x27;, [2, 4]), (&#x27;red&#x27;, [5]), (&#x27;yellow&#x27;, [1, 3])]</span><br></pre></td></tr></table></figure>
+
+<h2 id="13-3-Counter"><a href="#13-3-Counter" class="headerlink" title="13.3 Counter"></a>13.3 Counter</h2><p>counter可以支持方便、快速的计数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; from collections import *</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; cnt = Counter(&#x27;aabbcc&#x27;)</span><br><span class="line">&gt;&gt;&gt; cnt</span><br><span class="line">Out[14]: Counter(&#123;&#x27;a&#x27;: 2, &#x27;b&#x27;: 2, &#x27;c&#x27;: 2&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="13-4-deque"><a href="#13-4-deque" class="headerlink" title="13.4 deque"></a>13.4 deque</h2><p>deque是栈和队列的一种广义实现，deque是”double-end queue”的简称；deque支持线程安全、有效内存地以近似O(1)的性能在deque的两端插入和删除元素，尽管list也支持相似的操作，但是它主要在固定长度操作上的优化，从而在pop(0)和insert(0,v)（会改变数据的位置和大小）上有O(n)的时间复杂度。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; from collections import deque</span><br><span class="line">&gt;&gt;&gt; dq = deque(range(10), maxlen=10) </span><br><span class="line">&gt;&gt;&gt; dq</span><br><span class="line">deque([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], maxlen=10)</span><br><span class="line"># rotate 将循环队列向右移三次</span><br><span class="line">&gt;&gt;&gt; dq.rotate(3) </span><br><span class="line">&gt;&gt;&gt; dq</span><br><span class="line">deque([7, 8, 9, 0, 1, 2, 3, 4, 5, 6], maxlen=10)</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="————其他—————————"><a href="#————其他—————————" class="headerlink" title="————其他—————————"></a>————其他—————————</h1><ul>
+<li>mysql&#x2F;oracle</li>
+</ul>
+<blockquote>
+<p>内连接是保证两个表中所有的行都要满足连接条件，而外连接则不然。在外连接中，某些不满条件的列也会显示出来，也就是说，只限制其中一个表的行，而不限制另一个表的行。分左连接、右连接、全连接三种。</p>
+</blockquote>
+<ul>
+<li>Django&#x2F;Flask</li>
+<li>git</li>
+</ul>
+<h1 id="14-多线程，多进程，协程"><a href="#14-多线程，多进程，协程" class="headerlink" title="14 多线程，多进程，协程"></a>14 多线程，多进程，协程</h1><p>程序是由多个进程组成的，然后每个进程可能有多个线程（线程更加底层）</p>
+<p>而python由于GIL（全局解释器锁）的存在，使得多线程无法充分使用多核的优势</p>
+<p>如果使用爬虫这种i&#x2F;o密集型程序，多线程操作还是很明显的。</p>
+<h1 id="15-pandas操作"><a href="#15-pandas操作" class="headerlink" title="15 pandas操作"></a>15 pandas操作</h1><h1 id="16-scrapy相关"><a href="#16-scrapy相关" class="headerlink" title="16 scrapy相关"></a>16 scrapy相关</h1><h1 id="17-restful-api"><a href="#17-restful-api" class="headerlink" title="17 restful api"></a>17 restful api</h1><p>遵循 REST 架构规范的应用编程接口</p>
+<blockquote>
+<p>api：</p>
+<p>客户端和服务器端信息的传递者</p>
+</blockquote>
+<blockquote>
+<p>传输格式：</p>
+<p>JSON（Javascript 对象表示法）、HTML、XLT、Python、PHP 或纯文本</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/12/23/python/python%E4%B8%AD%E6%96%B9%E6%B3%95%E5%8F%8A%E5%8F%98%E9%87%8F%E7%9A%84%E4%B8%8B%E5%88%92%E7%BA%BF%E5%8F%8C%E4%B8%8B%E5%88%92%E7%BA%BF%E7%AD%89%E5%90%AB%E4%B9%89/" rel="prev" title="python中方法及变量的下划线双下划线等含义">
+      <i class="fa fa-chevron-left"></i> python中方法及变量的下划线双下划线等含义
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/03/01/python/pyspark%E8%AF%BB%E5%8F%96hbase%E8%B7%91%E6%A8%A1%E5%9E%8B%E5%B0%9D%E8%AF%95/" rel="next" title="'pyspark读取hbase跑模型尝试'">
+      'pyspark读取hbase跑模型尝试' <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E7%BA%BF%E7%A8%8B%E6%B1%A0ThreadPoolExecutor"><span class="nav-number">1.</span> <span class="nav-text">1.线程池ThreadPoolExecutor</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E8%A3%85%E9%A5%B0%E5%99%A8"><span class="nav-number">2.</span> <span class="nav-text">2. 装饰器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-anconda%E5%8D%87%E7%BA%A7python%E7%89%88%E6%9C%AC"><span class="nav-number">3.</span> <span class="nav-text">3.anconda升级python版本</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-%E4%BF%AE%E6%94%B9%E9%95%9C%E5%83%8F%E6%BA%90"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 修改镜像源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-%E5%8D%87%E7%BA%A7python%E7%89%88%E6%9C%AC"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 升级python版本</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E6%96%87%E4%BB%B6io"><span class="nav-number">4.</span> <span class="nav-text">4.文件io</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-%E6%96%87%E4%BB%B6%E6%89%93%E5%BC%80%E6%96%B9%E5%BC%8F%EF%BC%8Cr-w-a-%E7%9A%84%E8%AF%B4%E6%98%8E"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 文件打开方式，r&#x2F;w&#x2F;a&#x2F;+的说明</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-fileinput-%E6%87%92%E6%83%B0%E8%A1%8C%E8%BF%AD%E4%BB%A3"><span class="nav-number">5.</span> <span class="nav-text">6. fileinput 懒惰行迭代</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83"><span class="nav-number">6.</span> <span class="nav-text">7. 编码规范</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8-%E9%AD%94%E6%B3%95%E6%96%B9%E6%B3%95%E7%90%86%E8%A7%A3"><span class="nav-number">7.</span> <span class="nav-text">8.魔法方法理解</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#9-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">8.</span> <span class="nav-text">9.正则表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#9-4-findall%E5%92%8Csearch%E6%96%B9%E6%B3%95%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">8.1.</span> <span class="nav-text">9.4 findall和search方法的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-5-sub-%E5%92%8Csubn-%EF%BC%8C%E8%A1%A8%E7%A4%BA%E6%9B%BF%E6%8D%A2"><span class="nav-number">8.2.</span> <span class="nav-text">9.5 sub()和subn()，表示替换</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#10-python%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E5%A4%9A%E8%BF%9B%E7%A8%8B"><span class="nav-number">9.</span> <span class="nav-text">10 python多线程与多进程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#10-1-%E6%80%BB%E7%BB%93"><span class="nav-number">9.1.</span> <span class="nav-text">10.1 总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-2-%E4%BD%BF%E7%94%A8%E8%BF%9B%E7%A8%8B%E6%B1%A0"><span class="nav-number">9.2.</span> <span class="nav-text">10.2 使用进程池</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#10-2-1-%E6%A0%B7%E4%BE%8B"><span class="nav-number">9.2.1.</span> <span class="nav-text">10.2.1 样例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-2-2-%E7%BB%93%E6%9E%9C%EF%BC%9A"><span class="nav-number">9.2.2.</span> <span class="nav-text">10.2.2 结果：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#11-python-%E9%9B%86%E5%90%88set%E4%B8%AD-add%E4%B8%8Eupdate%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">10.</span> <span class="nav-text">11 python 集合set中 add与update的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#12-python%E7%A6%BB%E7%BA%BF%E7%8E%AF%E5%A2%83%E8%BF%81%E7%A7%BB"><span class="nav-number">11.</span> <span class="nav-text">12. python离线环境迁移</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#12-1-%E4%BE%9D%E8%B5%96%E6%96%87%E4%BB%B6requirement-txt%E7%94%9F%E6%88%90"><span class="nav-number">11.1.</span> <span class="nav-text">12.1 依赖文件requirement.txt生成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-2-%E7%84%B6%E5%90%8E%E6%A0%B9%E6%8D%AErequirement-txt%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E5%8C%85%E6%96%87%E4%BB%B6"><span class="nav-number">11.2.</span> <span class="nav-text">12.2 然后根据requirement.txt批量下载包文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-3-%E5%87%BA%E7%8E%B0%E9%97%AE%E9%A2%98"><span class="nav-number">11.3.</span> <span class="nav-text">12.3 出现问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#13-collection%E6%96%B9%E6%B3%95%E8%AF%A6%E8%A7%A3"><span class="nav-number">12.</span> <span class="nav-text">13. collection方法详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#13-1-%E5%91%BD%E5%90%8D%E5%85%83%E7%BB%84-namedtuple"><span class="nav-number">12.1.</span> <span class="nav-text">13.1 命名元组 namedtuple</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13-2-defaultdict"><span class="nav-number">12.2.</span> <span class="nav-text">13.2 defaultdict</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13-3-Counter"><span class="nav-number">12.3.</span> <span class="nav-text">13.3 Counter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13-4-deque"><span class="nav-number">12.4.</span> <span class="nav-text">13.4 deque</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E5%85%B6%E4%BB%96%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94"><span class="nav-number">13.</span> <span class="nav-text">————其他—————————</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#14-%E5%A4%9A%E7%BA%BF%E7%A8%8B%EF%BC%8C%E5%A4%9A%E8%BF%9B%E7%A8%8B%EF%BC%8C%E5%8D%8F%E7%A8%8B"><span class="nav-number">14.</span> <span class="nav-text">14 多线程，多进程，协程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#15-pandas%E6%93%8D%E4%BD%9C"><span class="nav-number">15.</span> <span class="nav-text">15 pandas操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#16-scrapy%E7%9B%B8%E5%85%B3"><span class="nav-number">16.</span> <span class="nav-text">16 scrapy相关</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#17-restful-api"><span class="nav-number">17.</span> <span class="nav-text">17 restful api</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

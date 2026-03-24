@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 8.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="数字边界识别检测并切割处理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="手写识别图片预处理">
+<meta property="og:url" content="http://example.com/2018/11/21/%E6%89%8B%E5%86%99%E8%AF%86%E5%88%AB%E5%9B%BE%E7%89%87%E9%A2%84%E5%A4%84%E7%90%86/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="数字边界识别检测并切割处理">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/EF7E208AE0EE4C20923C8FCE1596E233">
+<meta property="og:image" content="http://example.com/E0D1665B6D024C95BAA35ED62B95FFD3">
+<meta property="og:image" content="http://example.com/BC4FFD9E762F41B884F1561145188A38">
+<meta property="og:image" content="http://example.com/2CB054EC34C74753AC8B607F09C43EAB">
+<meta property="og:image" content="http://example.com/26767B1C17EF41419DBFAB8DFB1A3F97">
+<meta property="og:image" content="http://example.com/E3617599EB824E8299DABE0F092E2E2A">
+<meta property="og:image" content="http://example.com/BAD59EB81C624531B685A71658D40A6B">
+<meta property="og:image" content="http://example.com/334DE774AEC74DFF92342E47D4D5DE59">
+<meta property="og:image" content="http://example.com/FBF03940D0494CCA8DA20F1EB9189084">
+<meta property="og:image" content="http://example.com/8F285B11124A45CAB531F5BC452BA749">
+<meta property="article:published_time" content="2018-11-21T04:52:41.000Z">
+<meta property="article:modified_time" content="2020-09-16T06:56:26.236Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="opencv">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/EF7E208AE0EE4C20923C8FCE1596E233">
+
+<link rel="canonical" href="http://example.com/2018/11/21/%E6%89%8B%E5%86%99%E8%AF%86%E5%88%AB%E5%9B%BE%E7%89%87%E9%A2%84%E5%A4%84%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>手写识别图片预处理 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2018/11/21/%E6%89%8B%E5%86%99%E8%AF%86%E5%88%AB%E5%9B%BE%E7%89%87%E9%A2%84%E5%A4%84%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          手写识别图片预处理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2018-11-21 14:22:41" itemprop="dateCreated datePublished" datetime="2018-11-21T14:22:41+09:30">2018-11-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-09-16 16:26:26" itemprop="dateModified" datetime="2020-09-16T16:26:26+09:30">2020-09-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E6%A0%A1/" itemprop="url" rel="index"><span itemprop="name">学校</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h2><p>大二的时候几个人一起搞的一个东西，上周运气好被一个同学投到了成都的一个比赛还进了决赛，然后思考了一下既然要比赛还是把这个系统的各个方面完善一下好了。我做的是图片预处理部分，把一张图片中的数字算式部分提取出来。</p>
+<pre><code>之前的图片预处理分割字符是通过照片的像素点来分割的，
+现在看来是十分的愚蠢。。。主要是那个时候自己也菜，
+所以现在想了办法预处理部分重新做一下。
+</code></pre>
+<h2 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h2><ul>
+<li>图片预处理部分要实现的功能很简单，就是把一整张图片中的数字和运算符号切割成单独的一个一个小图像就好了。<br>大概步骤就是这样：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">整张图片--&gt;图片旋转闭操作等处理</span><br><span class="line">图片旋转闭操作等处理--&gt;切割单个等式</span><br><span class="line">切割单个等式--&gt;获取每一个数字与运算符</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>理想效果：<br>  原图⬇<br>  <img src="/EF7E208AE0EE4C20923C8FCE1596E233" alt="0--test0"></p>
+<p>  结果⬇<br>  <img src="/E0D1665B6D024C95BAA35ED62B95FFD3" alt="1"></p>
+</li>
+<li><p>其中图片的拍摄过程中需要解决的问题及解决方法：</p>
+<ol>
+<li>图片倾斜 –&gt; 霍夫变换</li>
+<li>不平整 –&gt; 闭操作透视变换</li>
+<li>噪点与阴影 –&gt; 二值化处理</li>
+<li>提取内容 –&gt; 算式框的边界检测</li>
+</ol>
+</li>
+</ul>
+<h2 id="模块具体实施步骤和结果"><a href="#模块具体实施步骤和结果" class="headerlink" title="模块具体实施步骤和结果"></a>模块具体实施步骤和结果</h2><ul>
+<li><p>步骤零：获取图片<br>  <img src="/BC4FFD9E762F41B884F1561145188A38" alt="image"></p>
+</li>
+<li><p>步骤一：霍夫变换</p>
+<p>  这个地方因为拍摄的照片就比较正，所以霍夫变换的效果不是十分明显，仔细看是能看到这个图边缘黑边的地方就是进行旋转后的痕迹。结果如下：</p>
+</li>
+</ul>
+<p><img src="/2CB054EC34C74753AC8B607F09C43EAB" alt="image"></p>
+<ul>
+<li><p>步骤二：获取边界图片</p>
+<p>  opencv的边界检测方法<br>  <img src="/26767B1C17EF41419DBFAB8DFB1A3F97" alt="image"></p>
+</li>
+<li><p>步骤三：灰度化闭操作及透视变换</p>
+<p>  闭操作：<br>  ‘’ 图片形态学操作中的一种，闭操作可使轮廓线更光滑，但与开操作相反的是，闭操作通常消弥狭窄的间断和长细的鸿沟，消除小的空洞，并填补轮廓线中的断裂。’’</p>
+<p>  简单点说：图片细节增强</p>
+<p>  透视变换：将原图投影到另一个平面上并通过点运算使图像更加平整。</p>
+<p>  二值化处理方法：根据Otsu’s方法取最佳阈值对图片进行二值化处理</p>
+<p>  结果如下：这里透明变换的效果并不是很好，目前还没有找到一个合适的参数使用，并且从分割的情况来看效果也还行，所以暂时就这样勉强用了。。。<br>  <img src="/E3617599EB824E8299DABE0F092E2E2A" alt="image"></p>
+</li>
+<li><p>步骤四：分割单元格</p>
+<p>  opencv对图片轮廓进行识别：<br>  <img src="/BAD59EB81C624531B685A71658D40A6B" alt="image"></p>
+<p>  使用opencv把边界画出来，效果简明易懂：</p>
+<p>  <img src="/334DE774AEC74DFF92342E47D4D5DE59" alt="image"></p>
+<p>  单个单元格的提取：<br>  <img src="/FBF03940D0494CCA8DA20F1EB9189084" alt="image"></p>
+</li>
+<li><p>步骤五：从单个单元格中提取数字及符号</p>
+<p>  因为用了垂直投影方法切割字符，在使用之前去噪点的步骤没有检测效果如何，导致这里用垂直投影会出现将噪点也切割出来的情况。返回重新调整一下二值化的阈值就可以了。</p>
+<p>  效果：<br>  <img src="/8F285B11124A45CAB531F5BC452BA749" alt="1"></p>
+</li>
+</ul>
+<h2 id="其他："><a href="#其他：" class="headerlink" title="其他："></a>其他：</h2><ol>
+<li>使用png格式图片的原因<br>png它是无损压缩格式，jpg是有损</li>
+<li>写一个完整的系统代码一定要分方法分模块，否则到后面代码量增加起来之后对后续的维护很麻烦。</li>
+<li>对opencv模块的强大有了更加的了解。。。</li>
+<li>这里实名感谢”@ATP合成酶”大佬提供的相关处理思路，万分感谢</li>
+<li>项目为了赶时间基本只写了两周还有很多不完整的细节处理地方，如果继续做下去的话也还是蛮有意思的</li>
+<li>第一次感受到当程序员没日没夜的加班生活，想到以后还有很多次真的是很后悔如这一行了</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/opencv/" rel="tag"># opencv</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2018/11/29/%E5%9B%BE%E8%A7%A3%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95/" rel="next" title="图解十大经典的机器学习算法（转自网络）">
+      图解十大经典的机器学习算法（转自网络） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">前言：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">需求分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9D%97%E5%85%B7%E4%BD%93%E5%AE%9E%E6%96%BD%E6%AD%A5%E9%AA%A4%E5%92%8C%E7%BB%93%E6%9E%9C"><span class="nav-number">3.</span> <span class="nav-text">模块具体实施步骤和结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">其他：</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

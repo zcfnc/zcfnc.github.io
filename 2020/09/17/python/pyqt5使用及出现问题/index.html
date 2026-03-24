@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 8.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="使用pyqt5为之前写的一个小工具添加界面">
+<meta property="og:type" content="article">
+<meta property="og:title" content="差补计算器及使用pyqt5入门写一个简单的界面">
+<meta property="og:url" content="http://example.com/2020/09/17/python/pyqt5%E4%BD%BF%E7%94%A8%E5%8F%8A%E5%87%BA%E7%8E%B0%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="使用pyqt5为之前写的一个小工具添加界面">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2020/09/17/python/pyqt5%E4%BD%BF%E7%94%A8%E5%8F%8A%E5%87%BA%E7%8E%B0%E9%97%AE%E9%A2%98/pyqt5%E4%BD%BF%E7%94%A8%E5%8F%8A%E5%87%BA%E7%8E%B0%E9%97%AE%E9%A2%98/2.png">
+<meta property="article:published_time" content="2020-09-17T07:43:07.000Z">
+<meta property="article:modified_time" content="2021-04-06T09:11:42.457Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="pyqt5">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2020/09/17/python/pyqt5%E4%BD%BF%E7%94%A8%E5%8F%8A%E5%87%BA%E7%8E%B0%E9%97%AE%E9%A2%98/pyqt5%E4%BD%BF%E7%94%A8%E5%8F%8A%E5%87%BA%E7%8E%B0%E9%97%AE%E9%A2%98/2.png">
+
+<link rel="canonical" href="http://example.com/2020/09/17/python/pyqt5%E4%BD%BF%E7%94%A8%E5%8F%8A%E5%87%BA%E7%8E%B0%E9%97%AE%E9%A2%98/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>差补计算器及使用pyqt5入门写一个简单的界面 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/09/17/python/pyqt5%E4%BD%BF%E7%94%A8%E5%8F%8A%E5%87%BA%E7%8E%B0%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          差补计算器及使用pyqt5入门写一个简单的界面
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-09-17 17:13:07" itemprop="dateCreated datePublished" datetime="2020-09-17T17:13:07+09:30">2020-09-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-04-06 18:41:42" itemprop="dateModified" datetime="2021-04-06T18:41:42+09:30">2021-04-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/" itemprop="url" rel="index"><span itemprop="name">编程语言特性相关</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="1-pyqt5及qtdesigner的安装"><a href="#1-pyqt5及qtdesigner的安装" class="headerlink" title="1. pyqt5及qtdesigner的安装"></a>1. pyqt5及qtdesigner的安装</h1><h2 id="1-1-安装"><a href="#1-1-安装" class="headerlink" title="1.1 安装"></a>1.1 安装</h2><p>安装步骤网上一堆自行谷歌</p>
+<h3 id="1-2-使用pyqt5生成ui文件后无法转py，报错"><a href="#1-2-使用pyqt5生成ui文件后无法转py，报错" class="headerlink" title="1.2 使用pyqt5生成ui文件后无法转py，报错"></a>1.2 使用pyqt5生成ui文件后无法转py，报错</h3><p>错误如下:</p>
+<blockquote>
+<p>Fatal error in launcher: Unable to create process using ‘“‘</p>
+</blockquote>
+<p>原因：</p>
+<blockquote>
+<p>执行语句错误，完整应为</p>
+<p>“python -m PyQt5.uic.pyuic untitled.ui -o untitled.py”</p>
+</blockquote>
+<blockquote>
+<p>注意在pycharm中的tools中的pyuic的settings—External Tools—(External Tools)Pyuic内Tools settings设置的正确，正确如下</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Program: D:\Anaconda3\envs\python36\python.exe</span><br><span class="line">Arguments: -m PyQt5.uic.pyuic $FileName$ -o $FileNameWithoutExtension$.py</span><br><span class="line">Working directory: $FileDir$</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="2-使用"><a href="#2-使用" class="headerlink" title="2. 使用"></a>2. 使用</h1><p>功能比较简单，就是一个根据时间和工作日&#x2F;休息日的不同计算出差补助。</p>
+<p>主要是因为之前没用过pyqt5，所以突发奇想尝试一下，发现也是蛮简单的。</p>
+<img src="pyqt5使用及出现问题\2.png" alt="uTools_1617699763437" style="zoom:50%;" />
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line"></span><br><span class="line"># Form implementation generated from reading ui file &#x27;untitled.ui&#x27;</span><br><span class="line">#</span><br><span class="line"># Created by: PyQt5 UI code generator 5.15.0</span><br><span class="line">#</span><br><span class="line"># WARNING: Any manual changes made to this file will be lost when pyuic5 is</span><br><span class="line"># run again.  Do not edit this file unless you know what you are doing.</span><br><span class="line"></span><br><span class="line">from PyQt5.QtWidgets import *</span><br><span class="line">from PyQt5 import QtCore, QtWidgets</span><br><span class="line">from datetime import datetime</span><br><span class="line">import datetime as datetime0</span><br><span class="line"># 添加这一行可以在程序捕获异常的时候pyqt不崩溃</span><br><span class="line">import cgitb</span><br><span class="line">cgitb.enable( format = &#x27;text&#x27;)</span><br><span class="line"></span><br><span class="line">class Ui_Form(object):</span><br><span class="line">    def setupUi(self, Form):</span><br><span class="line">        Form.setObjectName(&quot;Form&quot;)</span><br><span class="line">        Form.resize(586, 401)</span><br><span class="line">        self.textEdit = QtWidgets.QTextEdit(Form)</span><br><span class="line">        self.textEdit.setGeometry(QtCore.QRect(130, 100, 141, 41))</span><br><span class="line">        self.textEdit.setObjectName(&quot;textEdit&quot;)</span><br><span class="line">        self.textEdit_2 = QtWidgets.QTextEdit(Form)</span><br><span class="line">        self.textEdit_2.setGeometry(QtCore.QRect(420, 100, 121, 41))</span><br><span class="line">        self.textEdit_2.setObjectName(&quot;textEdit_2&quot;)</span><br><span class="line">        self.textEdit_4 = QtWidgets.QTextEdit(Form)</span><br><span class="line">        self.textEdit_4.setGeometry(QtCore.QRect(420, 190, 121, 41))</span><br><span class="line">        self.textEdit_4.setObjectName(&quot;textEdit_4&quot;)</span><br><span class="line">        self.textEdit_5 = QtWidgets.QTextEdit(Form)</span><br><span class="line">        self.textEdit_5.setGeometry(QtCore.QRect(210, 270, 281, 91))</span><br><span class="line">        self.textEdit_5.setObjectName(&quot;textEdit_5&quot;)</span><br><span class="line">        self.textEdit_5.setReadOnly(True)</span><br><span class="line">        self.textEdit_6 = QtWidgets.QTextEdit(Form)</span><br><span class="line">        self.textEdit_6.setGeometry(QtCore.QRect(130, 190, 141, 41))</span><br><span class="line">        self.textEdit_6.setObjectName(&quot;textEdit_6&quot;)</span><br><span class="line"></span><br><span class="line">        self.pushButton = QtWidgets.QPushButton(Form)</span><br><span class="line">        self.pushButton.setGeometry(QtCore.QRect(110, 290, 61, 41))</span><br><span class="line">        self.pushButton.setObjectName(&quot;pushButton&quot;)</span><br><span class="line">        self.label = QtWidgets.QLabel(Form)</span><br><span class="line">        self.label.setGeometry(QtCore.QRect(40, 100, 71, 31))</span><br><span class="line">        self.label.setObjectName(&quot;label&quot;)</span><br><span class="line">        self.label_2 = QtWidgets.QLabel(Form)</span><br><span class="line">        self.label_2.setGeometry(QtCore.QRect(320, 100, 81, 31))</span><br><span class="line">        self.label_2.setObjectName(&quot;label_2&quot;)</span><br><span class="line">        self.label_3 = QtWidgets.QLabel(Form)</span><br><span class="line">        self.label_3.setGeometry(QtCore.QRect(30, 190, 91, 31))</span><br><span class="line">        self.label_3.setObjectName(&quot;label_3&quot;)</span><br><span class="line">        self.label_4 = QtWidgets.QLabel(Form)</span><br><span class="line">        self.label_4.setGeometry(QtCore.QRect(320, 200, 91, 16))</span><br><span class="line">        self.label_4.setObjectName(&quot;label_4&quot;)</span><br><span class="line">        self.label_5 = QtWidgets.QLabel(Form)</span><br><span class="line">        self.label_5.setGeometry(QtCore.QRect(40, 40, 281, 41))</span><br><span class="line">        self.label_5.setObjectName(&quot;label_5&quot;)</span><br><span class="line"></span><br><span class="line">        self.retranslateUi(Form)</span><br><span class="line">        QtCore.QMetaObject.connectSlotsByName(Form)</span><br><span class="line">        Form.show()</span><br><span class="line"></span><br><span class="line">    def retranslateUi(self, Form):</span><br><span class="line">        _translate = QtCore.QCoreApplication.translate</span><br><span class="line">        Form.setWindowTitle(_translate(&quot;Form&quot;, &quot;Form&quot;))</span><br><span class="line">        self.textEdit.setHtml(_translate(&quot;Form&quot;,</span><br><span class="line">                                         &quot;&lt;!DOCTYPE HTML PUBLIC \&quot;-//W3C//DTD HTML 4.0//EN\&quot; \&quot;http://www.w3.org/TR/REC-html40/strict.dtd\&quot;&gt;\n&quot;</span><br><span class="line">                                         &quot;&lt;html&gt;&lt;head&gt;&lt;meta name=\&quot;qrichtext\&quot; content=\&quot;1\&quot; /&gt;&lt;style type=\&quot;text/css\&quot;&gt;\n&quot;</span><br><span class="line">                                         &quot;p, li &#123; white-space: pre-wrap; &#125;\n&quot;</span><br><span class="line">                                         &quot;&lt;/style&gt;&lt;/head&gt;&lt;body style=\&quot; font-family:\&#x27;SimSun\&#x27;; font-size:9pt; font-weight:400; font-style:normal;\&quot;&gt;\n&quot;</span><br><span class="line">                                         &quot;&lt;p style=\&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;&quot;))</span><br><span class="line">        self.pushButton.setText(_translate(&quot;Form&quot;, &quot;计算&quot;))</span><br><span class="line">        self.label.setText(_translate(&quot;Form&quot;, &quot;起始时间：&quot;))</span><br><span class="line">        self.label_2.setText(_translate(&quot;Form&quot;, &quot;结束时间：&quot;))</span><br><span class="line">        self.label_3.setText(_translate(&quot;Form&quot;, &quot;工作日价格：&quot;))</span><br><span class="line">        self.label_4.setText(_translate(&quot;Form&quot;, &quot;休息日价格：&quot;))</span><br><span class="line">        self.label_5.setText(_translate(&quot;Form&quot;, &quot;时间输入格式：20200101&quot;))</span><br><span class="line">        self.textEdit_2.setHtml(_translate(&quot;Form&quot;,</span><br><span class="line">                                           &quot;&lt;!DOCTYPE HTML PUBLIC \&quot;-//W3C//DTD HTML 4.0//EN\&quot; \&quot;http://www.w3.org/TR/REC-html40/strict.dtd\&quot;&gt;\n&quot;</span><br><span class="line">                                           &quot;&lt;html&gt;&lt;head&gt;&lt;meta name=\&quot;qrichtext\&quot; content=\&quot;1\&quot; /&gt;&lt;style type=\&quot;text/css\&quot;&gt;\n&quot;</span><br><span class="line">                                           &quot;p, li &#123; white-space: pre-wrap; &#125;\n&quot;</span><br><span class="line">                                           &quot;&lt;/style&gt;&lt;/head&gt;&lt;body style=\&quot; font-family:\&#x27;SimSun\&#x27;; font-size:9pt; font-weight:400; font-style:normal;\&quot;&gt;\n&quot;</span><br><span class="line">                                           &quot;&lt;p style=\&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;&quot;))</span><br><span class="line">        self.textEdit_4.setHtml(_translate(&quot;Form&quot;,</span><br><span class="line">                                           &quot;&lt;!DOCTYPE HTML PUBLIC \&quot;-//W3C//DTD HTML 4.0//EN\&quot; \&quot;http://www.w3.org/TR/REC-html40/strict.dtd\&quot;&gt;\n&quot;</span><br><span class="line">                                           &quot;&lt;html&gt;&lt;head&gt;&lt;meta name=\&quot;qrichtext\&quot; content=\&quot;1\&quot; /&gt;&lt;style type=\&quot;text/css\&quot;&gt;\n&quot;</span><br><span class="line">                                           &quot;p, li &#123; white-space: pre-wrap; &#125;\n&quot;</span><br><span class="line">                                           &quot;&lt;/style&gt;&lt;/head&gt;&lt;body style=\&quot; font-family:\&#x27;SimSun\&#x27;; font-size:9pt; font-weight:400; font-style:normal;\&quot;&gt;\n&quot;</span><br><span class="line">                                           &quot;&lt;p style=\&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;&quot;))</span><br><span class="line">        self.textEdit_6.setHtml(_translate(&quot;Form&quot;,</span><br><span class="line">                                           &quot;&lt;!DOCTYPE HTML PUBLIC \&quot;-//W3C//DTD HTML 4.0//EN\&quot; \&quot;http://www.w3.org/TR/REC-html40/strict.dtd\&quot;&gt;\n&quot;</span><br><span class="line">                                           &quot;&lt;html&gt;&lt;head&gt;&lt;meta name=\&quot;qrichtext\&quot; content=\&quot;1\&quot; /&gt;&lt;style type=\&quot;text/css\&quot;&gt;\n&quot;</span><br><span class="line">                                           &quot;p, li &#123; white-space: pre-wrap; &#125;\n&quot;</span><br><span class="line">                                           &quot;&lt;/style&gt;&lt;/head&gt;&lt;body style=\&quot; font-family:\&#x27;SimSun\&#x27;; font-size:9pt; font-weight:400; font-style:normal;\&quot;&gt;\n&quot;</span><br><span class="line">                                           &quot;&lt;p style=\&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;&quot;))</span><br><span class="line"></span><br><span class="line">        self.pushButton.clicked.connect(self.calc)</span><br><span class="line"></span><br><span class="line">    def calc(self):</span><br><span class="line"></span><br><span class="line">        try:</span><br><span class="line">            startTime = self.textEdit.toPlainText()</span><br><span class="line">            stopTime = self.textEdit_2.toPlainText()</span><br><span class="line">            holiday_price = self.textEdit_4.toPlainText()</span><br><span class="line">            workday_price = self.textEdit_6.toPlainText()</span><br><span class="line">            # today = datetime.now().weekday() + 1</span><br><span class="line">            工作日 = 0</span><br><span class="line">            休息日 = 0</span><br><span class="line">            begin = datetime0.date(int(startTime[0:4]), int(startTime[4:6]), int(startTime[6:8]))</span><br><span class="line">            end = datetime0.date(int(stopTime[0:4]), int(stopTime[4:6]), int(stopTime[6:8]))</span><br><span class="line">            for eachDay in range((end - begin).days + 1):</span><br><span class="line">                eachDay = str(begin + datetime0.timedelta(days=eachDay)).split(&quot;-&quot;)</span><br><span class="line"></span><br><span class="line">                week = datetime.strptime(eachDay[0] + eachDay[1] + eachDay[2], &quot;%Y%m%d&quot;).weekday() + 1</span><br><span class="line">                if week &gt; 0 and week &lt; 6:</span><br><span class="line">                    工作日 += 1</span><br><span class="line">                else:</span><br><span class="line">                    休息日 += 1</span><br><span class="line">            result = &quot;一共有工作日&#123;&#125;天，休息日&#123;&#125;天\n&quot;.format(工作日, 休息日) +\</span><br><span class="line">            &quot;出差补贴一共为&#123;&#125;元&quot;.format(工作日 * int(workday_price) + 休息日 * int(holiday_price))</span><br><span class="line">            self.textEdit_5.setText(result)</span><br><span class="line">        except Exception :</span><br><span class="line">            # 输入框制空并显示重新输入</span><br><span class="line">            self.textEdit_5.setText(&quot;输入格式有误\n请检查并重新输入&quot;)</span><br><span class="line">            # self.textEdit.setText()</span><br><span class="line">            # self.textEdit_2.setText()</span><br><span class="line">            # self.textEdit_5.setText()</span><br><span class="line">            # self.textEdit_6.setText()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    import sys</span><br><span class="line">    app = QApplication(sys.argv)</span><br><span class="line">    widget = QWidget(None)</span><br><span class="line">    ui = Ui_Form()</span><br><span class="line">    ui.setupUi(widget)</span><br><span class="line">    sys.exit(app.exec_())</span><br><span class="line">    pass</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/pyqt5/" rel="tag"># pyqt5</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/08/13/neo4j%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/" rel="prev" title="neo4j集群安装步骤">
+      <i class="fa fa-chevron-left"></i> neo4j集群安装步骤
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/09/23/faceswap%E5%AE%89%E8%A3%85%E4%B8%8E%E8%B8%A9%E5%9D%91/" rel="next" title="本地安装faceswap与一键使用google的colab搭建faceswap两种方式">
+      本地安装faceswap与一键使用google的colab搭建faceswap两种方式 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-pyqt5%E5%8F%8Aqtdesigner%E7%9A%84%E5%AE%89%E8%A3%85"><span class="nav-number">1.</span> <span class="nav-text">1. pyqt5及qtdesigner的安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-%E5%AE%89%E8%A3%85"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E4%BD%BF%E7%94%A8pyqt5%E7%94%9F%E6%88%90ui%E6%96%87%E4%BB%B6%E5%90%8E%E6%97%A0%E6%B3%95%E8%BD%ACpy%EF%BC%8C%E6%8A%A5%E9%94%99"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.2 使用pyqt5生成ui文件后无法转py，报错</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E4%BD%BF%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">2. 使用</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

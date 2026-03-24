@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 8.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="毕业设计部分记录">
+<meta property="og:type" content="article">
+<meta property="og:title" content="毕设记录">
+<meta property="og:url" content="http://example.com/2019/04/19/%E6%AF%95%E8%AE%BE%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="毕业设计部分记录">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="d:\%E5%AD%A6%E4%B9%A0\%E6%AF%95%E4%B8%9A\%E8%87%AA%E5%B7%B1%E8%AE%BA%E6%96%87%E7%9B%B8%E5%85%B3%E6%96%87%E6%A1%A3\ElasticSearch%E7%9B%B8%E5%85%B3%E6%88%AA%E5%9B%BE\elasticsearch%E6%88%90%E5%8A%9F%E5%AE%89%E8%A3%85%E7%BB%93%E6%9E%9C%E5%9B%BE.jpg">
+<meta property="og:image" content="d:\%E5%AD%A6%E4%B9%A0\%E6%AF%95%E4%B8%9A\%E8%87%AA%E5%B7%B1%E8%AE%BA%E6%96%87%E7%9B%B8%E5%85%B3%E6%96%87%E6%A1%A3\ElasticSearch%E7%9B%B8%E5%85%B3%E6%88%AA%E5%9B%BE\elasticsearch-head%E6%8F%92%E4%BB%B6%E6%88%90%E5%8A%9F%E5%AE%89%E8%A3%85%E6%88%AA%E5%9B%BE.jpg">
+<meta property="og:image" content="d:\%E5%AD%A6%E4%B9%A0\%E6%AF%95%E4%B8%9A\%E8%87%AA%E5%B7%B1%E8%AE%BA%E6%96%87%E7%9B%B8%E5%85%B3%E6%96%87%E6%A1%A3\ElasticSearch%E7%9B%B8%E5%85%B3%E6%88%AA%E5%9B%BE\kibana%E6%88%90%E5%8A%9F%E5%AE%89%E8%A3%85.jpg">
+<meta property="og:image" content="c:\Users\94452\Desktop\1.png">
+<meta property="og:image" content="c:\Users\94452\Desktop\2.png">
+<meta property="og:image" content="d:\%E5%AD%A6%E4%B9%A0\%E6%AF%95%E4%B8%9A\%E8%87%AA%E5%B7%B1%E8%AE%BA%E6%96%87%E7%9B%B8%E5%85%B3%E6%96%87%E6%A1%A3\ElasticSearch%E7%9B%B8%E5%85%B3%E6%88%AA%E5%9B%BE\%E5%9B%BE1.png">
+<meta property="og:image" content="d:\%E5%AD%A6%E4%B9%A0\%E6%AF%95%E4%B8%9A\%E8%87%AA%E5%B7%B1%E8%AE%BA%E6%96%87%E7%9B%B8%E5%85%B3%E6%96%87%E6%A1%A3\ElasticSearch%E7%9B%B8%E5%85%B3%E6%88%AA%E5%9B%BE\%E5%9B%BE2.png">
+<meta property="article:published_time" content="2019-04-19T04:55:51.000Z">
+<meta property="article:modified_time" content="2020-09-16T06:50:10.305Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="ElasticSearch">
+<meta property="article:tag" content="拉勾网">
+<meta property="article:tag" content="爬虫">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="d:\%E5%AD%A6%E4%B9%A0\%E6%AF%95%E4%B8%9A\%E8%87%AA%E5%B7%B1%E8%AE%BA%E6%96%87%E7%9B%B8%E5%85%B3%E6%96%87%E6%A1%A3\ElasticSearch%E7%9B%B8%E5%85%B3%E6%88%AA%E5%9B%BE\elasticsearch%E6%88%90%E5%8A%9F%E5%AE%89%E8%A3%85%E7%BB%93%E6%9E%9C%E5%9B%BE.jpg">
+
+<link rel="canonical" href="http://example.com/2019/04/19/%E6%AF%95%E8%AE%BE%E8%AE%B0%E5%BD%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>毕设记录 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/04/19/%E6%AF%95%E8%AE%BE%E8%AE%B0%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          毕设记录
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-04-19 14:25:51" itemprop="dateCreated datePublished" datetime="2019-04-19T14:25:51+09:30">2019-04-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-09-16 16:20:10" itemprop="dateModified" datetime="2020-09-16T16:20:10+09:30">2020-09-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E6%A0%A1/" itemprop="url" rel="index"><span itemprop="name">学校</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="一-爬虫数据获取相关说明"><a href="#一-爬虫数据获取相关说明" class="headerlink" title="一. 爬虫数据获取相关说明"></a>一. 爬虫数据获取相关说明</h1><h3 id="1-数据来源："><a href="#1-数据来源：" class="headerlink" title="1. 数据来源："></a>1. 数据来源：</h3><p>拉勾网</p>
+<h3 id="2-数据量："><a href="#2-数据量：" class="headerlink" title="2. 数据量："></a>2. 数据量：</h3><p>越大越好（初步测试用java大数据岗位搜索到了2500页的数据）</p>
+<h3 id="3-数据爬取方式"><a href="#3-数据爬取方式" class="headerlink" title="3. 数据爬取方式"></a>3. 数据爬取方式</h3><p>由于网站上是通过ajax请求访问得到的数据，所以我们选择伪装请求进行访问</p>
+<h3 id="4-初步页面显示数据结构："><a href="#4-初步页面显示数据结构：" class="headerlink" title="4. 初步页面显示数据结构："></a>4. 初步页面显示数据结构：</h3><ul>
+<li>positionId &#x3D; ‘’  #岗位id</li>
+<li>positionName &#x3D; ‘’  #岗位名称</li>
+<li>salary &#x3D; ‘’  # 薪水</li>
+<li>education &#x3D; ‘’  # 学历</li>
+<li>positionAdvantage &#x3D; ‘’  # 岗位优势</li>
+<li>firstType &#x3D; ‘’  # 岗位类型</li>
+<li>skillLables &#x3D; ‘’  #技能标签</li>
+<li>jobNature &#x3D; ‘’  # 是否全职</li>
+<li>workYear &#x3D; ‘’  # 工龄</li>
+<li>companyFullName &#x3D; ‘’  # 公司全称</li>
+<li>city &#x3D; ‘’  #公司城市</li>
+<li>industryField &#x3D; ‘’  # 领域</li>
+<li>companyLabelList &#x3D; ‘’  # 公司标签</li>
+<li>companySize &#x3D; ‘’  # 公司规模</li>
+<li>financeStage &#x3D; ‘’  # 公司资金状况，是否融资等</li>
+</ul>
+<h3 id="5-工作地点具体信息数据结构"><a href="#5-工作地点具体信息数据结构" class="headerlink" title="5. 工作地点具体信息数据结构"></a>5. 工作地点具体信息数据结构</h3><ul>
+<li>advantage   职位优势</li>
+<li>job-detail  工作职责&#x2F;任职资格</li>
+<li>job-address  工作地点</li>
+<li>company-url  有意向联系我们</li>
+</ul>
+<h3 id="6-数据爬取过程中遇到的问题及解决方法（这里反爬虫技术可以写很多，比如伪ip，切换cookies，延时访问等方法）"><a href="#6-数据爬取过程中遇到的问题及解决方法（这里反爬虫技术可以写很多，比如伪ip，切换cookies，延时访问等方法）" class="headerlink" title=". 6.数据爬取过程中遇到的问题及解决方法（这里反爬虫技术可以写很多，比如伪ip，切换cookies，延时访问等方法）"></a>. 6.数据爬取过程中遇到的问题及解决方法（这里反爬虫技术可以写很多，比如伪ip，切换cookies，延时访问等方法）</h3><ol>
+<li><p>通过requests.post请求访问网页数据的时候，伪装头文件传输过去的数据无法被识别到，导致多次请求到的数据都只是初始的头文件返回来的数据</p>
+<blockquote>
+<p>解决方法：直接将需要更新修改的数据添加在网页链接上传输到后台请求数据，多次尝试通过对网页重定向理解得到的解决方法。</p>
+</blockquote>
+</li>
+<li><p>网页数据只显示30页的数据如何获取到更多</p>
+<blockquote>
+<p>解决方法：网页上虽然只显示了30页，但是通过在后台伪装头文件发现是可以获取到其数据库中未显示在网页上的数据的</p>
+</blockquote>
+</li>
+<li><p>批量获取具体信息的时候访问多条后就程序自动停止，但是将停止的数据单独获取则没有问题</p>
+<blockquote>
+<p>问题原因：反爬虫机制，一次大量访问后封锁ip需要验证码登录</p>
+<ul>
+<li>解决方法：<br>中使用休眠方法但无效<br>访问一定条数之后使用伪ip访问</li>
+</ul>
+</blockquote>
+</li>
+<li><p>程序报异常，打印请求返回的数据时显示“{“status”:false,”msg”:”您操作太频繁,请稍后再访问”,”clientIp”:”218.206.101.37”,”state”:2402}”</p>
+<blockquote>
+<p>问题原因：网站设置了cookies拦截，对于手动设置的cookie模拟浏览器访问的爬虫程序自动进行了拉黑,并且不登录就无法查看所有的数据</p>
+<ul>
+<li>解决方法:<br>如果登录获取数据的话需要用到大量的拉勾网账号，比较复杂。这里通过使用手机app端的接口访问拉钩网进行数据的抓取。但是访问到一定数据量之后还是会被封，需要登录验证。通过app端口访问失败<br>访问30条之后便更新cookie进行爬取<br>最终成功方法：设置延时访问并访问一定数据量后进行自动获取当前浏览器的cookie进行更新，继续爬取数据</li>
+</ul>
+</blockquote>
+</li>
+</ol>
+<h1 id="二-ElasticSearh的安装使说明"><a href="#二-ElasticSearh的安装使说明" class="headerlink" title="二.ElasticSearh的安装使说明"></a>二.ElasticSearh的安装使说明</h1><h2 id="环境说明linux-centos6-9（用户组mima12345，用户test-12345），ElasticSearch5-2-2-kibana5-2-2"><a href="#环境说明linux-centos6-9（用户组mima12345，用户test-12345），ElasticSearch5-2-2-kibana5-2-2" class="headerlink" title="环境说明linux centos6.9（用户组mima12345，用户test_12345），ElasticSearch5.2.2,kibana5.2.2"></a>环境说明linux centos6.9（用户组mima12345，用户test_12345），ElasticSearch5.2.2,kibana5.2.2</h2><h3 id="1-ElasticSearch介绍-抄一些书，资料什么的"><a href="#1-ElasticSearch介绍-抄一些书，资料什么的" class="headerlink" title="1.ElasticSearch介绍(抄一些书，资料什么的)"></a>1.ElasticSearch介绍(抄一些书，资料什么的)</h3><ol>
+<li><p>index：类，所有对象的集合</p>
+</li>
+<li><p>document：类的实例化——》对象，以字典的形式存储，键为filed</p>
+</li>
+<li><p>type：对象的种类</p>
+</li>
+<li><p>shard（分片）：index所有数据在集群运算中被存放在多个节点上，称之为shard</p>
+</li>
+<li><p>replica：shard的保存副本，防止数据丢失系统出现意外</p>
+</li>
+<li><p>ElasticSearch的概念和数据库概念的对比<br> index   —-    库<br> document    —-    行<br> type    —-    表<br> mappings    —-    表结构</p>
+</li>
+<li><p>中文分词器 </p>
+</li>
+<li><p>部分操作</p>
+</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">批量检索获取文档：</span><br><span class="line">GET /lib/user/_mget</span><br><span class="line">&#123;</span><br><span class="line">    //检索id为1和2的对象</span><br><span class="line">    &quot;ids&quot;:[&quot;1&quot;,&quot;2&quot;]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">批量操作：</span><br><span class="line">Bulk API：</span><br><span class="line"></span><br><span class="line">导入数据（在account.json文件的当前目录输入进行导入操作）：</span><br><span class="line">$ curl -H &quot;Content-Type: application/json&quot; -XPOST &#x27;localhost:9200/bank/account/_bulk?pretty&#x27; --data-binary @accounts.json  </span><br><span class="line">查看是否导入成功：</span><br><span class="line">curl &quot;localhost:9200/_cat/indices?v&quot;</span><br><span class="line">数据导入并创建在kibana中创建index及相关使用</span><br><span class="line">https://blog.csdn.net/magerguo/article/details/79849863</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+<h3 id="2-ElasticSearch安装"><a href="#2-ElasticSearch安装" class="headerlink" title="2.ElasticSearch安装"></a>2.ElasticSearch安装</h3><ol>
+<li>安装jdk</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">因为最新版的jdk1.9和ElasticSearch存在部分不兼容，所以这里安装的是jdk1.8版本的</span><br><span class="line">具体步骤见：https://www.cnblogs.com/xqzt/p/4934451.html</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>安装elasticSearch5.2</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">下载：wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.2.2.tar.gz</span><br><span class="line">解压：tar -zxvf elasticsearch-5.2.2.tar.gz -C /usr/local/ElasticSearch</span><br><span class="line">使用：./bin/elasticsearch</span><br><span class="line">查看是否成功开启：打开“http://localhost:9200”有以下结果：</span><br><span class="line">&#123;</span><br><span class="line">  &quot;name&quot; : &quot;zLIR9JJ&quot;,</span><br><span class="line">  &quot;cluster_name&quot; : &quot;elasticsearch&quot;,</span><br><span class="line">  &quot;cluster_uuid&quot; : &quot;thS180_KTj6vZK9szI3Mag&quot;,</span><br><span class="line">  &quot;version&quot; : &#123;</span><br><span class="line">    &quot;number&quot; : &quot;5.2.2&quot;,</span><br><span class="line">    &quot;build_hash&quot; : &quot;f9d9b74&quot;,</span><br><span class="line">    &quot;build_date&quot; : &quot;2017-02-24T17:26:45.835Z&quot;,</span><br><span class="line">    &quot;build_snapshot&quot; : false,</span><br><span class="line">    &quot;lucene_version&quot; : &quot;6.4.1&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;tagline&quot; : &quot;You Know, for Search&quot;</span><br><span class="line">&#125;成功开启</span><br></pre></td></tr></table></figure>
+
+<p>如图所示：</p>
+<p><img src="D:\学习\毕业\自己论文相关文档\ElasticSearch相关截图\elasticsearch成功安装结果图.jpg"></p>
+<ol start="3">
+<li>安装elasticsearch-head插件</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">https://www.cnblogs.com/scharfsinnig/p/6706880.html</span><br><span class="line"></span><br><span class="line">安装node.js：</span><br><span class="line">https://blog.csdn.net/liangxw1/article/details/78251025安装npm：</span><br><span class="line">安装npm:nodejs安装的时候附带了npm</span><br><span class="line">下载elasticserach-head插件：</span><br><span class="line">git clone https://github.com/mobz/elasticsearch-head.git</span><br><span class="line">安装elasticsearch-head依赖包：</span><br><span class="line">npm install -g grunt-cli </span><br><span class="line">遇到问题:</span><br><span class="line">node npm install Error: CERT_UNTRUSTED</span><br><span class="line">解决方法：</span><br><span class="line">ssl验证问题，使用下面的命令取消ssl验证即可解决</span><br><span class="line">npm config set strict-ssl false</span><br><span class="line">打开方式：</span><br><span class="line">在./elasticsearch-head目录下输入 grunt server 出现下图为正确无误结果</span><br></pre></td></tr></table></figure>
+<p><img src="D:\学习\毕业\自己论文相关文档\ElasticSearch相关截图\elasticsearch-head插件成功安装截图.jpg"></p>
+<ol start="4">
+<li>安装kibana5.2.2</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">下载：wget https://artifacts.elastic.co/downloads/kibana/kibana-5.2.2-linux-x86_64.tar.gz</span><br><span class="line">解压：tar -zxvf kibana-5.2.2-linux-x86_64.tar.gz -C /usr/local/ElasticSearch</span><br><span class="line">在kibana安装目录的config下，编辑kibana.yml配置文件，添加如下配置：</span><br><span class="line">server.port: 5601</span><br><span class="line">server.host: &quot;本机的IP&quot;</span><br><span class="line">elasticsearch.url: &quot;http://192.168.222.131:9200&quot;</span><br><span class="line">其中elasticsearch.url 配置对应搜索引擎服务的真实地址</span><br><span class="line"></span><br><span class="line">打开5601端口（kinaba默认端口）：</span><br><span class="line"> /sbin/iptables -I INPUT -p tcp --dport 端口号 -j ACCEPT   写入修改</span><br><span class="line"> /etc/init.d/iptables save   保存修改</span><br><span class="line"> service iptables restart    重启防火墙，修改生效</span><br><span class="line">启动服务</span><br><span class="line">$ cd kibana-6.4.0-linux-x86_64/bin</span><br><span class="line">$ ./kibana</span><br><span class="line">浏览器访问“http:/.192.168.222.131:5601”验证是否成功安装</span><br><span class="line">结果如下图</span><br></pre></td></tr></table></figure>
+<p><img src="D:\学习\毕业\自己论文相关文档\ElasticSearch相关截图\kibana成功安装.jpg"></p>
+<h3 id="3-ElasticSearch的初步使用及项目实现"><a href="#3-ElasticSearch的初步使用及项目实现" class="headerlink" title="3.ElasticSearch的初步使用及项目实现"></a>3.ElasticSearch的初步使用及项目实现</h3><h4 id="1-初步使用"><a href="#1-初步使用" class="headerlink" title="1.初步使用"></a>1.初步使用</h4><ol>
+<li>查询功能的javaAPI使用</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">import java.net.InetAddress;</span><br><span class="line">import org.elasticsearch.action.get.GetResponse;</span><br><span class="line">import org.elasticsearch.client.transport.TransportClient;</span><br><span class="line">import org.elasticsearch.common.settings.Settings;</span><br><span class="line">import org.elasticsearch.common.transport.InetSocketTransportAddress;</span><br><span class="line">import org.elasticsearch.transport.client.PreBuiltTransportClient;</span><br><span class="line">import org.junit.Test;</span><br><span class="line"></span><br><span class="line">public class EsDemo &#123;</span><br><span class="line"></span><br><span class="line">	@Test</span><br><span class="line">	public void test1() throws  Exception&#123;</span><br><span class="line">		</span><br><span class="line">		//指定ES集群</span><br><span class="line">		Settings settings = Settings.builder().put(&quot;cluster.name&quot;,&quot;my-application&quot;).build();</span><br><span class="line">		//创建访问es服务器的客户端</span><br><span class="line">        InetSocketTransportAddress node = new InetSocketTransportAddress(</span><br><span class="line">                InetAddress.getByName(&quot;192.168.222.131&quot;),9300);</span><br><span class="line"></span><br><span class="line">		TransportClient client = new PreBuiltTransportClient(settings).addTransportAddress(node);</span><br><span class="line">		//数据查询</span><br><span class="line">		GetResponse response = client.prepareGet(&quot;lib&quot;,&quot;user&quot;,&quot;1&quot;).execute().get();</span><br><span class="line">		//打印结果</span><br><span class="line">		System.out.println(response.getSourceAsString());</span><br><span class="line">		</span><br><span class="line">		client.close();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;	</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>结构化查询</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">①通过id检索实现简单查询</span><br><span class="line"></span><br><span class="line">import java.io.BufferedWriter;</span><br><span class="line">import java.io.File;</span><br><span class="line">import java.io.FileWriter;</span><br><span class="line">import java.net.InetAddress;</span><br><span class="line">import java.net.UnknownHostException;</span><br><span class="line"></span><br><span class="line">import org.apache.lucene.util.fst.Util;</span><br><span class="line">import org.elasticsearch.action.get.GetResponse;</span><br><span class="line">import org.elasticsearch.action.search.SearchRequestBuilder;</span><br><span class="line">import org.elasticsearch.action.search.SearchResponse;</span><br><span class="line">import org.elasticsearch.client.transport.TransportClient;</span><br><span class="line">import org.elasticsearch.common.settings.Settings;</span><br><span class="line">import org.elasticsearch.common.transport.InetSocketTransportAddress;</span><br><span class="line">import org.elasticsearch.index.query.BoolQueryBuilder;</span><br><span class="line">import org.elasticsearch.index.query.QueryBuilder;</span><br><span class="line">import org.elasticsearch.index.query.QueryBuilders;</span><br><span class="line">import org.elasticsearch.search.SearchHit;</span><br><span class="line">import org.elasticsearch.search.SearchHits;</span><br><span class="line">import org.elasticsearch.transport.client.PreBuiltTransportClient;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">public class simpleSearch &#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) throws Exception &#123;</span><br><span class="line">		//指定ES集群</span><br><span class="line">		Settings settings = Settings.builder().put(&quot;cluster.name&quot;,&quot;my-application&quot;).build();</span><br><span class="line">		//创建访问es服务器的客户端</span><br><span class="line">		InetSocketTransportAddress node = new InetSocketTransportAddress(</span><br><span class="line">		InetAddress.getByName(&quot;192.168.222.131&quot;),9300);</span><br><span class="line"></span><br><span class="line">		TransportClient client = new PreBuiltTransportClient(settings).addTransportAddress(node);</span><br><span class="line">		//数据查询</span><br><span class="line">		</span><br><span class="line">         BufferedWriter writer = new BufferedWriter(new FileWriter(new File(&quot;C:\\Users\\94452\\Desktop\\1.txt&quot;),true));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	     BoolQueryBuilder qb = QueryBuilders.boolQuery();</span><br><span class="line">	     qb.must(QueryBuilders.termQuery(&quot;positionName&quot;, &quot;java大数据&quot;));</span><br><span class="line">	     // termQuery 是代表短语、不可拆分。就是不会把你teamId拿去切词，然后再去查，而是直接拿去查询</span><br><span class="line">	     //prepareSearch写库的名称，setTypes写表的名称,setQuery写查询语句，setSize写默认结果返回条数的个数（默认为10条），get语句执行，返回的结果存放在getHits中</span><br><span class="line">	     SearchResponse response = client.prepareSearch(&quot;lagou&quot;).setTypes(&quot;work&quot;).setQuery(qb).setSize(3000).get();</span><br><span class="line">	     SearchHits searchHits =  response.getHits();</span><br><span class="line">	     </span><br><span class="line">	     System.out.println(&quot;查询到记录数=&quot; + searchHits.getTotalHits());</span><br><span class="line">	     for(SearchHit hit:searchHits.getHits())&#123;</span><br><span class="line">	    	 System.out.println(hit.getSourceAsString());</span><br><span class="line">	    	 writer.write(hit.getSourceAsString()+&quot;\n&quot;);</span><br><span class="line">	     &#125;</span><br><span class="line">	   </span><br><span class="line">	     writer.close();</span><br><span class="line">				</span><br><span class="line">		client.close();</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">②多条件查询，查询出学历要求为本科，工作城市在杭州，工作类型为全职的信息</span><br><span class="line"></span><br><span class="line">import java.net.InetAddress;</span><br><span class="line">import org.elasticsearch.action.search.SearchRequestBuilder;</span><br><span class="line">import org.elasticsearch.action.search.SearchResponse;</span><br><span class="line">import org.elasticsearch.client.transport.TransportClient;</span><br><span class="line">import org.elasticsearch.common.settings.Settings;</span><br><span class="line">import org.elasticsearch.common.transport.InetSocketTransportAddress;</span><br><span class="line">import org.elasticsearch.index.query.QueryBuilder;</span><br><span class="line">import org.elasticsearch.index.query.QueryBuilders;</span><br><span class="line">import org.elasticsearch.search.SearchHit;</span><br><span class="line">import org.elasticsearch.search.SearchHits;</span><br><span class="line">import org.elasticsearch.transport.client.PreBuiltTransportClient;</span><br><span class="line"></span><br><span class="line">public class simpleSearch &#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) throws Exception &#123;</span><br><span class="line">		// 指定ES集群</span><br><span class="line">		Settings settings = Settings.builder().put(&quot;cluster.name&quot;, &quot;my-application&quot;).build();</span><br><span class="line">		// 创建访问es服务器的客户端</span><br><span class="line">		InetSocketTransportAddress node = new InetSocketTransportAddress(InetAddress.getByName(&quot;192.168.222.131&quot;),</span><br><span class="line">				9300);</span><br><span class="line"></span><br><span class="line">		TransportClient client = new PreBuiltTransportClient(settings).addTransportAddress(node);</span><br><span class="line">		// 数据查询</span><br><span class="line"></span><br><span class="line">		QueryBuilder qb = QueryBuilders.boolQuery().must(QueryBuilders.termQuery(&quot;education.keyword&quot;, &quot;本科&quot;))</span><br><span class="line">				.must(QueryBuilders.termQuery(&quot;city.keyword&quot;, &quot;杭州&quot;))</span><br><span class="line">				.must(QueryBuilders.termQuery(&quot;jobNature.keyword&quot;, &quot;全职&quot;));</span><br><span class="line"></span><br><span class="line">		SearchRequestBuilder sv = client.prepareSearch(&quot;lagou&quot;).setTypes(&quot;work&quot;).setQuery(qb).setFrom(0).setSize(100);</span><br><span class="line"></span><br><span class="line">		SearchResponse response = sv.get();</span><br><span class="line">		SearchHits searchHits = response.getHits();</span><br><span class="line">		System.out.println(&quot;查询到记录数=&quot; + searchHits.getTotalHits());</span><br><span class="line">		for (SearchHit hit : searchHits.getHits()) &#123;</span><br><span class="line">			System.out.println(hit.getSourceAsString());</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		client.close();</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<ol start="3">
+<li>出现问题及解决方法：<blockquote>
+<p>对于包含中文字符的查询语句无法执行进行</p>
+<ul>
+<li>问题原因：elasticsearch 里默认的IK分词器是会将每一个中文都进行了分词的切割，所以你直接想查一整个词，或者一整句话是无返回结果的。</li>
+<li>解决方法：</li>
+</ul>
+</blockquote>
+</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">termQuery(&quot;cityName&quot;, &quot;北京市&quot;);</span><br><span class="line">改成</span><br><span class="line">termQuery(&quot;cityName.keyword&quot;, &quot;北京市&quot;);</span><br><span class="line">就可以了</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="2-项目实现"><a href="#2-项目实现" class="headerlink" title="2.项目实现"></a>2.项目实现</h4><ol>
+<li>数据结构的设计并转换数据格式</li>
+</ol>
+<ul>
+<li>原数据格式为：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">5309423	大数据Java工程师	8k-16k	本科	六险一金，补贴，带薪年假	开发|测试|运维类		全职	1-3年	成都数联铭品科技有限公司	成都	带薪年假/绩效奖金/扁平管理/定期体检	150-500人	C轮	</span><br></pre></td></tr></table></figure>
+<ul>
+<li>需要的格式为：（index行为设置索引，第二行为数据）</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;index&quot;: &#123;&quot;_id&quot;:&quot;1&quot;&#125;&#125;</span><br><span class="line">&#123;&quot;positionId&quot;:&quot;5309423&quot;,&quot;positionName&quot;:&quot;大数据Java工程师&quot;,&quot;salary&quot;:&quot;8k-16k&quot;,&quot;education&quot;:&quot;本科&quot;,&quot;positionAdvantage&quot;:&quot;六险一金，补贴，带薪年假&quot;,&quot;firstType&quot;:&quot;开发|测试|运维类&quot;,&quot;skillLables&quot;:&quot;&quot;,&quot;jobNature&quot;:&quot;全职&quot;,&quot;workYear&quot;:&quot;1-3年&quot;,&quot;companyFullName&quot;:&quot;成都数联铭品科技有限公司&quot;,&quot;city&quot;:&quot;成都&quot;,&quot;companyLabelList&quot;:&quot;带薪年假/绩效奖金/扁平管理/定期体检&quot;,&quot;companySize&quot;:&quot;150-500人&quot;,&quot;financeStage&quot;:&quot;C轮&quot;,&quot;detailInfo&quot;:&quot;https://www.lagou.com/jobs/5309423.html&quot;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>以上通过python编程语言实现数据结构的转换，并存储为”.json”文件</p>
+</li>
+<li><p>出现相关问题及解决方法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java.lang.NoClassDefFoundError:org/apache/logging/log4j/Logger问题</span><br></pre></td></tr></table></figure>
+
+<p><img src="C:\Users\94452\Desktop\1.png" alt="1"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">问题原因及解决方法：</span><br><span class="line">问题原因：log4j 1.6不适用于ElasticSearch 5.2.2。而且你还需要添加库的依赖slf4j-simple，log4j-to-slf4j和log4j-api。</span><br><span class="line">解决方法：</span><br><span class="line">必须在pom中明确包含Log4J 2作为依赖项，将之前的log4j依赖替换成以下依赖。</span><br><span class="line">Maven添加以下依赖：</span><br></pre></td></tr></table></figure>
+
+<p><img src="C:\Users\94452\Desktop\2.png" alt="2"></p>
+</li>
+</ul>
+<ol start="2">
+<li>批量数据导入ElasticSearch系统</li>
+</ol>
+<ul>
+<li>数据导入</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -H &quot;Content-Type: application/json&quot; -XPOST &#x27;192.168.222.131:9200/lagou/work/_bulk?pretty&#x27; --data-binary @work.json </span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>查看结果<br>如图1<img src="D:\学习\毕业\自己论文相关文档\ElasticSearch相关截图\图1.png">，图2所示</p>
+<p><img src="D:\学习\毕业\自己论文相关文档\ElasticSearch相关截图\图2.png" alt="图2"></p>
+</li>
+<li><p>通过kibana建立索引（操作步骤）</p>
+</li>
+</ul>
+<ol start="3">
+<li>检索数据结构的设计</li>
+</ol>
+<ul>
+<li>positionName:职位名称</li>
+<li>salary: 20-30k(这里的数据检索前需要处理，仔细想想该怎么做)</li>
+<li>education:本科&#x2F;大专&#x2F;硕士&#x2F;不限</li>
+<li>skillLables:手动填写  </li>
+<li>jobNature:全职&#x2F;实习</li>
+<li>workYear：1-3年&#x2F;3-5年&#x2F;不限&#x2F;应届毕业生</li>
+<li>city:城市</li>
+<li>公司规模：100-200人等等</li>
+</ul>
+<ol start="4">
+<li>通过编写javaAPI接口实现搜索功能<br> javaAPI中主要使用ElasticSearch中的布尔查询来实现复杂信息的检索功能。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">must:必须出现在匹配文档中，并且会影响匹配得分</span><br><span class="line">filter:必须出现在匹配文档中，并且匹配得分会被忽略</span><br><span class="line">should:应该出现在匹配文档中</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h1 id="三-小程序开发部分"><a href="#三-小程序开发部分" class="headerlink" title="三.小程序开发部分"></a>三.小程序开发部分</h1><blockquote>
+<p>小程序的相关概念学习：</p>
+<ul>
+<li>index.js 文件配置页面入口与逻辑,还有存储数据并与网页使用的数据进行绑定;还有函数的绑定也是放在js文件中的</li>
+<li>index.wxml配置布局与ui,index.wxss为页面的样式文件（类似与css）,二级目录下的json文件可有可无，如果存在的话会覆盖掉app.json的数据，wxss文件同理</li>
+</ul>
+</blockquote>
+<ol>
+<li><p>小程序开发软件的安装</p>
+</li>
+<li><p>小程序软件的编写</p>
+</li>
+</ol>
+<ul>
+<li>前台与后台的交互实现部分<blockquote>
+<p>服务器端使用的是tomcat8，通过微信小程序的wx.request方法对服务器端进行servlet请求，然后通过servlet层对dao层发送搜索请求，dao层处理完成后得到结果再返回微信小程序端。</p>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<p>实现样例：通过小程序点击按钮对“<a target="_blank" rel="noopener" href="http://localhost:8080/weixin/getInfoServlet%E2%80%9D%E5%8F%91%E9%80%81%E8%AF%B7%E6%B1%82%EF%BC%8C%E5%B9%B6%E4%BC%A0%E8%BE%93%E8%BF%87%E5%8E%BBdata%E5%86%85%E7%9A%84%E5%80%BC%EF%BC%8C%E5%9C%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE%E6%98%AF%E5%90%A6%E4%BC%A0%E8%BE%93%E8%BF%87%E6%9D%A5">http://localhost:8080/weixin/getInfoServlet”发送请求，并传输过去data内的值，在服务器端查看数据是否传输过来</a></p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line">//index.js</span><br><span class="line"></span><br><span class="line">Page(&#123;</span><br><span class="line">  bindtest: function () &#123;</span><br><span class="line">    wx.request(&#123;</span><br><span class="line">      url: &#x27;http://localhost:8080/weixin/getInfoServlet&#x27;,</span><br><span class="line">      data: &#123;</span><br><span class="line">        username: &#x27;001&#x27;,</span><br><span class="line">        password: &#x27;abc&#x27;</span><br><span class="line">      &#125;,</span><br><span class="line">      method: &#x27;GET&#x27;,</span><br><span class="line">      header: &#123;</span><br><span class="line">        &#x27;content-type&#x27;: &#x27;application/json&#x27; // 默认值</span><br><span class="line">      &#125;,</span><br><span class="line">      success: function (res) &#123;</span><br><span class="line">        console.log(res.data);</span><br><span class="line">      &#125;,</span><br><span class="line">      fail: function (res) &#123;</span><br><span class="line">        console.log(&quot;.....fail.....&quot;);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">//index.wxml</span><br><span class="line"></span><br><span class="line"> &lt;view&gt;</span><br><span class="line">  &lt;button bindtap=&#x27;bindtest&#x27;&gt;test&lt;/button&gt;</span><br><span class="line">  &lt;/view&gt;</span><br><span class="line"></span><br><span class="line">//servlet</span><br><span class="line"></span><br><span class="line">package com.weixin.servlet;</span><br><span class="line"></span><br><span class="line">import java.io.IOException;</span><br><span class="line">import java.io.Writer;</span><br><span class="line"></span><br><span class="line">import javax.servlet.ServletException;</span><br><span class="line">import javax.servlet.annotation.WebServlet;</span><br><span class="line">import javax.servlet.http.HttpServlet;</span><br><span class="line">import javax.servlet.http.HttpServletRequest;</span><br><span class="line">import javax.servlet.http.HttpServletResponse;</span><br><span class="line"></span><br><span class="line">@WebServlet(&quot;/getInfoServlet&quot;)</span><br><span class="line">public class getInfoServlet extends HttpServlet &#123;</span><br><span class="line">	private static final long serialVersionUID = 1L;</span><br><span class="line">       </span><br><span class="line">    public getInfoServlet() &#123;</span><br><span class="line">        super();</span><br><span class="line">        // TODO Auto-generated constructor stub</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		response.setContentType(&quot;text/html;charset=utf-8&quot;);          </span><br><span class="line">        /* 设置响应头允许ajax跨域访问 */  </span><br><span class="line">        response.setHeader(&quot;Access-Control-Allow-Origin&quot;, &quot;*&quot;);  </span><br><span class="line">        /* 星号表示所有的异域请求都可以接受， */  </span><br><span class="line">        response.setHeader(&quot;Access-Control-Allow-Methods&quot;, &quot;GET,POST&quot;);  </span><br><span class="line">       </span><br><span class="line">        //获取微信小程序get的参数值并打印</span><br><span class="line">        String username = request.getParameter(&quot;username&quot;);</span><br><span class="line">        String password = request.getParameter(&quot;password&quot;);</span><br><span class="line">        System.out.println(&quot;username=&quot;+username+&quot; ,password=&quot;+password);</span><br><span class="line">        </span><br><span class="line">        //返回值给微信小程序</span><br><span class="line">        Writer out = response.getWriter(); </span><br><span class="line">        out.write(&quot;成功访问客户端&quot;);</span><br><span class="line">        out.flush();   </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		doGet(request, response);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>查看结果：先打开tomcat8，然后打开小程序客户端点击test按钮如图（小程序测试按钮截图），可以查看到小程序的调试器界面出现了“成功访问客户端”几个字，而这几个字是通过“<a target="_blank" rel="noopener" href="http://localhost:8080/weixin/getInfoServlet%E2%80%9D%E6%89%80%E8%BF%94%E5%9B%9E%E5%88%B0%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%AB%AF%E7%9A%84%E7%BB%93%E6%9E%9C%E3%80%82%E7%84%B6%E5%90%8E%E5%9C%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E6%9F%A5%E7%9C%8B%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%AB%AF%E4%BC%A0%E8%BE%93%E8%BF%87%E5%8E%BB%E7%9A%84data%E6%98%AF%E5%90%A6%E6%88%90%E5%8A%9F%E6%8E%A5%E6%94%B6%EF%BC%8C%E6%89%93%E5%BC%80%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%EF%BC%88%E5%A6%82%E5%9B%BE%EF%BC%9A%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B5%8B%E8%AF%95%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E6%88%AA%E5%9B%BE%EF%BC%89%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0%E6%95%B0%E6%8D%AE%E6%88%90%E5%8A%9F%E4%BC%A0%E8%BE%93%E8%BF%87%E5%8E%BB%E4%BA%86%E3%80%82">http://localhost:8080/weixin/getInfoServlet”所返回到小程序端的结果。然后在服务器端查看小程序端传输过去的data是否成功接收，打开服务器端（如图：小程序测试服务器端截图）可以看到数据成功传输过去了。</a><br>提交按钮</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">小程序端-&gt;&gt;服务器端: 传输data</span><br><span class="line">服务器端-&gt;&gt;小程序端: 返回“成功访问客户端”说明，并打印data</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>项目具体实现<blockquote>
+<p>selvert层：处理小程序端传过来的请求，传输到dao层进行查询处理</p>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<p>dao层：进行数据检索功能</p>
+</blockquote>
+<blockquote>
+<p>model层：<br>该层创建信息对象（字段全部都为ES中的text格式，在java对象中对应设置为string格式）</p>
+</blockquote>
+<ul>
+<li>系统设计：三个页面</li>
+<li><ul>
+<li>主页，显示轮换广告页面和一些主页推荐公司信息</li>
+</ul>
+</li>
+<li><ul>
+<li>搜索页面，添加搜索条件进行</li>
+</ul>
+</li>
+<li><ul>
+<li>个人信息页面</li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li>遇到的问题及解决方法</li>
+</ol>
+<ul>
+<li>小程序页面的编写及功能实现，主要两个功能：</li>
+<li><blockquote>
+<p>1.不含条件的工作名称检索（默认） 2.含条件的工作名称检索。</p>
+</blockquote>
+</li>
+<li>服务器端的servlet层从小程序端获取到数据后，传入dao层进行数据检索，并返回前端页面显示结果。目前存在以下问题:</li>
+<li><blockquote>
+<p>1.在使用javaAPI的过程中对于多条件检索语句如何编写？2.检索到的数据以什么格式存储并传输到前端的小程序中？</p>
+</blockquote>
+</li>
+<li>小程序接收到数据后静态刷新页面显示结果页面。以列表形式将所有的信息打印出来，点击直接跳转到detailInfo的值包含的页面。</li>
+<li>多单选框如何传入数据</li>
+<li>maven项目依赖包无法导入tomcat中进行部署（<a target="_blank" rel="noopener" href="https://blog.csdn.net/class2class/article/details/83066073%EF%BC%89">https://blog.csdn.net/class2class/article/details/83066073）</a></li>
+<li>前端与后端的数据传输部分（json格式的修改）</li>
+<li>事件绑定bindtap等</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%88%AC%E8%99%AB/" rel="tag"># 爬虫</a>
+              <a href="/tags/ElasticSearch/" rel="tag"># ElasticSearch</a>
+              <a href="/tags/%E6%8B%89%E5%8B%BE%E7%BD%91/" rel="tag"># 拉勾网</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/11/29/%E5%9B%BE%E8%A7%A3%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95/" rel="prev" title="图解十大经典的机器学习算法（转自网络）">
+      <i class="fa fa-chevron-left"></i> 图解十大经典的机器学习算法（转自网络）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/07/14/%E5%AE%9E%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="next" title="实习记录">
+      实习记录 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80-%E7%88%AC%E8%99%AB%E6%95%B0%E6%8D%AE%E8%8E%B7%E5%8F%96%E7%9B%B8%E5%85%B3%E8%AF%B4%E6%98%8E"><span class="nav-number">1.</span> <span class="nav-text">一. 爬虫数据获取相关说明</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%95%B0%E6%8D%AE%E6%9D%A5%E6%BA%90%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">1. 数据来源：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%95%B0%E6%8D%AE%E9%87%8F%EF%BC%9A"><span class="nav-number">1.2.</span> <span class="nav-text">2. 数据量：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%95%B0%E6%8D%AE%E7%88%AC%E5%8F%96%E6%96%B9%E5%BC%8F"><span class="nav-number">1.3.</span> <span class="nav-text">3. 数据爬取方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%88%9D%E6%AD%A5%E9%A1%B5%E9%9D%A2%E6%98%BE%E7%A4%BA%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A"><span class="nav-number">1.4.</span> <span class="nav-text">4. 初步页面显示数据结构：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%B7%A5%E4%BD%9C%E5%9C%B0%E7%82%B9%E5%85%B7%E4%BD%93%E4%BF%A1%E6%81%AF%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">1.5.</span> <span class="nav-text">5. 工作地点具体信息数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E6%95%B0%E6%8D%AE%E7%88%AC%E5%8F%96%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95%EF%BC%88%E8%BF%99%E9%87%8C%E5%8F%8D%E7%88%AC%E8%99%AB%E6%8A%80%E6%9C%AF%E5%8F%AF%E4%BB%A5%E5%86%99%E5%BE%88%E5%A4%9A%EF%BC%8C%E6%AF%94%E5%A6%82%E4%BC%AAip%EF%BC%8C%E5%88%87%E6%8D%A2cookies%EF%BC%8C%E5%BB%B6%E6%97%B6%E8%AE%BF%E9%97%AE%E7%AD%89%E6%96%B9%E6%B3%95%EF%BC%89"><span class="nav-number">1.6.</span> <span class="nav-text">. 6.数据爬取过程中遇到的问题及解决方法（这里反爬虫技术可以写很多，比如伪ip，切换cookies，延时访问等方法）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C-ElasticSearh%E7%9A%84%E5%AE%89%E8%A3%85%E4%BD%BF%E8%AF%B4%E6%98%8E"><span class="nav-number">2.</span> <span class="nav-text">二.ElasticSearh的安装使说明</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E8%AF%B4%E6%98%8Elinux-centos6-9%EF%BC%88%E7%94%A8%E6%88%B7%E7%BB%84mima12345%EF%BC%8C%E7%94%A8%E6%88%B7test-12345%EF%BC%89%EF%BC%8CElasticSearch5-2-2-kibana5-2-2"><span class="nav-number">2.1.</span> <span class="nav-text">环境说明linux centos6.9（用户组mima12345，用户test_12345），ElasticSearch5.2.2,kibana5.2.2</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-ElasticSearch%E4%BB%8B%E7%BB%8D-%E6%8A%84%E4%B8%80%E4%BA%9B%E4%B9%A6%EF%BC%8C%E8%B5%84%E6%96%99%E4%BB%80%E4%B9%88%E7%9A%84"><span class="nav-number">2.1.1.</span> <span class="nav-text">1.ElasticSearch介绍(抄一些书，资料什么的)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-ElasticSearch%E5%AE%89%E8%A3%85"><span class="nav-number">2.1.2.</span> <span class="nav-text">2.ElasticSearch安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-ElasticSearch%E7%9A%84%E5%88%9D%E6%AD%A5%E4%BD%BF%E7%94%A8%E5%8F%8A%E9%A1%B9%E7%9B%AE%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.1.3.</span> <span class="nav-text">3.ElasticSearch的初步使用及项目实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%88%9D%E6%AD%A5%E4%BD%BF%E7%94%A8"><span class="nav-number">2.1.3.1.</span> <span class="nav-text">1.初步使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E9%A1%B9%E7%9B%AE%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.1.3.2.</span> <span class="nav-text">2.项目实现</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89-%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%BC%80%E5%8F%91%E9%83%A8%E5%88%86"><span class="nav-number">3.</span> <span class="nav-text">三.小程序开发部分</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 8.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="国产图数据库使用体验充满重重困难，最后还是选择了neo4j">
+<meta property="og:type" content="article">
+<meta property="og:title" content="图数据库nebula-graph的安装与集群部署">
+<meta property="og:url" content="http://example.com/2020/04/16/%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93nebula-graph%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="国产图数据库使用体验充满重重困难，最后还是选择了neo4j">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-04-16T05:43:04.000Z">
+<meta property="article:modified_time" content="2020-09-16T07:16:39.608Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="nebula-graph">
+<meta property="article:tag" content="图数据库">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2020/04/16/%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93nebula-graph%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>图数据库nebula-graph的安装与集群部署 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/04/16/%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93nebula-graph%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          图数据库nebula-graph的安装与集群部署
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-04-16 15:13:04" itemprop="dateCreated datePublished" datetime="2020-04-16T15:13:04+09:30">2020-04-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-09-16 16:46:39" itemprop="dateModified" datetime="2020-09-16T16:46:39+09:30">2020-09-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B7%A5%E4%BD%9C%E7%9B%B8%E5%85%B3/" itemprop="url" rel="index"><span itemprop="name">工作相关</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="1-nebula的安装"><a href="#1-nebula的安装" class="headerlink" title="1. nebula的安装"></a>1. nebula的安装</h1><h2 id="1-1-下载nebula的rpm包"><a href="#1-1-下载nebula的rpm包" class="headerlink" title="1.1 下载nebula的rpm包"></a>1.1 下载nebula的rpm包</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">bash $ wget https://nebula-graph.oss-cn-hangzhou.aliyuncs.com/package/1.0.0-rc2/nebula-1.0.0-rc2.el7-5.x86_64.rpm</span><br><span class="line"></span><br><span class="line"># centos6的链接格式  </span><br><span class="line"># package/$&#123;release_version&#125;/nebula-$&#123;release_version&#125;.el6-5.x86_64.rpm</span><br><span class="line"># centos7的链接格式</span><br><span class="line"># package/$&#123;release_version&#125;/nebula-$&#123;release_version&#125;.el7-5.x86_64.rpm</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="1-2-安装"><a href="#1-2-安装" class="headerlink" title="1.2 安装"></a>1.2 安装</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo rpm -ivh nebula-2019.12.23-nightly.el6-5.x86_64.rpm</span><br></pre></td></tr></table></figure>
+<h2 id="1-3-启动"><a href="#1-3-启动" class="headerlink" title="1.3 启动"></a>1.3 启动</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo /usr/local/nebula/scripts/nebula.service start all</span><br></pre></td></tr></table></figure>
+<h2 id="1-4-查看-Nebula-Graph-服务"><a href="#1-4-查看-Nebula-Graph-服务" class="headerlink" title="1.4 查看 Nebula Graph 服务"></a>1.4 查看 Nebula Graph 服务</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo /usr/local/nebula/scripts/nebula.service status all</span><br></pre></td></tr></table></figure>
+<h2 id="1-5-连接-Nebula-Graph-服务"><a href="#1-5-连接-Nebula-Graph-服务" class="headerlink" title="1.5 连接 Nebula Graph 服务"></a>1.5 连接 Nebula Graph 服务</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo /usr/local/nebula/bin/nebula -u user -p password</span><br></pre></td></tr></table></figure>
+<h2 id="1-6-停止-Nebula-Graph-服务"><a href="#1-6-停止-Nebula-Graph-服务" class="headerlink" title="1.6 停止 Nebula Graph 服务"></a>1.6 停止 Nebula Graph 服务</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo /usr/local/nebula/scripts/nebula.service stop all</span><br></pre></td></tr></table></figure>
+
+<h1 id="2-集群部署"><a href="#2-集群部署" class="headerlink" title="2. 集群部署"></a>2. 集群部署</h1><h2 id="2-1集群部署ip需要修改的步骤如下："><a href="#2-1集群部署ip需要修改的步骤如下：" class="headerlink" title="2.1集群部署ip需要修改的步骤如下："></a>2.1集群部署ip需要修改的步骤如下：</h2><ol>
+<li>“nebula&#x2F;etc&#x2F;”文件夹里面的配置文件“nebula-metad.conf”里面的相关ip地址</li>
+<li>本地“etc&#x2F;hosts”里面的hostsip地址</li>
+<li>“nebula&#x2F;etc&#x2F;nebula-graphd.conf”里面的hostname</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">etc/nebula-graphd.conf:26:--meta_server_addrs=ng1:45500</span><br><span class="line">etc/nebula-graphd.conf:28:--local_ip=ng1</span><br><span class="line">etc/nebula-graphd.conf:48:--ws_ip=ng1</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>添加节点服务器地址</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 以下几个文件中的地址都要添加节点地址，用逗号隔开</span><br><span class="line">etc/nebula-storaged.conf:19:--meta_server_addrs=127.0.0.1:45500</span><br><span class="line">etc/nebula-metad.conf:20:--meta_server_addrs=192.168.111.133:45500</span><br><span class="line">etc/nebula-graphd.conf:26:--meta_server_addrs=ng2:45500</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>修改nebula的host文件</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@ng2 scripts]# vi graph.hosts </span><br><span class="line">[root@ng2 scripts]# vi meta.hosts </span><br><span class="line">[root@ng2 scripts]# vi storage.hosts </span><br><span class="line"># 添加如下：</span><br><span class="line">ng1</span><br><span class="line">ng2</span><br></pre></td></tr></table></figure>
+<ol start="6">
+<li>这个时候应该已经可以登陆了，如下，但是登录从节点每次都需要输入密码。为了方便，下一步需要手动设置ssh免密登录</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">[root@ng1 nebula]# ./jiqunRestart.sh </span><br><span class="line">Processing Meta Service ...</span><br><span class="line">start ng1</span><br><span class="line">The authenticity of host &#x27;ng1 (::1)&#x27; can&#x27;t be established.</span><br><span class="line">ECDSA key fingerprint is SHA256:A1I43wcavqxvxEqTh2XYzqdYlXZZVbavUpmoQffE26Y.</span><br><span class="line">ECDSA key fingerprint is MD5:5d:9c:99:d7:70:51:5f:f0:e5:c7:cc:0d:54:e5:b6:f9.</span><br><span class="line">Are you sure you want to continue connecting (yes/no)? yes</span><br><span class="line">Warning: Permanently added &#x27;ng1&#x27; (ECDSA) to the list of known hosts.</span><br><span class="line">root@ng1&#x27;s password: </span><br><span class="line">start ng2</span><br><span class="line">The authenticity of host &#x27;ng2 (192.168.111.133)&#x27; can&#x27;t be established.</span><br><span class="line">ECDSA key fingerprint is SHA256:A1I43wcavqxvxEqTh2XYzqdYlXZZVbavUpmoQffE26Y.</span><br><span class="line">ECDSA key fingerprint is MD5:5d:9c:99:d7:70:51:5f:f0:e5:c7:cc:0d:54:e5:b6:f9.</span><br><span class="line">Are you sure you want to continue connecting (yes/no)? yes</span><br><span class="line">Warning: Permanently added &#x27;ng2,192.168.111.133&#x27; (ECDSA) to the list of known hosts.</span><br><span class="line">root@ng2&#x27;s password: </span><br><span class="line">Processing Storage Service ...</span><br><span class="line">start ng1</span><br><span class="line">root@ng1&#x27;s password: </span><br><span class="line">start ng2</span><br><span class="line">root@ng2&#x27;s password: </span><br><span class="line">Processing Graph Service ...</span><br><span class="line">start ng1</span><br><span class="line">root@ng1&#x27;s password: </span><br><span class="line">start ng2</span><br><span class="line">root@ng2&#x27;s password: </span><br></pre></td></tr></table></figure>
+<ol start="7">
+<li>配置免密登录</li>
+</ol>
+<ul>
+<li>因为nebula自身是没有从属关系的，这里把ng1当作Master节点，ng2当作slave节点</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">首先生成 Master 节点的公匙，在Master 节点的终端中执行（因为改过主机名，所以还需要删掉原有的再重新生成一次）：</span><br><span class="line">cd ~/.ssh               # 如果没有该目录，先执行一次ssh localhost</span><br><span class="line">rm ./id_rsa*            # 删除之前生成的公匙（如果有）</span><br><span class="line">ssh-keygen -t rsa       # 一直按回车就可以</span><br><span class="line"></span><br><span class="line">让Master节点需能无密码SSH 本机，在 Master节点上执行： </span><br><span class="line">cat ./id_rsa.pub &gt;&gt; ./authorized_keys</span><br><span class="line"></span><br><span class="line">完成后可执行 ssh ng1 验证一下（可能需要输入 yes，成功后执行 exit 返回原来的终端）。接着在 Master 节点将上公匙传输到 ng2 节点：</span><br><span class="line">scp ~/.ssh/id_rsa.pub leox@ng2:/home/hadoop/</span><br><span class="line"></span><br><span class="line">接着在 ng2 节点上，将 ssh 公匙加入授权：</span><br><span class="line">mkdir ~/.ssh       # 如果不存在该文件夹需先创建，若已存在则忽略</span><br><span class="line">cat ~/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys</span><br><span class="line">rm ~/id_rsa.pub    # 用完就可以删掉了</span><br><span class="line"></span><br><span class="line">如果有其他 Slave 节点，也要执行将 Master公匙传输到 Slave节点、在 Slave 节点上加入授权这两步。</span><br><span class="line">这样，在Master节点上就可以无密码 SSH 到各个 Slave节点了</span><br></pre></td></tr></table></figure>
+<ul>
+<li>配置成功后再次启动结果如下</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@ng1 nebula]# ./jiqunRestart.sh </span><br><span class="line">Processing Meta Service ...</span><br><span class="line">start ng1</span><br><span class="line">start ng2</span><br><span class="line">Processing Storage Service ...</span><br><span class="line">start ng1</span><br><span class="line">start ng2</span><br><span class="line">Processing Graph Service ...</span><br><span class="line">start ng1</span><br><span class="line">start ng2</span><br><span class="line"># 进入命令行</span><br><span class="line">[root@ng1 nebula]# ./login.sh </span><br><span class="line">Welcome to Nebula Graph (Version 1.0.0-rc4)</span><br><span class="line">(user@127.0.0.1:3699) [(none)]&gt; </span><br></pre></td></tr></table></figure>
+
+<h1 id="3-可视化安装"><a href="#3-可视化安装" class="headerlink" title="3.可视化安装"></a>3.可视化安装</h1><h2 id="3-1-因为可视化组件需要使用docker安装，所以需要先安装docker"><a href="#3-1-因为可视化组件需要使用docker安装，所以需要先安装docker" class="headerlink" title="3.1 因为可视化组件需要使用docker安装，所以需要先安装docker"></a>3.1 因为可视化组件需要使用docker安装，所以需要先安装docker</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 见docker官方安装文档：</span><br><span class="line">https://docs.docker.com/engine/install/centos/#install-using-the-repository</span><br></pre></td></tr></table></figure>
+<h2 id="3-2-安装docker-compose"><a href="#3-2-安装docker-compose" class="headerlink" title="3.2 安装docker-compose"></a>3.2 安装docker-compose</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo curl -L &quot;https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)&quot; -o /usr/local/bin/docker-compose</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-3-安装并启动-Nebula-Graph-Studio"><a href="#3-3-安装并启动-Nebula-Graph-Studio" class="headerlink" title="3.3 安装并启动 Nebula Graph Studio"></a>3.3 安装并启动 Nebula Graph Studio</h2><ul>
+<li>在命令行中输入以下命令，下载 Nebula Graph Studio 安装包。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/vesoft-inc/nebula-web-docker</span><br></pre></td></tr></table></figure>
+<ul>
+<li>在命令行中，进入到安装文件夹 nebula-web-docker(当前放在根目录下面)。</li>
+<li>输入 systemctl start docker 启动docker</li>
+<li>输入 docker-compose pull &amp;&amp; docker-compose up 启动 Nebula Graph Studio 服务。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Creating docker_importer_1 ... done</span><br><span class="line">Creating docker_client_1   ... done</span><br><span class="line">Creating docker_web_1      ... done</span><br><span class="line">Creating docker_nginx_1    ... done</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这一步可能会出现“ERROR: Couldn’t connect to Docker daemon at http+docker:&#x2F;&#x2F;localhost - is it running?<br>If it’s at a non-standard location, specify the URL with the DOCKER_HOST environment variable.的问题”，是因为需要给用户登录，直接su给root权限启动就可以了</p>
+</blockquote>
+<ul>
+<li>启动成功，访问: <a href="http://0.0.0.0:7001（本机为192.168.111.135:7001）">http://0.0.0.0:7001（本机为192.168.111.135:7001）</a></li>
+<li>配置数据库的相关信息</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Host :192.168.111.135:3699</span><br><span class="line">用户名:user</span><br><span class="line">密码:password</span><br></pre></td></tr></table></figure>
+
+<h1 id="4-遇到问题及解决"><a href="#4-遇到问题及解决" class="headerlink" title="4. 遇到问题及解决"></a>4. 遇到问题及解决</h1><h2 id="0-1-某个服务无法启动，查看日志中发现”failed-to-set-SO-REUSEPORT-on-async-server-socket-Protocol-not-available”问题。"><a href="#0-1-某个服务无法启动，查看日志中发现”failed-to-set-SO-REUSEPORT-on-async-server-socket-Protocol-not-available”问题。" class="headerlink" title="0.1  某个服务无法启动，查看日志中发现”failed to set SO_REUSEPORT on async server socket Protocol not available”问题。"></a>0.1  某个服务无法启动，查看日志中发现”failed to set SO_REUSEPORT on async server socket Protocol not available”问题。</h2><ul>
+<li>问题原因<blockquote>
+<p> 使用的版本为centos6.5， 内核版本是小于3.9<br> SO_REUSEPORT 在linux 3.9 及以上才支持的</p>
+</blockquote>
+</li>
+<li>解决方法</li>
+</ul>
+<blockquote>
+<p>修改系统版本为centos7.5 内核版本为3.10即可解决</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 图数据库</a>
+              <a href="/tags/nebula-graph/" rel="tag"># nebula-graph</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/13/python/python%E6%89%93%E5%8C%85%E7%A8%8B%E5%BA%8F%E7%A7%BB%E6%A4%8D%E5%88%B0%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83redhat%E5%87%BA%E7%8E%B0%E7%9A%84%E9%97%AE%E9%A2%98/" rel="prev" title="python打包程序移植到生产环境redhat出现的问题">
+      <i class="fa fa-chevron-left"></i> python打包程序移植到生产环境redhat出现的问题
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/11/HBase%E5%9F%BA%E7%A1%80/" rel="next" title="HBase基础">
+      HBase基础 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-nebula%E7%9A%84%E5%AE%89%E8%A3%85"><span class="nav-number">1.</span> <span class="nav-text">1. nebula的安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-%E4%B8%8B%E8%BD%BDnebula%E7%9A%84rpm%E5%8C%85"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 下载nebula的rpm包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-%E5%AE%89%E8%A3%85"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-%E5%90%AF%E5%8A%A8"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-%E6%9F%A5%E7%9C%8B-Nebula-Graph-%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 查看 Nebula Graph 服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-5-%E8%BF%9E%E6%8E%A5-Nebula-Graph-%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.5.</span> <span class="nav-text">1.5 连接 Nebula Graph 服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-6-%E5%81%9C%E6%AD%A2-Nebula-Graph-%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.6.</span> <span class="nav-text">1.6 停止 Nebula Graph 服务</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2"><span class="nav-number">2.</span> <span class="nav-text">2. 集群部署</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2ip%E9%9C%80%E8%A6%81%E4%BF%AE%E6%94%B9%E7%9A%84%E6%AD%A5%E9%AA%A4%E5%A6%82%E4%B8%8B%EF%BC%9A"><span class="nav-number">2.1.</span> <span class="nav-text">2.1集群部署ip需要修改的步骤如下：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E5%8F%AF%E8%A7%86%E5%8C%96%E5%AE%89%E8%A3%85"><span class="nav-number">3.</span> <span class="nav-text">3.可视化安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-%E5%9B%A0%E4%B8%BA%E5%8F%AF%E8%A7%86%E5%8C%96%E7%BB%84%E4%BB%B6%E9%9C%80%E8%A6%81%E4%BD%BF%E7%94%A8docker%E5%AE%89%E8%A3%85%EF%BC%8C%E6%89%80%E4%BB%A5%E9%9C%80%E8%A6%81%E5%85%88%E5%AE%89%E8%A3%85docker"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 因为可视化组件需要使用docker安装，所以需要先安装docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-%E5%AE%89%E8%A3%85docker-compose"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 安装docker-compose</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-%E5%AE%89%E8%A3%85%E5%B9%B6%E5%90%AF%E5%8A%A8-Nebula-Graph-Studio"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 安装并启动 Nebula Graph Studio</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E9%81%87%E5%88%B0%E9%97%AE%E9%A2%98%E5%8F%8A%E8%A7%A3%E5%86%B3"><span class="nav-number">4.</span> <span class="nav-text">4. 遇到问题及解决</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-1-%E6%9F%90%E4%B8%AA%E6%9C%8D%E5%8A%A1%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%EF%BC%8C%E6%9F%A5%E7%9C%8B%E6%97%A5%E5%BF%97%E4%B8%AD%E5%8F%91%E7%8E%B0%E2%80%9Dfailed-to-set-SO-REUSEPORT-on-async-server-socket-Protocol-not-available%E2%80%9D%E9%97%AE%E9%A2%98%E3%80%82"><span class="nav-number">4.1.</span> <span class="nav-text">0.1  某个服务无法启动，查看日志中发现”failed to set SO_REUSEPORT on async server socket Protocol not available”问题。</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

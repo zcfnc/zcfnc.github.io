@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 8.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="spark报错Could not execute broadcast in 1800secs,问题溯源及解决处理。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spark三种join方法对比及应用场景">
+<meta property="og:url" content="http://example.com/2021/07/08/spark/spark%E4%B8%89%E7%A7%8Djoin%E6%96%B9%E6%B3%95%E5%AF%B9%E6%AF%94%E5%8F%8A%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="spark报错Could not execute broadcast in 1800secs,问题溯源及解决处理。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-07-08T00:22:48.000Z">
+<meta property="article:modified_time" content="2021-07-08T07:04:13.614Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="spark">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2021/07/08/spark/spark%E4%B8%89%E7%A7%8Djoin%E6%96%B9%E6%B3%95%E5%AF%B9%E6%AF%94%E5%8F%8A%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>spark三种join方法对比及应用场景 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/08/spark/spark%E4%B8%89%E7%A7%8Djoin%E6%96%B9%E6%B3%95%E5%AF%B9%E6%AF%94%E5%8F%8A%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          spark三种join方法对比及应用场景
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2021-07-08 09:52:48 / Modified: 16:34:13" itemprop="dateCreated datePublished" datetime="2021-07-08T09:52:48+09:30">2021-07-08</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/" itemprop="url" rel="index"><span itemprop="name">大数据</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="1-问题描述"><a href="#1-问题描述" class="headerlink" title="1 问题描述"></a>1 问题描述</h1><p>前几天在跑一个程序的时候遇到了一个很诡异的事情，在dolphinSchedule上面上线了几天的一个程序突然挂掉了，查看问题原因总是报连接超时。无从下手，然后查看代码发现是同事写的代码有一个分区的bug，改掉了但是运行到程序的一个关联操作的地方还是连接超时，然后直接就死掉了。感觉很诡异，因为程序运行了几天没问题，说明代码可能是没问题的，然后计算的数据是一年的数据，猜想可能是数据量的变化出现的问题。</p>
+<h1 id="2-问题详情"><a href="#2-问题详情" class="headerlink" title="2 问题详情"></a>2 问题详情</h1><h2 id="2-1-报错信息"><a href="#2-1-报错信息" class="headerlink" title="2.1 报错信息"></a>2.1 报错信息</h2><ul>
+<li>具体信息</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Traceback (most recent call last):</span><br><span class="line">  File &quot;LineLossRate.py&quot;, line 237, in &lt;module&gt;</span><br><span class="line">    dfjoin.show(5)</span><br><span class="line">  File &quot;/opt/cloudera/parcels/SPARK2-2.4.0.cloudera2-1.cdh5.13.3.p0.1041012/lib/spark2/python/lib/pyspark.zip/pyspark/sql/dataframe.py&quot;, line 378, in show</span><br><span class="line">  File &quot;/opt/cloudera/parcels/SPARK2-2.4.0.cloudera2-1.cdh5.13.3.p0.1041012/lib/spark2/python/lib/py4j-0.10.7-src.zip/py4j/java_gateway.py&quot;, line 1257, in __call__</span><br><span class="line">  File &quot;/opt/cloudera/parcels/SPARK2-2.4.0.cloudera2-1.cdh5.13.3.p0.1041012/lib/spark2/python/lib/pyspark.zip/pyspark/sql/utils.py&quot;, line 63, in deco</span><br><span class="line">  File &quot;/opt/cloudera/parcels/SPARK2-2.4.0.cloudera2-1.cdh5.13.3.p0.1041012/lib/spark2/python/lib/py4j-0.10.7-src.zip/py4j/protocol.py&quot;, line 328, in get_return_value</span><br><span class="line">py4j.protocol.Py4JJavaError: An error occurred while calling o409.showString.</span><br><span class="line">: org.apache.spark.SparkException: Could not execute broadcast in 1800 secs. You can increase the timeout for broadcasts via spark.sql.broadcastTimeout or disable broadcast join by setting spark.sql.autoBroadcastJoinThreshold to -1</span><br><span class="line">at org.apache.spark.sql.execution.exchange.BroadcastExchangeExec.doExecuteBroadcast(BroadcastExchangeExec.scala:150)</span><br><span class="line">	at org.apache.spark.sql.execution.InputAdapter.doExecuteBroadcast(WholeStageCodegenExec.scala:387)</span><br><span class="line">	at org.apache.spark.sql.execution.SparkPlan$$anonfun$executeBroadcast$1.apply(SparkPlan.scala:144)</span><br></pre></td></tr></table></figure>
+
+<p>在其他节点上显示有一些重复连接超时的警告：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">21/07/02 19:13:42 WARN scheduler.TaskSetManager: Lost task 9.0 in stage 70.0 (TID 5771, cdh06.nari.com, executor 12): java.net.ConnectException: Connection timed out (Connection timed out)</span><br><span class="line">	at java.net.PlainSocketImpl.socketConnect(Native Method)</span><br><span class="line">	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)</span><br><span class="line">	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)</span><br><span class="line">	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)</span><br><span class="line">	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)</span><br><span class="line">	at java.net.Socket.connect(Socket.java:589)</span><br><span class="line">	at java.net.Socket.connect(Socket.java:538)</span><br><span class="line">	at java.net.Socket.&lt;init&gt;(Socket.java:434)</span><br><span class="line">	at java.net.Socket.&lt;init&gt;(Socket.java:244)</span><br><span class="line">	at org.apache.spark.api.python.PythonWorkerFact</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-2-报错代码"><a href="#2-2-报错代码" class="headerlink" title="2.2 报错代码"></a>2.2 报错代码</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">dfjoin=df365.join(resDf3,on=[&quot;xx&quot;]).\</span><br><span class="line">    withColumn(&quot;xx&quot;,F.lit(dateMyes)). \</span><br><span class="line">    withColumn(&quot;xx&quot;, F.expr(&quot;cast(`xx` as string)&quot;)).join(tg_id,on=[&quot;xx&quot;]).\</span><br><span class="line">    withColumnRenamed(&quot;xx&quot;,&quot;xx&quot;).\</span><br><span class="line">    select(&quot;xx&quot;,&quot;xx&quot;,&quot;xx&quot;&quot;xx&quot;&quot;xx&quot;&quot;xx&quot;&quot;xx&quot;).persist()</span><br><span class="line"></span><br><span class="line">dfjoin.show(5)</span><br><span class="line">dfjoin.coalesce(128).write.mode(&quot;append&quot;).partitionBy(&quot;XXX&quot;).format(&quot;parquet&quot;).saveAsTable(&quot;tableName&quot;)</span><br></pre></td></tr></table></figure>
+
+<h1 id="3-问题刨析"><a href="#3-问题刨析" class="headerlink" title="3 问题刨析"></a>3 问题刨析</h1><p>从报错的信息中基本可以定位问题出现在数据join的位置，但是其中的两个dataframe，resDf3和df365数据量都在十几万也并不是很大。但是从这句话中可以看出也是join的问题，建议我们关闭BroadcastJoin。然后大致可以清楚了，BroadcastJoin是关联一个大表和一个小表的方法，但是这里关联的两个表数据量基本相同，如果使用BroadcastJoin的话就可能导致广播时间过长而连接超时，初步猜想问题的原因就在于此。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">You can increase the timeout for broadcasts via spark.sql.broadcastTimeout or disable broadcast join by setting spark.sql.autoBroadcastJoinThreshold to -1</span><br></pre></td></tr></table></figure>
+
+<p>于是添加了spark.sql.autoBroadcastJoinThreshold参数为-1，程序正常运行，问题解决。</p>
+<h1 id="4-扩展延伸：spark的三种join方式"><a href="#4-扩展延伸：spark的三种join方式" class="headerlink" title="4  扩展延伸：spark的三种join方式"></a>4  扩展延伸：spark的三种join方式</h1><p>文章参考链接：<a target="_blank" rel="noopener" href="http://hbasefly.com/2017/03/19/sparksql-basic-join/">SparkSQL – 有必要坐下来聊聊Join – 有态度的HBase&#x2F;Spark&#x2F;BigData (hbasefly.com)</a></p>
+<p>这里是对该文章内的信息转载并做一个简要的摘录：</p>
+<p>当前SparkSQL支持三种Join算法－shuffle hash join、broadcast hash join以及sort merge join。其中前两者归根到底都属于hash join，只不过在hash join之前需要先shuffle还是先broadcast。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>所属类别</th>
+<th>使用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>shuffle hash join</td>
+<td>hash join</td>
+<td>一张大表join一张小表</td>
+</tr>
+<tr>
+<td>broadcast hash join</td>
+<td>hash join</td>
+<td>一张大表join一张极小表</td>
+</tr>
+<tr>
+<td>sort merge join</td>
+<td>merge join</td>
+<td>两张大表join</td>
+</tr>
+</tbody></table>
+<h2 id="4-1-Hash-Join"><a href="#4-1-Hash-Join" class="headerlink" title="4.1 Hash Join"></a>4.1 <strong>Hash Join</strong></h2><p>先来看看这样一条SQL语句：select * from order,item where item.id &#x3D; order.i_id，很简单一个Join节点，参与join的两张表是item和order，join key分别是item.id以及order.i_id。现在假设这个Join采用的是hash join算法，整个过程会经历三步：</p>
+<ol>
+<li><p>确定Build Table以及Probe Table：这个概念比较重要，Build Table使用join key构建Hash Table，而Probe Table使用join key进行探测，探测成功就可以join在一起。通常情况下，小表会作为Build Table，大表作为Probe Table。此事例中item为Build Table，order为Probe Table。</p>
+</li>
+<li><p>构建Hash Table：依次读取Build Table（item）的数据，对于每一行数据根据join key（item.id）进行hash，hash到对应的Bucket，生成hash table中的一条记录。数据缓存在内存中，如果内存放不下需要dump到外存。</p>
+</li>
+<li><p>探测：再依次扫描Probe Table（order）的数据，使用相同的hash函数映射Hash Table中的记录，映射成功之后再检查join条件（item.id &#x3D; order.i_id），如果匹配成功就可以将两者join在一起</p>
+</li>
+</ol>
+<blockquote>
+<p> 这里可能存在的疑问：</p>
+<ol>
+<li><p>hash join性能如何？hash join基本都只扫描两表一次，可以认为o(a+b)</p>
+</li>
+<li><p>为什么Build Table选择小表？因为构建的Hash Table最好能全部加载在内存，效率最高；这也决定了<strong>hash join算法只适合至少一个小表的join场景，对于两个大表的join场景并不适用</strong>；</p>
+</li>
+</ol>
+</blockquote>
+<h2 id="4-1-1-Broadcast-Hash-Join"><a href="#4-1-1-Broadcast-Hash-Join" class="headerlink" title="4.1.1 Broadcast Hash Join"></a>4.1.1 <strong>Broadcast Hash Join</strong></h2><p>Broadcast Hash Join一般分为两步：</p>
+<ol>
+<li><p>broadcast阶段：将小表广播分发到大表所在的所有主机。广播算法可以有很多，最简单的是先发给driver，driver再统一分发给所有executor；要不就是基于bittorrete的p2p思路；</p>
+</li>
+<li><p>hash join阶段：在每个executor上执行单机版hash join，小表映射，大表试探</p>
+</li>
+</ol>
+<blockquote>
+<p>SparkSQL规定broadcast hash join执行的基本条件为被广播小表必须小于参数spark.sql.autoBroadcastJoinThreshold，默认为10M</p>
+</blockquote>
+<h2 id="4-1-2-Shuffle-Hash-Join"><a href="#4-1-2-Shuffle-Hash-Join" class="headerlink" title="4.1.2 Shuffle Hash Join"></a>4.1.2 <strong>Shuffle Hash Join</strong></h2><p>在大数据条件下如果一张表很小，执行join操作最优的选择无疑是broadcast hash join，效率最高。但是一旦小表数据量增大，广播所需内存、带宽等资源必然就会太大，broadcast hash join就不再是最优方案。此时可以按照join key进行分区，根据key相同必然分区相同的原理，就可以将大表join分而治之，划分为很多小表的join，充分利用集群资源并行化。如下图所示，shuffle hash join也可以分为两步：</p>
+<ol>
+<li><p>shuffle阶段：分别将两个表按照join key进行分区，将相同join key的记录重分布到同一节点，两张表的数据会被重分布到集群中所有节点。这个过程称为shuffle</p>
+</li>
+<li><p>hash join阶段：每个分区节点上的数据单独执行单机hash join算法。</p>
+</li>
+</ol>
+<h1 id="4-2-Sort-Merge-Join"><a href="#4-2-Sort-Merge-Join" class="headerlink" title="4.2 Sort-Merge Join"></a>4.2 <strong>Sort-Merge Join</strong></h1><p>sort merge join 一般分为三个步骤：</p>
+<ol>
+<li><p>shuffle阶段：将两张大表根据join key进行重新分区，两张表数据会分布到整个集群，以便分布式并行处理</p>
+</li>
+<li><p>sort阶段：对单个分区节点的两表数据，分别进行排序</p>
+</li>
+<li><p>merge阶段：对排好序的两张分区表数据执行join操作。join操作很简单，分别遍历两个有序序列，碰到相同join key就merge输出，否则取更小一边</p>
+</li>
+</ol>
+<h1 id="5-再次回到问题"><a href="#5-再次回到问题" class="headerlink" title="5. 再次回到问题"></a>5. 再次回到问题</h1><p>从上面介绍的三种join的原理可以基本确定各自所对应的应用场景，这次遇到的问题就是由于spark默认使用了broadcast join方法，然后两个join的表的数据量基本相似，所以遇到了broadcast join乱广播导致程序超时的现象。所以手动禁止该方法解决了问题。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/spark/" rel="tag"># spark</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/06/29/%E7%94%9F%E6%B4%BB%E5%85%B6%E4%BB%96/%E4%BF%9D%E9%99%A9/" rel="prev" title="保险相关基础知识">
+      <i class="fa fa-chevron-left"></i> 保险相关基础知识
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/08/24/vim-tutor/" rel="next" title="vim tutor">
+      vim tutor <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">1 问题描述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E9%97%AE%E9%A2%98%E8%AF%A6%E6%83%85"><span class="nav-number">2.</span> <span class="nav-text">2 问题详情</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-%E6%8A%A5%E9%94%99%E4%BF%A1%E6%81%AF"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 报错信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E6%8A%A5%E9%94%99%E4%BB%A3%E7%A0%81"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 报错代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E9%97%AE%E9%A2%98%E5%88%A8%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">3 问题刨析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E6%89%A9%E5%B1%95%E5%BB%B6%E4%BC%B8%EF%BC%9Aspark%E7%9A%84%E4%B8%89%E7%A7%8Djoin%E6%96%B9%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">4  扩展延伸：spark的三种join方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-Hash-Join"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 Hash Join</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-1-Broadcast-Hash-Join"><span class="nav-number">4.2.</span> <span class="nav-text">4.1.1 Broadcast Hash Join</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-2-Shuffle-Hash-Join"><span class="nav-number">4.3.</span> <span class="nav-text">4.1.2 Shuffle Hash Join</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-2-Sort-Merge-Join"><span class="nav-number">5.</span> <span class="nav-text">4.2 Sort-Merge Join</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-%E5%86%8D%E6%AC%A1%E5%9B%9E%E5%88%B0%E9%97%AE%E9%A2%98"><span class="nav-number">6.</span> <span class="nav-text">5. 再次回到问题</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

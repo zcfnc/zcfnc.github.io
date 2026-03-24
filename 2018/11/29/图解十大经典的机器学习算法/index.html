@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 8.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="概述 决策树 随机森林 逻辑回归 SVM bayes Knn k-means Adaboost 神经网络 HMM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="图解十大经典的机器学习算法（转自网络）">
+<meta property="og:url" content="http://example.com/2018/11/29/%E5%9B%BE%E8%A7%A3%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="概述 决策树 随机森林 逻辑回归 SVM bayes Knn k-means Adaboost 神经网络 HMM">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://p3.pstatp.com/large/43500001eb4471788557">
+<meta property="og:image" content="https://p3.pstatp.com/large/435200006b668ea633bd">
+<meta property="og:image" content="https://p1.pstatp.com/large/434f0001f5ed801daccf">
+<meta property="og:image" content="https://p1.pstatp.com/large/435200006bcfcb4c5948">
+<meta property="og:image" content="https://p1.pstatp.com/large/434f0001f6466bf0d67d">
+<meta property="og:image" content="https://p3.pstatp.com/large/434e00020cea24ad72ac">
+<meta property="og:image" content="https://p1.pstatp.com/large/4352000088a0cca901dc">
+<meta property="og:image" content="https://p9.pstatp.com/large/43500002088dadd37cd2">
+<meta property="og:image" content="https://p1.pstatp.com/large/43520000890f09d83fe9">
+<meta property="og:image" content="https://p9.pstatp.com/large/4351000204be99bba336">
+<meta property="og:image" content="https://p3.pstatp.com/large/4353000003f6ba0e0f8d">
+<meta property="og:image" content="https://p1.pstatp.com/large/435100020586720b85a6">
+<meta property="og:image" content="https://p3.pstatp.com/large/435000020b04838dcf31">
+<meta property="og:image" content="https://p1.pstatp.com/large/435000020b4ac6b506a0">
+<meta property="og:image" content="https://p3.pstatp.com/large/435200008bc2bf7f5517">
+<meta property="og:image" content="https://p3.pstatp.com/large/43530000059e39d73a18">
+<meta property="og:image" content="https://p1.pstatp.com/large/4353000005c7816fdd59">
+<meta property="og:image" content="https://p9.pstatp.com/large/43510002070c383b6105">
+<meta property="og:image" content="https://p3.pstatp.com/large/43530000063edd668c55">
+<meta property="og:image" content="https://p9.pstatp.com/large/435200008cd4629a6bc4">
+<meta property="og:image" content="https://p1.pstatp.com/large/434e00022df729f719f3">
+<meta property="og:image" content="https://p3.pstatp.com/large/434d00022ba607261510">
+<meta property="og:image" content="https://p3.pstatp.com/large/43510002080ef9b94c91">
+<meta property="og:image" content="https://p3.pstatp.com/large/434e00022edc52fa300b">
+<meta property="og:image" content="https://p3.pstatp.com/large/4351000208a4639fb593">
+<meta property="og:image" content="https://p3.pstatp.com/large/43530000080920d7643e">
+<meta property="og:image" content="https://p3.pstatp.com/large/435200008ec651b49844">
+<meta property="og:image" content="https://p3.pstatp.com/large/434e0002300572baeba6">
+<meta property="og:image" content="https://p1.pstatp.com/large/434e00023018f6a2f245">
+<meta property="og:image" content="https://p1.pstatp.com/large/435100020a32bbefadfd">
+<meta property="og:image" content="https://p3.pstatp.com/large/434d00022e7cc9792c98">
+<meta property="og:image" content="https://p1.pstatp.com/large/435000021041994467f7">
+<meta property="og:image" content="https://p1.pstatp.com/large/434e000231a8b19cc6a0">
+<meta property="og:image" content="https://p3.pstatp.com/large/435100020b63904aa0f0">
+<meta property="og:image" content="https://p3.pstatp.com/large/434d00022fbafcfbfa77">
+<meta property="og:image" content="https://p3.pstatp.com/large/435200009180de2aa4a9">
+<meta property="og:image" content="https://p3.pstatp.com/large/435300000b3f99003259">
+<meta property="article:published_time" content="2018-11-29T05:43:50.000Z">
+<meta property="article:modified_time" content="2020-09-16T06:44:31.342Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="machine learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://p3.pstatp.com/large/43500001eb4471788557">
+
+<link rel="canonical" href="http://example.com/2018/11/29/%E5%9B%BE%E8%A7%A3%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>图解十大经典的机器学习算法（转自网络） | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2018/11/29/%E5%9B%BE%E8%A7%A3%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          图解十大经典的机器学习算法（转自网络）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2018-11-29 15:13:50" itemprop="dateCreated datePublished" datetime="2018-11-29T15:13:50+09:30">2018-11-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-09-16 16:14:31" itemprop="dateModified" datetime="2020-09-16T16:14:31+09:30">2020-09-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">机器学习笔记</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><ul>
+<li>决策树</li>
+<li>随机森林</li>
+<li>逻辑回归</li>
+<li>SVM</li>
+<li>bayes</li>
+<li>Knn</li>
+<li>k-means</li>
+<li>Adaboost</li>
+<li>神经网络</li>
+<li>HMM</li>
+</ul>
+<span id="more"></span>
+
+<p>下图是一部典型的智能手机上安装的一些常见应用程序，可能很多人都猜不到，人工智能技术已经是手机上很多应用程序的核心驱动力。</p>
+<p><img src="https://p3.pstatp.com/large/43500001eb4471788557" alt="image"><br>    图1 智能手机上的相关应用</p>
+<p>传统的机器学习算法包括决策树、聚类、贝叶斯分类、支持向量机、EM、Adaboost等等。这篇文章将对常用算法做常识性的介绍，没有代码，也没有复杂的理论推导，就是图解一下，知道这些算法是什么，它们是怎么应用的。</p>
+<h2 id="决策树"><a href="#决策树" class="headerlink" title="决策树"></a>决策树</h2><p>根据一些 feature（特征） 进行分类，每个节点提一个问题，通过判断，将数据分为两类，再继续提问。这些问题是根据已有数据学习出来的，再投入新数据的时候，就可以根据这棵树上的问题，将数据划分到合适的叶子上。</p>
+<p><img src="https://p3.pstatp.com/large/435200006b668ea633bd" alt="image"><br>图2 决策树原理示意图</p>
+<h2 id="随机森林"><a href="#随机森林" class="headerlink" title="随机森林"></a>随机森林</h2><p>在源数据中随机选取数据，组成几个子集：<br><img src="https://p1.pstatp.com/large/434f0001f5ed801daccf" alt="image"></p>
+<p>图3-1 随机森林原理示意图</p>
+<p>S矩阵是源数据，有1-N条数据，A、B、C 是feature，最后一列C是类别：</p>
+<p><img src="https://p1.pstatp.com/large/435200006bcfcb4c5948" alt="image"></p>
+<p>由S随机生成M个子矩阵：</p>
+<p><img src="https://p1.pstatp.com/large/434f0001f6466bf0d67d" alt="image"></p>
+<p>这M个子集得到 M 个决策树：将新数据投入到这M个树中，得到M个分类结果，计数看预测成哪一类的数目最多，就将此类别作为最后的预测结果。</p>
+<p> <img src="https://p3.pstatp.com/large/434e00020cea24ad72ac" alt="image"></p>
+<p>图3-2 随机森林效果展示图</p>
+<h2 id="逻辑回归"><a href="#逻辑回归" class="headerlink" title="逻辑回归"></a>逻辑回归</h2><p>当预测目标是概率这样的，值域需要满足大于等于0，小于等于1的，这个时候单纯的线性模型是做不到的，因为在定义域不在某个范围之内时，值域也超出了规定区间。</p>
+<p><img src="https://p1.pstatp.com/large/4352000088a0cca901dc" alt="image"></p>
+<p>图4-1 线性模型图</p>
+<p>所以此时需要这样的形状的模型会比较好：</p>
+<p><img src="https://p9.pstatp.com/large/43500002088dadd37cd2" alt="image"></p>
+<p>图4-2</p>
+<p>那么怎么得到这样的模型呢？</p>
+<p>这个模型需要满足两个条件 “大于等于0”，“小于等于1” 。大于等于0 的模型可以选择绝对值，平方值，这里用指数函数，一定大于0；小于等于1 用除法，分子是自己，分母是自身加上1，那一定是小于1的了。</p>
+<p><img src="https://p1.pstatp.com/large/43520000890f09d83fe9" alt="image"><br>图4-3</p>
+<p>再做一下变形，就得到了 logistic regressions 模型：</p>
+<p><img src="https://p9.pstatp.com/large/4351000204be99bba336" alt="image"><br>图4-4</p>
+<p>通过源数据计算可以得到相应的系数了：<br> <img src="https://p3.pstatp.com/large/4353000003f6ba0e0f8d" alt="image"><br>图4-5<br><img src="https://p1.pstatp.com/large/435100020586720b85a6" alt="image"><br>图4-6 LR模型曲线图</p>
+<h2 id="支持向量机"><a href="#支持向量机" class="headerlink" title="支持向量机"></a>支持向量机</h2><p>要将两类分开，想要得到一个超平面，最优的超平面是到两类的 margin 达到最大，margin就是超平面与离它最近一点的距离，如下图，Z2&gt;Z1，所以绿色的超平面比较好。</p>
+<p>图解十大经典的机器学习算法<br><img src="https://p3.pstatp.com/large/435000020b04838dcf31" alt="image"><br>图5 分类问题示意图</p>
+<p>将这个超平面表示成一个线性方程，在线上方的一类，都大于等于1，另一类小于等于－1：</p>
+<p><img src="https://p1.pstatp.com/large/435000020b4ac6b506a0" alt="image"></p>
+<p>点到面的距离根据图中的公式计算：</p>
+<p><img src="https://p3.pstatp.com/large/435200008bc2bf7f5517" alt="image"></p>
+<p>所以得到total margin的表达式如下，目标是最大化这个margin，就需要最小化分母，于是变成了一个优化问题：</p>
+<p><img src="https://p3.pstatp.com/large/43530000059e39d73a18" alt="image"></p>
+<p>举个例子，三个点，找到最优的超平面，定义了 weight vector＝（2，3）－（1，1）：</p>
+<p><img src="https://p1.pstatp.com/large/4353000005c7816fdd59" alt="image"></p>
+<p>得到weight vector为（a，2a），将两个点代入方程，代入（2，3）另其值＝1，代入（1，1）另其值＝-1，求解出 a 和 截矩 w0 的值，进而得到超平面的表达式。</p>
+<p><img src="https://p9.pstatp.com/large/43510002070c383b6105" alt="image"></p>
+<p>a求出来后，代入（a，2a）得到的就是support vector，a和w0代入超平面的方程就是support vector machine。</p>
+<h2 id="朴素贝叶斯"><a href="#朴素贝叶斯" class="headerlink" title="朴素贝叶斯"></a>朴素贝叶斯</h2><p>举个在 NLP 的应用：给一段文字，返回情感分类，这段文字的态度是positive，还是negative：<br><img src="https://p3.pstatp.com/large/43530000063edd668c55" alt="image"><br>图6-1 问题案例</p>
+<p>为了解决这个问题，可以只看其中的一些单词：<br><img src="https://p9.pstatp.com/large/435200008cd4629a6bc4" alt="image"><br>这段文字，将仅由一些单词和它们的计数代表：<br><img src="https://p1.pstatp.com/large/434e00022df729f719f3" alt="image"></p>
+<p>原始问题是：给你一句话，它属于哪一类 ？通过bayes rules变成一个比较简单容易求得的问题：<br><img src="https://p3.pstatp.com/large/434d00022ba607261510" alt="image"></p>
+<p>问题变成，这一类中这句话出现的概率是多少，当然，别忘了公式里的另外两个概率。例子：单词“love”在positive的情况下出现的概率是 0.1，在negative的情况下出现的概率是0.001。</p>
+<p><img src="https://p3.pstatp.com/large/43510002080ef9b94c91" alt="image"><br>图6-2 NB算法结果展示图</p>
+<h2 id="K近邻算法"><a href="#K近邻算法" class="headerlink" title="K近邻算法"></a>K近邻算法</h2><p>给一个新的数据时，离它最近的 k 个点中，哪个类别多，这个数据就属于哪一类。</p>
+<p>例子：要区分“猫”和“狗”，通过“claws”和“sound”两个feature来判断的话，圆形和三角形是已知分类的了，那么这个“star”代表的是哪一类呢？<br><img src="https://p3.pstatp.com/large/434e00022edc52fa300b" alt="image"><br>图7-1 问题案例</p>
+<p>k＝3时，这三条线链接的点就是最近的三个点，那么圆形多一些，所以这个star就是属于猫。<br><img src="https://p3.pstatp.com/large/4351000208a4639fb593" alt="image"><br>图7-2 算法步骤展示图</p>
+<h2 id="K均值算法"><a href="#K均值算法" class="headerlink" title="K均值算法"></a>K均值算法</h2><p>先要将一组数据，分为三类，粉色数值大，黄色数值小 。最开始先初始化，这里面选了最简单的 3，2，1 作为各类的初始值 。剩下的数据里，每个都与三个初始值计算距离，然后归类到离它最近的初始值所在类别。<br><img src="https://p3.pstatp.com/large/43530000080920d7643e" alt="image"><br>图8-1 问题案例</p>
+<p>分好类后，计算每一类的平均值，作为新一轮的中心点：<br><img src="https://p3.pstatp.com/large/435200008ec651b49844" alt="image"><br>图8-2</p>
+<p>几轮之后，分组不再变化了，就可以停止了：<br><img src="https://p3.pstatp.com/large/434e0002300572baeba6" alt="image"><br><img src="https://p1.pstatp.com/large/434e00023018f6a2f245" alt="image"><br>图8-3 算法结果展示</p>
+<h2 id="Adaboost"><a href="#Adaboost" class="headerlink" title="Adaboost"></a>Adaboost</h2><p>Adaboost 是 Boosting 的方法之一。Boosting就是把若干个分类效果并不好的分类器综合起来考虑，会得到一个效果比较好的分类器。</p>
+<p>下图，左右两个决策树，单个看是效果不怎么好的，但是把同样的数据投入进去，把两个结果加起来考虑，就会增加可信度。<br><img src="https://p1.pstatp.com/large/435100020a32bbefadfd" alt="image"><br>图9-1 算法原理展示</p>
+<p>Adaboost 的例子，手写识别中，在画板上可以抓取到很多features（特征），例如始点的方向，始点和终点的距离等等。<br><img src="https://p3.pstatp.com/large/434d00022e7cc9792c98" alt="image"><br>图9-2</p>
+<p>training的时候，会得到每个feature的weight（权重），例如2和3的开头部分很像，这个feature对分类起到的作用很小，它的权重也就会较小。<br><img src="https://p1.pstatp.com/large/435000021041994467f7" alt="image"><br>图9-3</p>
+<p>而这个alpha角就具有很强的识别性，这个feature的权重就会较大，最后的预测结果是综合考虑这些feature的结果。</p>
+<p><img src="https://p1.pstatp.com/large/434e000231a8b19cc6a0" alt="image"><br>图9-4</p>
+<h2 id="神经网络"><a href="#神经网络" class="headerlink" title="神经网络"></a>神经网络</h2><p>Neural Networks适合一个input可能落入至少两个类别里：NN由若干层神经元，和它们之间的联系组成。 第一层是input层，最后一层是output层。在hidden层和output层都有自己的classifier。<br><img src="https://p3.pstatp.com/large/435100020b63904aa0f0" alt="image"><br>图10-1 神经网络结构</p>
+<p>input输入到网络中，被激活，计算的分数被传递到下一层，激活后面的神经层，最后output层的节点上的分数代表属于各类的分数，下图例子得到分类结果为class 1；同样的input被传输到不同的节点上，之所以会得到不同的结果是因为各自节点有不同的weights 和bias，这也就是forward propagation。<br><img src="https://p3.pstatp.com/large/434d00022fbafcfbfa77" alt="image"><br>图10-2 算法结果展示</p>
+<h2 id="马尔科夫"><a href="#马尔科夫" class="headerlink" title="马尔科夫"></a>马尔科夫</h2><p>Markov Chains由state（状态）和transitions（转移）组成。例子，根据这一句话 ‘the quick brown fox jumps over the lazy dog’，要得到markov chains。</p>
+<p>步骤，先给每一个单词设定成一个状态，然后计算状态间转换的概率。<br><img src="https://p3.pstatp.com/large/435200009180de2aa4a9" alt="image"><br>图11-1 马尔科夫原理图</p>
+<p>这是一句话计算出来的概率，当你用大量文本去做统计的时候，会得到更大的状态转移矩阵，例如the后面可以连接的单词，及相应的概率。<br><img src="https://p3.pstatp.com/large/435300000b3f99003259" alt="image"><br>图11-2 算法结果展示</p>
+<p>上述十大类机器学习算法是人工智能发展的践行者，即使在当下，依然在数据挖掘以及小样本的人工智能问题中被广泛使用。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/machine-learning/" rel="tag"># machine learning</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/11/21/%E6%89%8B%E5%86%99%E8%AF%86%E5%88%AB%E5%9B%BE%E7%89%87%E9%A2%84%E5%A4%84%E7%90%86/" rel="prev" title="手写识别图片预处理">
+      <i class="fa fa-chevron-left"></i> 手写识别图片预处理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/04/19/%E6%AF%95%E8%AE%BE%E8%AE%B0%E5%BD%95/" rel="next" title="毕设记录">
+      毕设记录 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%B3%E7%AD%96%E6%A0%91"><span class="nav-number">1.1.</span> <span class="nav-text">决策树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97"><span class="nav-number">1.2.</span> <span class="nav-text">随机森林</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92"><span class="nav-number">1.3.</span> <span class="nav-text">逻辑回归</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA"><span class="nav-number">1.4.</span> <span class="nav-text">支持向量机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF"><span class="nav-number">1.5.</span> <span class="nav-text">朴素贝叶斯</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#K%E8%BF%91%E9%82%BB%E7%AE%97%E6%B3%95"><span class="nav-number">1.6.</span> <span class="nav-text">K近邻算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#K%E5%9D%87%E5%80%BC%E7%AE%97%E6%B3%95"><span class="nav-number">1.7.</span> <span class="nav-text">K均值算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Adaboost"><span class="nav-number">1.8.</span> <span class="nav-text">Adaboost</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">1.9.</span> <span class="nav-text">神经网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A9%AC%E5%B0%94%E7%A7%91%E5%A4%AB"><span class="nav-number">1.10.</span> <span class="nav-text">马尔科夫</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
