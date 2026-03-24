@@ -12,37 +12,37 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
-
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen:300,300italic,400,400italic,700,700italic|-apple-system, BlinkMacSystemFont:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="数字边界识别检测并切割处理">
 <meta property="og:type" content="article">
 <meta property="og:title" content="手写识别图片预处理">
 <meta property="og:url" content="http://example.com/2018/11/21/%E6%89%8B%E5%86%99%E8%AF%86%E5%88%AB%E5%9B%BE%E7%89%87%E9%A2%84%E5%A4%84%E7%90%86/index.html">
-<meta property="og:site_name" content="Hexo">
+<meta property="og:site_name" content="Zhou&#96;s Blog">
 <meta property="og:description" content="数字边界识别检测并切割处理">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/EF7E208AE0EE4C20923C8FCE1596E233">
-<meta property="og:image" content="http://example.com/E0D1665B6D024C95BAA35ED62B95FFD3">
-<meta property="og:image" content="http://example.com/BC4FFD9E762F41B884F1561145188A38">
-<meta property="og:image" content="http://example.com/2CB054EC34C74753AC8B607F09C43EAB">
-<meta property="og:image" content="http://example.com/26767B1C17EF41419DBFAB8DFB1A3F97">
-<meta property="og:image" content="http://example.com/E3617599EB824E8299DABE0F092E2E2A">
-<meta property="og:image" content="http://example.com/BAD59EB81C624531B685A71658D40A6B">
-<meta property="og:image" content="http://example.com/334DE774AEC74DFF92342E47D4D5DE59">
-<meta property="og:image" content="http://example.com/FBF03940D0494CCA8DA20F1EB9189084">
-<meta property="og:image" content="http://example.com/8F285B11124A45CAB531F5BC452BA749">
+<meta property="og:image" content="http://example.com/.com//EF7E208AE0EE4C20923C8FCE1596E233">
+<meta property="og:image" content="http://example.com/.com//E0D1665B6D024C95BAA35ED62B95FFD3">
+<meta property="og:image" content="http://example.com/.com//BC4FFD9E762F41B884F1561145188A38">
+<meta property="og:image" content="http://example.com/.com//2CB054EC34C74753AC8B607F09C43EAB">
+<meta property="og:image" content="http://example.com/.com//26767B1C17EF41419DBFAB8DFB1A3F97">
+<meta property="og:image" content="http://example.com/.com//E3617599EB824E8299DABE0F092E2E2A">
+<meta property="og:image" content="http://example.com/.com//BAD59EB81C624531B685A71658D40A6B">
+<meta property="og:image" content="http://example.com/.com//334DE774AEC74DFF92342E47D4D5DE59">
+<meta property="og:image" content="http://example.com/.com//FBF03940D0494CCA8DA20F1EB9189084">
+<meta property="og:image" content="http://example.com/.com//8F285B11124A45CAB531F5BC452BA749">
 <meta property="article:published_time" content="2018-11-21T04:52:41.000Z">
 <meta property="article:modified_time" content="2020-09-16T06:56:26.236Z">
-<meta property="article:author" content="John Doe">
+<meta property="article:author" content="Zhou">
 <meta property="article:tag" content="opencv">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/EF7E208AE0EE4C20923C8FCE1596E233">
+<meta name="twitter:image" content="http://example.com/.com//EF7E208AE0EE4C20923C8FCE1596E233">
 
 <link rel="canonical" href="http://example.com/2018/11/21/%E6%89%8B%E5%86%99%E8%AF%86%E5%88%AB%E5%9B%BE%E7%89%87%E9%A2%84%E5%A4%84%E7%90%86/">
 
@@ -57,7 +57,7 @@
   };
 </script>
 
-  <title>手写识别图片预处理 | Hexo</title>
+  <title>手写识别图片预处理 | Zhou`s Blog</title>
   
 
 
@@ -88,6 +88,7 @@
   </style>
 </noscript>
 
+<link rel="alternate" href="/atom.xml" title="Zhou`s Blog" type="application/atom+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -108,9 +109,10 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">Hexo</h1>
+      <h1 class="site-title">Zhou`s Blog</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
+      <p class="site-subtitle" itemprop="description">Tech | Study | Life</p>
   </div>
 
   <div class="site-nav-right">
@@ -129,9 +131,39 @@
     <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
         <li class="menu-item menu-item-archives">
 
     <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-contact">
+
+    <a href="/contact/" rel="section"><i class="envelope fa-fw"></i>contact</a>
+
+  </li>
+        <li class="menu-item menu-item-privacy">
+
+    <a href="/privacy/" rel="section"><i class="shield fa-fw"></i>privacy</a>
 
   </li>
   </ul>
@@ -148,6 +180,7 @@
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
+  <div class="reading-progress-bar"></div>
 
 
     <main class="main">
@@ -165,13 +198,13 @@
     <link itemprop="mainEntityOfPage" href="http://example.com/2018/11/21/%E6%89%8B%E5%86%99%E8%AF%86%E5%88%AB%E5%9B%BE%E7%89%87%E9%A2%84%E5%A4%84%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="John Doe">
-      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/self.jpg">
+      <meta itemprop="name" content="Zhou">
+      <meta itemprop="description" content="Life | Coding | Study Notes">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
+      <meta itemprop="name" content="Zhou`s Blog">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -225,8 +258,8 @@
 </ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">整张图片--&gt;图片旋转闭操作等处理</span><br><span class="line">图片旋转闭操作等处理--&gt;切割单个等式</span><br><span class="line">切割单个等式--&gt;获取每一个数字与运算符</span><br></pre></td></tr></table></figure>
 <ul>
-<li><p>理想效果：<br>  原图⬇<br>  <img src="/EF7E208AE0EE4C20923C8FCE1596E233" alt="0--test0"></p>
-<p>  结果⬇<br>  <img src="/E0D1665B6D024C95BAA35ED62B95FFD3" alt="1"></p>
+<li><p>理想效果：<br>  原图⬇<br>  <img src="/.com//EF7E208AE0EE4C20923C8FCE1596E233" alt="0--test0"></p>
+<p>  结果⬇<br>  <img src="/.com//E0D1665B6D024C95BAA35ED62B95FFD3" alt="1"></p>
 </li>
 <li><p>其中图片的拍摄过程中需要解决的问题及解决方法：</p>
 <ol>
@@ -238,33 +271,33 @@
 </li>
 </ul>
 <h2 id="模块具体实施步骤和结果"><a href="#模块具体实施步骤和结果" class="headerlink" title="模块具体实施步骤和结果"></a>模块具体实施步骤和结果</h2><ul>
-<li><p>步骤零：获取图片<br>  <img src="/BC4FFD9E762F41B884F1561145188A38" alt="image"></p>
+<li><p>步骤零：获取图片<br>  <img src="/.com//BC4FFD9E762F41B884F1561145188A38" alt="image"></p>
 </li>
 <li><p>步骤一：霍夫变换</p>
 <p>  这个地方因为拍摄的照片就比较正，所以霍夫变换的效果不是十分明显，仔细看是能看到这个图边缘黑边的地方就是进行旋转后的痕迹。结果如下：</p>
 </li>
 </ul>
-<p><img src="/2CB054EC34C74753AC8B607F09C43EAB" alt="image"></p>
+<p><img src="/.com//2CB054EC34C74753AC8B607F09C43EAB" alt="image"></p>
 <ul>
 <li><p>步骤二：获取边界图片</p>
-<p>  opencv的边界检测方法<br>  <img src="/26767B1C17EF41419DBFAB8DFB1A3F97" alt="image"></p>
+<p>  opencv的边界检测方法<br>  <img src="/.com//26767B1C17EF41419DBFAB8DFB1A3F97" alt="image"></p>
 </li>
 <li><p>步骤三：灰度化闭操作及透视变换</p>
 <p>  闭操作：<br>  ‘’ 图片形态学操作中的一种，闭操作可使轮廓线更光滑，但与开操作相反的是，闭操作通常消弥狭窄的间断和长细的鸿沟，消除小的空洞，并填补轮廓线中的断裂。’’</p>
 <p>  简单点说：图片细节增强</p>
 <p>  透视变换：将原图投影到另一个平面上并通过点运算使图像更加平整。</p>
 <p>  二值化处理方法：根据Otsu’s方法取最佳阈值对图片进行二值化处理</p>
-<p>  结果如下：这里透明变换的效果并不是很好，目前还没有找到一个合适的参数使用，并且从分割的情况来看效果也还行，所以暂时就这样勉强用了。。。<br>  <img src="/E3617599EB824E8299DABE0F092E2E2A" alt="image"></p>
+<p>  结果如下：这里透明变换的效果并不是很好，目前还没有找到一个合适的参数使用，并且从分割的情况来看效果也还行，所以暂时就这样勉强用了。。。<br>  <img src="/.com//E3617599EB824E8299DABE0F092E2E2A" alt="image"></p>
 </li>
 <li><p>步骤四：分割单元格</p>
-<p>  opencv对图片轮廓进行识别：<br>  <img src="/BAD59EB81C624531B685A71658D40A6B" alt="image"></p>
+<p>  opencv对图片轮廓进行识别：<br>  <img src="/.com//BAD59EB81C624531B685A71658D40A6B" alt="image"></p>
 <p>  使用opencv把边界画出来，效果简明易懂：</p>
-<p>  <img src="/334DE774AEC74DFF92342E47D4D5DE59" alt="image"></p>
-<p>  单个单元格的提取：<br>  <img src="/FBF03940D0494CCA8DA20F1EB9189084" alt="image"></p>
+<p>  <img src="/.com//334DE774AEC74DFF92342E47D4D5DE59" alt="image"></p>
+<p>  单个单元格的提取：<br>  <img src="/.com//FBF03940D0494CCA8DA20F1EB9189084" alt="image"></p>
 </li>
 <li><p>步骤五：从单个单元格中提取数字及符号</p>
 <p>  因为用了垂直投影方法切割字符，在使用之前去噪点的步骤没有检测效果如何，导致这里用垂直投影会出现将噪点也切割出来的情况。返回重新调整一下二值化的阈值就可以了。</p>
-<p>  效果：<br>  <img src="/8F285B11124A45CAB531F5BC452BA749" alt="1"></p>
+<p>  效果：<br>  <img src="/.com//8F285B11124A45CAB531F5BC452BA749" alt="1"></p>
 </li>
 </ul>
 <h2 id="其他："><a href="#其他：" class="headerlink" title="其他："></a>其他：</h2><ol>
@@ -361,15 +394,17 @@
 
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">John Doe</p>
-  <div class="site-description" itemprop="description"></div>
+    <img class="site-author-image" itemprop="image" alt="Zhou"
+      src="/images/self.jpg">
+  <p class="site-author-name" itemprop="name">Zhou</p>
+  <div class="site-description" itemprop="description">Life | Coding | Study Notes</div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-count">27</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -378,7 +413,7 @@
         <span class="site-state-item-name">categories</span>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-count">28</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>
@@ -404,14 +439,14 @@
 
 <div class="copyright">
   
-  &copy; 
+  &copy; 2019 – 
   <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
-    <i class="fa fa-heart"></i>
+    <i class="heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">John Doe</span>
+  <span class="author" itemprop="copyrightHolder">Zhou</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
   </div>
 
         
@@ -446,6 +481,31 @@
 
 
   
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
 
 
 
