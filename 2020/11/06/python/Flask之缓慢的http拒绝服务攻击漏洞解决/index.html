@@ -27,17 +27,17 @@
 <meta property="og:site_name" content="Wednesday&#96;s Blog">
 <meta property="og:description" content="详解Slowloris、Slow POST、Slow Read三种缓慢HTTP拒绝服务攻击原理，及在Flask应用中的防御配置方案">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://studyflowblog.com/img/Flask%E4%B9%8B%E7%BC%93%E6%85%A2%E7%9A%84http%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB%E6%BC%8F%E6%B4%9E%E8%A7%A3%E5%86%B3/image-20201115151719480.png">
-<meta property="og:image" content="https://studyflowblog.com/img/Flask%E4%B9%8B%E7%BC%93%E6%85%A2%E7%9A%84http%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB%E6%BC%8F%E6%B4%9E%E8%A7%A3%E5%86%B3/image-20201115151939829.png">
-<meta property="og:image" content="https://studyflowblog.com/img/Flask%E4%B9%8B%E7%BC%93%E6%85%A2%E7%9A%84http%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB%E6%BC%8F%E6%B4%9E%E8%A7%A3%E5%86%B3/image-20201115154404536.png">
-<meta property="og:image" content="https://studyflowblog.com/img/Flask%E4%B9%8B%E7%BC%93%E6%85%A2%E7%9A%84http%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB%E6%BC%8F%E6%B4%9E%E8%A7%A3%E5%86%B3/image-20201115152038635.png">
+<meta property="og:image" content="https://studyflowblog.com/.com//image-20201115151719480.png">
+<meta property="og:image" content="https://studyflowblog.com/.com//image-20201115151939829.png">
+<meta property="og:image" content="https://studyflowblog.com/.com//image-20201115154404536.png">
+<meta property="og:image" content="https://studyflowblog.com/.com//image-20201115152038635.png">
 <meta property="article:published_time" content="2020-11-06T01:32:24.000Z">
-<meta property="article:modified_time" content="2026-04-02T12:26:44.850Z">
+<meta property="article:modified_time" content="2026-04-02T12:44:11.036Z">
 <meta property="article:author" content="Wednesday">
 <meta property="article:tag" content="Flask">
 <meta property="article:tag" content="python">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://studyflowblog.com/img/Flask%E4%B9%8B%E7%BC%93%E6%85%A2%E7%9A%84http%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB%E6%BC%8F%E6%B4%9E%E8%A7%A3%E5%86%B3/image-20201115151719480.png">
+<meta name="twitter:image" content="https://studyflowblog.com/.com//image-20201115151719480.png">
 
 <link rel="canonical" href="https://studyflowblog.com/2020/11/06/python/Flask%E4%B9%8B%E7%BC%93%E6%85%A2%E7%9A%84http%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB%E6%BC%8F%E6%B4%9E%E8%A7%A3%E5%86%B3/">
 
@@ -220,7 +220,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-04-02 21:56:44" itemprop="dateModified" datetime="2026-04-02T21:56:44+09:30">2026-04-02</time>
+                <time title="Modified: 2026-04-02 22:14:11" itemprop="dateModified" datetime="2026-04-02T22:14:11+09:30">2026-04-02</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -294,15 +294,15 @@
 
 <h1 id="4-使用说明"><a href="#4-使用说明" class="headerlink" title="4.使用说明"></a>4.使用说明</h1><p>以下是分别使用四种方式对自己的服务进行测试的结果，先开始不太懂每个曲线图的意义。这里说明一下，上面的参数可以设置连接数量以及持续请求时间等参数。然后下面展现的是曲线图，主要看在测试程序运行时间内Connected的数量是否被释放，是否通过服务的设置不符合条件的请求被服务端关闭，Service是否正常运行（服务是否存在被漏洞攻击程序给冲宕机了）。</p>
 <p>##4.1 RANGE HEADERS</p>
-<img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115151719480.png" alt="rangeHeader" style="zoom:67%;">
+<img src="/.com//image-20201115151719480.png" alt="rangeHeader" style="zoom:67%;">
 
 <p>##4.2 SLOW HEADERS(SlowLoris)</p>
-<img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115151939829.png" alt="image-20201115151939829" style="zoom: 67%;">
+<img src="/.com//image-20201115151939829.png" alt="image-20201115151939829" style="zoom: 67%;">
 
 <p>##4.3 SLOW BODY(SLOW POST)</p>
-<img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115154404536.png" alt="image-20201115154404536" style="zoom:67%;">
+<img src="/.com//image-20201115154404536.png" alt="image-20201115154404536" style="zoom:67%;">
 
-<h2 id="4-4-SLOW-READ"><a href="#4-4-SLOW-READ" class="headerlink" title="4.4  SLOW READ"></a>4.4  SLOW READ</h2><img src="/img/Flask之缓慢的http拒绝服务攻击漏洞解决/image-20201115152038635.png" style="zoom:67%;">
+<h2 id="4-4-SLOW-READ"><a href="#4-4-SLOW-READ" class="headerlink" title="4.4  SLOW READ"></a>4.4  SLOW READ</h2><img src="/.com//image-20201115152038635.png" style="zoom:67%;">
 
 
     </div>
