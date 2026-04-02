@@ -306,17 +306,17 @@
 </li>
 <li><p>–local：仓库级，–global：全局级，–system：系统级</p>
 <blockquote>
-<p>git config &lt;–local | –global | –system&gt; –add <name> <value></value></name></p>
+<p>git config &lt;–local | –global | –system&gt; –add <name> <value></p>
 </blockquote>
 </li>
 <li><p>获取配置项</p>
 <blockquote>
-<p>git config &lt;–local | –global | –system&gt; –get <name></name></p>
+<p>git config &lt;–local | –global | –system&gt; –get <name></p>
 </blockquote>
 </li>
 <li><p>删除配置项</p>
 <blockquote>
-<p>git config &lt;–local | –global | –system&gt; –unset <name></name></p>
+<p>git config &lt;–local | –global | –system&gt; –unset <name></p>
 </blockquote>
 </li>
 <li><p>配置提交记录中的用户信息</p>
@@ -494,7 +494,7 @@
 <h1 id="git-cherry-pick"><a href="#git-cherry-pick" class="headerlink" title="git cherry-pick"></a>git cherry-pick</h1><p>把已经提交的记录合并到当前分支。</p>
 <ul>
 <li>把已经提交的记录合并到当前分支<blockquote>
-<p>git cherry-pick <commit id></commit></p>
+<p>git cherry-pick <commit ID></p>
 </blockquote>
 </li>
 </ul>
@@ -585,7 +585,7 @@
 </li>
 <li><p>查看从指定的版本之后改动的内容</p>
 <blockquote>
-<p>git diff <commit id></commit></p>
+<p>git diff <commit ID></p>
 </blockquote>
 </li>
 <li><p>比较两个分支之间的差异</p>
@@ -628,7 +628,7 @@
 </li>
 <li><p>打印从第一次提交到指定的提交的记录</p>
 <blockquote>
-<p>git log <commit id></commit></p>
+<p>git log <commit ID></p>
 </blockquote>
 </li>
 <li><p>打印指定数量的最新提交的记录</p>
@@ -650,26 +650,26 @@
 </li>
 <li><p>将 HEAD 的指向改变，撤销到指定的提交记录，文件未修改</p>
 <blockquote>
-<p>git reset <commit id><br>git reset –mixed <commit id></commit></commit></p>
+<p>git reset <commit ID><br>git reset –mixed <commit ID></p>
 </blockquote>
 </li>
 <li><p>将 HEAD 的指向改变，撤销到指定的提交记录，文件未修改</p>
 </li>
 <li><p>相当于调用 “git reset –mixed” 命令后又做了一次 “git add”</p>
 <blockquote>
-<p>git reset –soft <commit id></commit></p>
+<p>git reset –soft <commit ID></p>
 </blockquote>
 </li>
 <li><p>将 HEAD 的指向改变，撤销到指定的提交记录，文件也修改了</p>
 <blockquote>
-<p>git reset –hard <commit id></commit></p>
+<p>git reset –hard <commit ID></p>
 </blockquote>
 </li>
 </ul>
 <h1 id="git-revert"><a href="#git-revert" class="headerlink" title="git revert"></a>git revert</h1><p>生成一个新的提交来撤销某次提交，此次提交之前的所有提交都会被保留。</p>
 <ul>
 <li>生成一个新的提交来撤销某次提交<blockquote>
-<p>git revert <commit id></commit></p>
+<p>git revert <commit ID></p>
 </blockquote>
 </li>
 </ul>
@@ -682,12 +682,12 @@
 </li>
 <li><p>添加轻量标签，指向提交对象的引用，可以指定之前的提交记录</p>
 <blockquote>
-<p>git tag &lt;标签名称&gt; [<commit id>]</commit></p>
+<p>git tag &lt;标签名称&gt; [<commit ID>]</p>
 </blockquote>
 </li>
 <li><p>添加带有描述信息的附注标签，可以指定之前的提交记录</p>
 <blockquote>
-<p>git tag -a &lt;标签名称&gt; -m &lt;标签描述信息&gt; [<commit id>]</commit></p>
+<p>git tag -a &lt;标签名称&gt; -m &lt;标签描述信息&gt; [<commit ID>]</p>
 </blockquote>
 </li>
 <li><p>切换到指定的标签</p>

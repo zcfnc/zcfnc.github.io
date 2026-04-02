@@ -27,22 +27,22 @@
 <meta property="og:site_name" content="Wednesday&#96;s Blog">
 <meta property="og:description" content="使用OpenCV对手写算式图片进行预处理，通过闭操作等方式切割单个数字与运算符，参赛项目实战记录">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://studyflowblog.com/.com//EF7E208AE0EE4C20923C8FCE1596E233">
-<meta property="og:image" content="https://studyflowblog.com/.com//E0D1665B6D024C95BAA35ED62B95FFD3">
-<meta property="og:image" content="https://studyflowblog.com/.com//BC4FFD9E762F41B884F1561145188A38">
-<meta property="og:image" content="https://studyflowblog.com/.com//2CB054EC34C74753AC8B607F09C43EAB">
-<meta property="og:image" content="https://studyflowblog.com/.com//26767B1C17EF41419DBFAB8DFB1A3F97">
-<meta property="og:image" content="https://studyflowblog.com/.com//E3617599EB824E8299DABE0F092E2E2A">
-<meta property="og:image" content="https://studyflowblog.com/.com//BAD59EB81C624531B685A71658D40A6B">
-<meta property="og:image" content="https://studyflowblog.com/.com//334DE774AEC74DFF92342E47D4D5DE59">
-<meta property="og:image" content="https://studyflowblog.com/.com//FBF03940D0494CCA8DA20F1EB9189084">
-<meta property="og:image" content="https://studyflowblog.com/.com//8F285B11124A45CAB531F5BC452BA749">
+<meta property="og:image" content="https://studyflowblog.com/EF7E208AE0EE4C20923C8FCE1596E233">
+<meta property="og:image" content="https://studyflowblog.com/E0D1665B6D024C95BAA35ED62B95FFD3">
+<meta property="og:image" content="https://studyflowblog.com/BC4FFD9E762F41B884F1561145188A38">
+<meta property="og:image" content="https://studyflowblog.com/2CB054EC34C74753AC8B607F09C43EAB">
+<meta property="og:image" content="https://studyflowblog.com/26767B1C17EF41419DBFAB8DFB1A3F97">
+<meta property="og:image" content="https://studyflowblog.com/E3617599EB824E8299DABE0F092E2E2A">
+<meta property="og:image" content="https://studyflowblog.com/BAD59EB81C624531B685A71658D40A6B">
+<meta property="og:image" content="https://studyflowblog.com/334DE774AEC74DFF92342E47D4D5DE59">
+<meta property="og:image" content="https://studyflowblog.com/FBF03940D0494CCA8DA20F1EB9189084">
+<meta property="og:image" content="https://studyflowblog.com/8F285B11124A45CAB531F5BC452BA749">
 <meta property="article:published_time" content="2018-11-21T04:52:41.000Z">
 <meta property="article:modified_time" content="2026-04-02T12:25:57.482Z">
 <meta property="article:author" content="Wednesday">
 <meta property="article:tag" content="opencv">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://studyflowblog.com/.com//EF7E208AE0EE4C20923C8FCE1596E233">
+<meta name="twitter:image" content="https://studyflowblog.com/EF7E208AE0EE4C20923C8FCE1596E233">
 
 <link rel="canonical" href="https://studyflowblog.com/2018/11/21/handwriting-recognition-image-preprocessing/">
 
@@ -258,8 +258,8 @@
 </ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">整张图片--&gt;图片旋转闭操作等处理</span><br><span class="line">图片旋转闭操作等处理--&gt;切割单个等式</span><br><span class="line">切割单个等式--&gt;获取每一个数字与运算符</span><br></pre></td></tr></table></figure>
 <ul>
-<li><p>理想效果：<br>  原图⬇<br>  <img src="/.com//EF7E208AE0EE4C20923C8FCE1596E233" alt="0--test0"></p>
-<p>  结果⬇<br>  <img src="/.com//E0D1665B6D024C95BAA35ED62B95FFD3" alt="1"></p>
+<li><p>理想效果：<br>  原图⬇<br>  <img src="/EF7E208AE0EE4C20923C8FCE1596E233" alt="0--test0"></p>
+<p>  结果⬇<br>  <img src="/E0D1665B6D024C95BAA35ED62B95FFD3" alt="1"></p>
 </li>
 <li><p>其中图片的拍摄过程中需要解决的问题及解决方法：</p>
 <ol>
@@ -271,33 +271,33 @@
 </li>
 </ul>
 <h2 id="模块具体实施步骤和结果"><a href="#模块具体实施步骤和结果" class="headerlink" title="模块具体实施步骤和结果"></a>模块具体实施步骤和结果</h2><ul>
-<li><p>步骤零：获取图片<br>  <img src="/.com//BC4FFD9E762F41B884F1561145188A38" alt="image"></p>
+<li><p>步骤零：获取图片<br>  <img src="/BC4FFD9E762F41B884F1561145188A38" alt="image"></p>
 </li>
 <li><p>步骤一：霍夫变换</p>
 <p>  这个地方因为拍摄的照片就比较正，所以霍夫变换的效果不是十分明显，仔细看是能看到这个图边缘黑边的地方就是进行旋转后的痕迹。结果如下：</p>
 </li>
 </ul>
-<p><img src="/.com//2CB054EC34C74753AC8B607F09C43EAB" alt="image"></p>
+<p><img src="/2CB054EC34C74753AC8B607F09C43EAB" alt="image"></p>
 <ul>
 <li><p>步骤二：获取边界图片</p>
-<p>  opencv的边界检测方法<br>  <img src="/.com//26767B1C17EF41419DBFAB8DFB1A3F97" alt="image"></p>
+<p>  opencv的边界检测方法<br>  <img src="/26767B1C17EF41419DBFAB8DFB1A3F97" alt="image"></p>
 </li>
 <li><p>步骤三：灰度化闭操作及透视变换</p>
 <p>  闭操作：<br>  ‘’ 图片形态学操作中的一种，闭操作可使轮廓线更光滑，但与开操作相反的是，闭操作通常消弥狭窄的间断和长细的鸿沟，消除小的空洞，并填补轮廓线中的断裂。’’</p>
 <p>  简单点说：图片细节增强</p>
 <p>  透视变换：将原图投影到另一个平面上并通过点运算使图像更加平整。</p>
 <p>  二值化处理方法：根据Otsu’s方法取最佳阈值对图片进行二值化处理</p>
-<p>  结果如下：这里透明变换的效果并不是很好，目前还没有找到一个合适的参数使用，并且从分割的情况来看效果也还行，所以暂时就这样勉强用了。。。<br>  <img src="/.com//E3617599EB824E8299DABE0F092E2E2A" alt="image"></p>
+<p>  结果如下：这里透明变换的效果并不是很好，目前还没有找到一个合适的参数使用，并且从分割的情况来看效果也还行，所以暂时就这样勉强用了。。。<br>  <img src="/E3617599EB824E8299DABE0F092E2E2A" alt="image"></p>
 </li>
 <li><p>步骤四：分割单元格</p>
-<p>  opencv对图片轮廓进行识别：<br>  <img src="/.com//BAD59EB81C624531B685A71658D40A6B" alt="image"></p>
+<p>  opencv对图片轮廓进行识别：<br>  <img src="/BAD59EB81C624531B685A71658D40A6B" alt="image"></p>
 <p>  使用opencv把边界画出来，效果简明易懂：</p>
-<p>  <img src="/.com//334DE774AEC74DFF92342E47D4D5DE59" alt="image"></p>
-<p>  单个单元格的提取：<br>  <img src="/.com//FBF03940D0494CCA8DA20F1EB9189084" alt="image"></p>
+<p>  <img src="/334DE774AEC74DFF92342E47D4D5DE59" alt="image"></p>
+<p>  单个单元格的提取：<br>  <img src="/FBF03940D0494CCA8DA20F1EB9189084" alt="image"></p>
 </li>
 <li><p>步骤五：从单个单元格中提取数字及符号</p>
 <p>  因为用了垂直投影方法切割字符，在使用之前去噪点的步骤没有检测效果如何，导致这里用垂直投影会出现将噪点也切割出来的情况。返回重新调整一下二值化的阈值就可以了。</p>
-<p>  效果：<br>  <img src="/.com//8F285B11124A45CAB531F5BC452BA749" alt="1"></p>
+<p>  效果：<br>  <img src="/8F285B11124A45CAB531F5BC452BA749" alt="1"></p>
 </li>
 </ul>
 <h2 id="其他："><a href="#其他：" class="headerlink" title="其他："></a>其他：</h2><ol>
